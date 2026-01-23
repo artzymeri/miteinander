@@ -43,13 +43,6 @@ const bentoItems = [
     icon: Clock,
     size: "small",
   },
-  {
-    id: 6,
-    title: "Qualität",
-    description: "Nur die besten Pflegekräfte in unserem Netzwerk.",
-    icon: Star,
-    size: "small",
-  },
 ];
 
 export default function DifferenceSection() {

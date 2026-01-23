@@ -68,9 +68,10 @@ export default function Navbar() {
               </motion.a>
             ))}
             <motion.button
-              className="bg-accent text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-accent-light transition-colors"
+              className="bg-accent text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-accent-light transition-colors cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' })}
             >
               Jetzt starten
             </motion.button>
@@ -103,7 +104,13 @@ export default function Navbar() {
                 {item.name}
               </a>
             ))}
-            <button className="w-full bg-accent text-white px-6 py-3 rounded-full font-medium hover:bg-accent-light transition-colors">
+            <button 
+              className="w-full bg-accent text-white px-6 py-3 rounded-full font-medium hover:bg-accent-light transition-colors cursor-pointer"
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
               Jetzt starten
             </button>
           </div>

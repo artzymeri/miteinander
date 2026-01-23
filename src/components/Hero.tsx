@@ -194,26 +194,26 @@ export default function Hero() {
             <span className="text-accent-light font-medium">Direkt, persönlich, menschlich.</span>
           </motion.p>
 
-          {/* CTA Buttons */}
+          {/* CTA Button */}
           <motion.div
-            className="flex flex-col sm:flex-row gap-4"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 4.7 }}
           >
             <motion.button
-              className="group relative bg-accent text-white px-8 py-4 rounded-full text-lg font-medium overflow-hidden"
-              whileHover={{ scale: 1.05 }}
+              className="group relative bg-accent text-white px-10 py-5 rounded-full text-xl font-medium overflow-hidden cursor-pointer shadow-2xl shadow-accent/30"
+              whileHover={{ scale: 1.05, boxShadow: "0 25px 50px -12px rgba(224, 122, 95, 0.5)" }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              <span className="relative z-10 flex items-center justify-center gap-2">
+              <span className="relative z-10 flex items-center justify-center gap-3">
                 Jetzt Unterstützung finden
                 <motion.svg 
-                  className="w-5 h-5" 
+                  className="w-6 h-6" 
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
-                  animate={{ x: [0, 4, 0] }}
+                  animate={{ x: [0, 5, 0] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -225,19 +225,6 @@ export default function Hero() {
                 whileHover={{ x: 0 }}
                 transition={{ duration: 0.3 }}
               />
-            </motion.button>
-
-            <motion.button
-              className="group glass-dark text-white px-8 py-4 rounded-full text-lg font-medium border border-white/20 hover:border-white/40 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span className="flex items-center justify-center gap-2">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                </svg>
-                Video ansehen
-              </span>
             </motion.button>
           </motion.div>
 
@@ -275,7 +262,7 @@ export default function Hero() {
           <button
             key={index}
             onClick={() => setCurrentImage(index)}
-            className={`w-2 h-8 rounded-full transition-all duration-300 ${
+            className={`w-2 h-8 rounded-full transition-all duration-300 cursor-pointer ${
               currentImage === index 
                 ? "bg-accent scale-110" 
                 : "bg-white/30 hover:bg-white/50"

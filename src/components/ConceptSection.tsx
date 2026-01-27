@@ -9,7 +9,7 @@ const steps = [
     number: "01",
     title: "Suchen",
     description:
-      "Finden Sie qualifizierte Pflegekräfte in Ihrer Nähe. Filtern Sie nach Erfahrung, Verfügbarkeit und Spezialisierung.",
+      "Finden Sie qualifizierte Pflegekräfte in Ihrer Nähe. Filtern Sie nach Behandlung, Qualifikation und ihre Preise.",
     icon: Search,
     image: "https://images.unsplash.com/photo-1454418747937-bd95bb945625?q=80&w=2070",
   },
@@ -27,7 +27,7 @@ const steps = [
     description:
       "Organisieren Sie Besuche und Pflege direkt. Ohne Agentur, ohne Vermittlungsgebühren – einfach menschlich.",
     icon: CalendarCheck,
-    image: "https://images.unsplash.com/photo-1509909756405-be0199881695?q=80&w=2070",
+    image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2070",
   },
 ];
 

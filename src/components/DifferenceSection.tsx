@@ -11,7 +11,7 @@ const bentoItems = [
       "Verbinden Sie sich direkt mit Pflegekräften. Keine Vermittlungsgebühren, keine versteckten Kosten.",
     icon: Users,
     size: "large",
-    image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=2025",
+    image: "https://images.unsplash.com/photo-1609131257008-a5436a6238da?q=80&w=2048&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: 2,

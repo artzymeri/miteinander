@@ -16,8 +16,8 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: "Miteinander | Fürsorge, die verbindet",
-  description: "Finden Sie die perfekte Unterstützung für Ihre Liebsten. Direkt, persönlich, menschlich. Die deutsche Plattform für Altenpflege.",
-  keywords: "Altenpflege, Seniorenbetreuung, Pflegekräfte, Deutschland, häusliche Pflege, Betreuung",
+  description: "Finden Sie die perfekte Unterstützung für Ihre Liebsten. Direkt, persönlich, menschlich. Die deutsche Plattform für Pflege.",
+  keywords: "Pflege, Seniorenbetreuung, Pflegekräfte, Deutschland, häusliche Pflege, Betreuung",
   authors: [{ name: "Miteinander" }],
   icons: {
     icon: "/logo.svg",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     apple: "/logo.svg",
   },
   openGraph: {
-    title: "Miteinander | Fürsorge, die verbindet",
+    title: "Miteinander | Die Plattform, die verbindet",
     description: "Finden Sie die perfekte Unterstützung für Ihre Liebsten. Direkt, persönlich, menschlich.",
     type: "website",
     images: [
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "Miteinander | Fürsorge, die verbindet",
+    title: "Miteinander | Die Plattform, die verbindet",
     description: "Finden Sie die perfekte Unterstützung für Ihre Liebsten. Direkt, persönlich, menschlich.",
     images: ["/logo.svg"],
   },

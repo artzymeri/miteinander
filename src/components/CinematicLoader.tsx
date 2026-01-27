@@ -132,7 +132,7 @@ export default function CinematicLoader({ onLoadingComplete }: CinematicLoaderPr
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 2.6 }}
             >
-              Fürsorge verbindet
+              Die Plattform, die verbindet
             </motion.p>
           </motion.div>
         </>

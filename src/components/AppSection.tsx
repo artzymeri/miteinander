@@ -170,7 +170,7 @@ export default function AppSection() {
                             </p>
                             <p className="text-muted text-xs">
                               {i === 1
-                                ? "Altenpfleger • 5 Jahre"
+                                ? "Pfleger • 5 Jahre"
                                 : "Pflegehelfer • 3 Jahre"}
                             </p>
                           </div>

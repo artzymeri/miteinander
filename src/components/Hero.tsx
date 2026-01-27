@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 
 const heroImages = [
   {
-    src: "https://images.unsplash.com/photo-1516733968668-dbdce39c4651?q=80&w=2070",
+    src: "https://images.unsplash.com/photo-1596633607590-7156877ef734?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     alt: "Elderly hands holding a warm cup",
   },
   {
@@ -13,7 +13,7 @@ const heroImages = [
     alt: "Caregiver holding hands with elderly person",
   },
   {
-    src: "https://images.unsplash.com/photo-1447452001602-7090c7ab2db3?q=80&w=2070",
+    src: "https://images.unsplash.com/photo-1508028922235-7b9a1b690358?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     alt: "Happy elderly couple walking together",
   },
 ];
@@ -61,7 +61,7 @@ function FloatingParticles() {
 
 export default function Hero() {
   const [currentImage, setCurrentImage] = useState(0);
-  const words = ["Fürsorge,", "die", "verbindet."];
+  const words = ["Die Plattform,", "die", "verbindet."];
 
   // Auto-switch images every 6 seconds
   useEffect(() => {
@@ -148,7 +148,7 @@ export default function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
             </span>
-            <span className="text-sm font-medium text-white/90">Die #1 Plattform für Altenpflege in Deutschland</span>
+            <span className="text-sm font-medium text-white/90">Die #1 Plattform für Pflege in Deutschland</span>
           </motion.div>
 
           {/* Staggered headline with gradient text effect */}

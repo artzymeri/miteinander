@@ -1,0 +1,12 @@
+export { default as RegisterHeader } from './RegisterHeader';
+export { default as RoleSelector } from './RoleSelector';
+export { default as RoleCard } from './RoleCard';
+export { default as ProgressSteps } from './ProgressSteps';
+export { default as FormPlaceholder } from './FormPlaceholder';
+export { default as AccountForm } from './AccountForm';
+export { default as PersonalForm } from './PersonalForm';
+export { default as AddressForm } from './AddressForm';
+export { default as CareNeedsForm } from './CareNeedsForm';
+export { default as EmergencyContactForm } from './EmergencyContactForm';
+export { default as CareRecipientDetailsForm } from './CareRecipientDetailsForm';
+export { default as CareGiverDetailsForm } from './CareGiverDetailsForm';

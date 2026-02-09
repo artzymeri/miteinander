@@ -1,0 +1,21 @@
+{
+  "executed": [
+    "20260203000001_create_admins_table.js",
+    "20260203000002_create_supports_table.js",
+    "20260203000003_create_care_recipients_table.js",
+    "20260203000004_create_care_givers_table.js",
+    "20260203000005_seed_mock_users.js",
+    "20260203000006_create_care_needs_table.js",
+    "20260203000007_seed_default_care_needs.js",
+    "20260203000008_replace_hourly_rate_with_occupation.js",
+    "20260203000009_add_country_to_care_recipients.js",
+    "20260203000010_convert_care_needs_to_ids.js",
+    "20260203000011_add_bio_to_care_recipients.js",
+    "20260203000012_add_country_to_care_givers.js",
+    "20260203000013_change_profile_image_to_longtext.js",
+    "20260203000014_create_conversations_and_messages_tables.js",
+    "20260203000015_create_support_tickets_table.js",
+    "20260203000016_add_email_verification_fields.js",
+    "20260203000017_add_settlement_system.js"
+  ]
+}

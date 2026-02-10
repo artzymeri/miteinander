@@ -51,4 +51,12 @@ router.get(
   messageController.getUnreadCount
 );
 
+// Delete a conversation and all its messages
+// DELETE /api/messages/conversations/:conversationId
+router.delete(
+  '/conversations/:conversationId',
+  authenticate,
+  messageController.deleteConversation
+);
+
 module.exports = router;

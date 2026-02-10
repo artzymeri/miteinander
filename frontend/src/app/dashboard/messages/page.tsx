@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { useSocket } from '@/context/SocketContext';
 import { useTranslation } from '@/context/LanguageContext';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import CareRecipientLayout from '@/components/dashboard/CareRecipientLayout';
 import {
   Search,
@@ -16,6 +16,9 @@ import {
   Check,
   CheckCheck,
   Handshake,
+  MoreVertical,
+  Settings,
+  Trash2,
 } from 'lucide-react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -35,6 +38,7 @@ interface LastMessage {
   senderId: number;
   isRead: boolean;
   createdAt: string;
+  messageType?: string;
 }
 
 interface Conversation {
@@ -64,6 +68,7 @@ export default function RecipientMessagesPage() {
   const { sendMessage, respondSettlement, joinConversation, leaveConversation, onNewMessage, onMessagesRead, startTyping, stopTyping, onTyping, onStopTyping, markAsRead, refreshUnreadCount, onSettlementCompleted } = useSocket();
   const { t } = useTranslation();
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
@@ -75,6 +80,8 @@ export default function RecipientMessagesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [respondingTo, setRespondingTo] = useState<number | null>(null);
+  const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -137,6 +144,8 @@ export default function RecipientMessagesPage() {
     // Immediately clear local unread count for this conversation
     setConversations(prev => prev.map(c => c.id === conv.id ? { ...c, unreadCount: 0 } : c));
     setActiveConversation({ ...conv, unreadCount: 0 });
+    setMenuOpenId(null);
+    setHeaderMenuOpen(false);
   };
 
   // When active conversation changes
@@ -255,9 +264,41 @@ export default function RecipientMessagesPage() {
   };
 
   // Check if there's a pending settlement request (no response yet)
-  const hasSettlementResponse = messages.some(
-    m => m.messageType === 'settlement_confirmed' || m.messageType === 'settlement_dismissed'
-  );
+  // We check if the LATEST settlement request has been responded to
+  const getLatestSettlementRequest = () => {
+    const requests = messages.filter(m => m.messageType === 'settlement_request');
+    return requests.length > 0 ? requests[requests.length - 1] : null;
+  };
+  
+  const isSettlementRequestResponded = (requestMsgId: number) => {
+    const requestIndex = messages.findIndex(m => m.id === requestMsgId);
+    if (requestIndex === -1) return true;
+    // Check if any response message exists after this request
+    return messages.slice(requestIndex + 1).some(
+      m => m.messageType === 'settlement_confirmed' || m.messageType === 'settlement_dismissed'
+    );
+  };
+
+  const handleDeleteChat = async (conversationId: number) => {
+    if (!confirm(t('messages.deleteChatConfirm'))) return;
+    try {
+      const res = await fetch(`${API_URL}/messages/conversations/${conversationId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        setConversations(prev => prev.filter(c => c.id !== conversationId));
+        if (activeConversation?.id === conversationId) {
+          setActiveConversation(null);
+          setMessages([]);
+        }
+        setMenuOpenId(null);
+        setHeaderMenuOpen(false);
+      }
+    } catch (error) {
+      console.error('Failed to delete conversation:', error);
+    }
+  };
 
   const formatTime = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -334,48 +375,76 @@ export default function RecipientMessagesPage() {
                 const other = getOtherUser(conv);
                 const isActive = activeConversation?.id === conv.id;
                 return (
-                  <button
-                    key={conv.id}
-                    onClick={() => selectConversation(conv)}
-                    className={`w-full flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors cursor-pointer border-b border-gray-50 ${isActive ? 'bg-amber-50 hover:bg-amber-50' : ''}`}
-                  >
-                    <div className="relative flex-shrink-0">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-semibold overflow-hidden">
-                        {other.profileImageUrl ? (
-                          <img src={other.profileImageUrl} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <>{other.firstName[0]}{other.lastName[0]}</>
-                        )}
-                      </div>
-                      {conv.unreadCount > 0 && (
-                        <span className="absolute -top-1 -right-1 w-5 h-5 bg-amber-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
-                          {conv.unreadCount > 9 ? '9+' : conv.unreadCount}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0 text-left">
-                      <div className="flex items-center justify-between">
-                        <span className="font-semibold text-sm text-gray-900 truncate">
-                          {other.firstName} {other.lastName}
-                        </span>
-                        {conv.lastMessage && (
-                          <span className="text-xs text-gray-400 flex-shrink-0 ml-2">
-                            {formatTime(conv.lastMessage.createdAt)}
+                  <div key={conv.id} className="relative">
+                    <button
+                      onClick={() => selectConversation(conv)}
+                      className={`w-full flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors cursor-pointer border-b border-gray-50 ${isActive ? 'bg-amber-50 hover:bg-amber-50' : ''}`}
+                    >
+                      <div className="relative flex-shrink-0">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-semibold overflow-hidden">
+                          {other.profileImageUrl ? (
+                            <img src={other.profileImageUrl} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <>{other.firstName[0]}{other.lastName[0]}</>
+                          )}
+                        </div>
+                        {conv.unreadCount > 0 && (
+                          <span className="absolute -top-1 -right-1 w-5 h-5 bg-amber-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
+                            {conv.unreadCount > 9 ? '9+' : conv.unreadCount}
                           </span>
                         )}
                       </div>
-                      {conv.lastMessage ? (
-                        <p className={`text-xs truncate mt-0.5 ${conv.unreadCount > 0 ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
-                          {conv.lastMessage.senderRole === 'care_recipient' && (
-                            <span className="text-gray-400">{t('messages.you')}: </span>
-                          )}
-                          {conv.lastMessage.content}
-                        </p>
-                      ) : (
-                        <p className="text-xs text-gray-400 mt-0.5">{t('messages.noMessages')}</p>
+                      <div className="flex-1 min-w-0 text-left">
+                        <div className="flex items-center justify-between">
+                          <span className="font-semibold text-sm text-gray-900 truncate">
+                            {other.firstName} {other.lastName}
+                          </span>
+                          <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                            {conv.lastMessage && (
+                              <span className="text-xs text-gray-400">
+                                {formatTime(conv.lastMessage.createdAt)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        {conv.lastMessage ? (
+                          <p className={`text-xs truncate mt-0.5 ${conv.unreadCount > 0 ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
+                            {conv.lastMessage.senderRole === 'care_recipient' && (
+                              <span className="text-gray-400">{t('messages.you')}: </span>
+                            )}
+                            {conv.lastMessage.messageType === 'settlement_request'
+                              ? t('settlement.requestTitle')
+                              : conv.lastMessage.messageType === 'settlement_confirmed'
+                              ? t('settlement.confirmedMessage')
+                              : conv.lastMessage.messageType === 'settlement_dismissed'
+                              ? t('settlement.dismissedMessage')
+                              : conv.lastMessage.content}
+                          </p>
+                        ) : (
+                          <p className="text-xs text-gray-400 mt-0.5">{t('messages.noMessages')}</p>
+                        )}
+                      </div>
+                    </button>
+                    <div className="absolute top-3 right-3 z-10">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setMenuOpenId(menuOpenId === conv.id ? null : conv.id); }}
+                        className="p-1 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors"
+                      >
+                        <MoreVertical className="w-4 h-4 text-gray-400" />
+                      </button>
+                      {menuOpenId === conv.id && (
+                        <div className="absolute right-0 top-8 bg-white rounded-xl shadow-lg border border-gray-200 py-1 min-w-[160px] z-50">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleDeleteChat(conv.id); }}
+                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            {t('messages.deleteChat')}
+                          </button>
+                        </div>
                       )}
                     </div>
-                  </button>
+                  </div>
                 );
               })
             )}
@@ -403,10 +472,34 @@ export default function RecipientMessagesPage() {
                 </div>
                 <div>
                   <h2 className="font-semibold text-gray-900 text-sm">
-                    {getOtherUser(activeConversation).firstName} {getOtherUser(activeConversation).lastName}
+                    <button
+                      onClick={() => router.push(`/dashboard/caregivers/${getOtherUser(activeConversation).id}`)}
+                      className="hover:text-amber-600 transition-colors cursor-pointer"
+                    >
+                      {getOtherUser(activeConversation).firstName} {getOtherUser(activeConversation).lastName}
+                    </button>
                   </h2>
                   {isTyping && (
                     <p className="text-xs text-amber-500">{t('messages.typing')}</p>
+                  )}
+                </div>
+                <div className="ml-auto relative">
+                  <button
+                    onClick={() => setHeaderMenuOpen(!headerMenuOpen)}
+                    className="p-2 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors"
+                  >
+                    <Settings className="w-5 h-5 text-gray-400" />
+                  </button>
+                  {headerMenuOpen && (
+                    <div className="absolute right-0 top-10 bg-white rounded-xl shadow-lg border border-gray-200 py-1 min-w-[160px] z-50">
+                      <button
+                        onClick={() => handleDeleteChat(activeConversation.id)}
+                        className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        {t('messages.deleteChat')}
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -461,7 +554,7 @@ export default function RecipientMessagesPage() {
                                   <span className="text-sm font-medium text-amber-800">{t('settlement.requestTitle')}</span>
                                 </div>
                                 <p className="text-xs text-amber-600 mb-3">{t('settlement.requestDesc')}</p>
-                                {!hasSettlementResponse && (
+                                {!isSettlementRequestResponded(msg.id) && (
                                   <div className="flex gap-2">
                                     <button
                                       onClick={() => handleSettlementResponse(msg.id, true)}

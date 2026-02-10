@@ -12,6 +12,7 @@ import {
   Calendar,
   Heart,
   Edit,
+  CheckCircle,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -38,6 +39,8 @@ interface Profile {
   bio?: string;
   careNeeds: CareNeed[];
   profileImageUrl?: string;
+  isSettled?: boolean;
+  settledWithCaregiver?: { id: number; firstName: string; lastName: string; profileImageUrl: string | null } | null;
   memberSince: string;
 }
 
@@ -167,9 +170,17 @@ export default function CareRecipientProfilePage() {
 
               {/* Basic Info */}
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                  {profile.firstName} {profile.lastName}
-                </h2>
+                <div className="flex items-center gap-2 mb-2">
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    {profile.firstName} {profile.lastName}
+                  </h2>
+                  {profile.isSettled && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-full border border-emerald-200">
+                      <CheckCircle className="w-4 h-4" />
+                      {t('recipient.settled') || 'Settled'}
+                    </span>
+                  )}
+                </div>
                 
                 <div className="flex flex-wrap gap-3">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-sm">

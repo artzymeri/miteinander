@@ -13,7 +13,6 @@ import {
   Loader2,
   Star,
   Briefcase,
-  CheckCircle,
   Clock,
   ArrowRight,
 } from 'lucide-react';
@@ -532,14 +531,9 @@ export default function FindCaregiversPage() {
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <h3 className="font-semibold text-gray-900 truncate text-[15px]">
-                          {caregiver.firstName} {caregiver.lastName}
-                        </h3>
-                        {caregiver.isVerified && (
-                          <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                        )}
-                      </div>
+                      <h3 className="font-semibold text-gray-900 truncate text-[15px]">
+                        {caregiver.firstName} {caregiver.lastName}
+                      </h3>
                       {caregiver.occupation && (
                         <p className="text-sm text-gray-500 truncate mt-0.5 flex items-center gap-1">
                           <Briefcase className="w-3.5 h-3.5 flex-shrink-0" />
@@ -562,18 +556,25 @@ export default function FindCaregiversPage() {
 
                   {/* Stats row */}
                   <div className="mt-3.5 flex items-center gap-3 flex-wrap">
-                    {caregiver.rating !== null && caregiver.rating > 0 && (
+                    {caregiver.rating !== null && caregiver.rating > 0 ? (
                       <div className="flex items-center gap-1 px-2.5 py-1 bg-amber-50 rounded-lg">
                         <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                         <span className="text-xs font-semibold text-amber-700">{Number(caregiver.rating).toFixed(1)}</span>
                         <span className="text-xs text-amber-500">({caregiver.reviewCount})</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1 px-2.5 py-1 bg-gray-50 rounded-lg">
+                        <Star className="w-3.5 h-3.5 text-gray-300" />
+                        <span className="text-xs text-gray-400">
+                          {t('recipient.findCaregivers.noReviews') || 'No reviews yet'}
+                        </span>
                       </div>
                     )}
                     {caregiver.experienceYears && caregiver.experienceYears > 0 ? (
                       <div className="flex items-center gap-1 px-2.5 py-1 bg-blue-50 rounded-lg">
                         <Clock className="w-3.5 h-3.5 text-blue-500" />
                         <span className="text-xs font-medium text-blue-700">
-                          {caregiver.experienceYears} {t('recipient.findCaregivers.yearsExp') || 'yrs'}
+                          {caregiver.experienceYears} {caregiver.experienceYears === 1 ? (t('recipient.findCaregivers.year') || 'year') : (t('recipient.findCaregivers.years') || 'years')}
                         </span>
                       </div>
                     ) : (

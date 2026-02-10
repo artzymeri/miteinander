@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const recipientController = require('../controllers/recipientController');
+const notificationController = require('../controllers/notificationController');
+const reviewController = require('../controllers/reviewController');
 const { authenticate } = require('../middlewares/auth');
 const { careRecipientOnly } = require('../middlewares/roleGuard');
 
@@ -92,6 +94,64 @@ router.post(
   authenticate,
   careRecipientOnly,
   recipientController.unsettleFromCaregiver
+);
+
+// ── Notifications ──
+
+// Get notifications
+// GET /api/recipient/notifications
+router.get(
+  '/notifications',
+  authenticate,
+  careRecipientOnly,
+  notificationController.getNotifications
+);
+
+// Get unread notification count
+// GET /api/recipient/notifications/unread-count
+router.get(
+  '/notifications/unread-count',
+  authenticate,
+  careRecipientOnly,
+  notificationController.getUnreadCount
+);
+
+// Mark notifications as read
+// PUT /api/recipient/notifications/mark-read
+router.put(
+  '/notifications/mark-read',
+  authenticate,
+  careRecipientOnly,
+  notificationController.markAsRead
+);
+
+// ── Reviews ──
+
+// Submit a review
+// POST /api/recipient/reviews
+router.post(
+  '/reviews',
+  authenticate,
+  careRecipientOnly,
+  reviewController.submitReview
+);
+
+// Get reviews for a caregiver
+// GET /api/recipient/reviews/:caregiverId
+router.get(
+  '/reviews/:caregiverId',
+  authenticate,
+  careRecipientOnly,
+  reviewController.getCaregiverReviews
+);
+
+// Check if already reviewed
+// GET /api/recipient/reviews/:caregiverId/check
+router.get(
+  '/reviews/:caregiverId/check',
+  authenticate,
+  careRecipientOnly,
+  reviewController.checkReview
 );
 
 module.exports = router;

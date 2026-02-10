@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { useSocket } from '@/context/SocketContext';
 import { useTranslation } from '@/context/LanguageContext';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import CareGiverLayout from '@/components/caregiver/CareGiverLayout';
 import {
   Search,
@@ -16,6 +16,9 @@ import {
   Check,
   CheckCheck,
   Handshake,
+  MoreVertical,
+  Settings,
+  Trash2,
 } from 'lucide-react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -26,6 +29,14 @@ interface ConversationUser {
   lastName: string;
   profileImageUrl: string | null;
   occupation?: string;
+  isSettled?: boolean;
+  settledWithCaregiverId?: number;
+  settledWithCaregiver?: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    profileImageUrl: string | null;
+  } | null;
 }
 
 interface LastMessage {
@@ -35,6 +46,7 @@ interface LastMessage {
   senderId: number;
   isRead: boolean;
   createdAt: string;
+  messageType?: string;
 }
 
 interface Conversation {
@@ -64,6 +76,7 @@ export default function CaregiverMessagesPage() {
   const { sendMessage, sendSettlementRequest, joinConversation, leaveConversation, onNewMessage, onMessagesRead, startTyping, stopTyping, onTyping, onStopTyping, markAsRead, refreshUnreadCount, onSettlementCompleted } = useSocket();
   const { t } = useTranslation();
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
@@ -75,6 +88,8 @@ export default function CaregiverMessagesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isSendingSettlement, setIsSendingSettlement] = useState(false);
+  const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -133,6 +148,8 @@ export default function CaregiverMessagesPage() {
   const selectConversation = (conv: Conversation) => {
     setConversations(prev => prev.map(c => c.id === conv.id ? { ...c, unreadCount: 0 } : c));
     setActiveConversation({ ...conv, unreadCount: 0 });
+    setMenuOpenId(null);
+    setHeaderMenuOpen(false);
   };
 
   useEffect(() => {
@@ -243,15 +260,72 @@ export default function CaregiverMessagesPage() {
     setIsSendingSettlement(false);
   };
 
-  // Check if settlement request was already sent in this conversation
-  const hasSettlementRequest = messages.some(
-    m => m.messageType === 'settlement_request' || m.messageType === 'settlement_confirmed'
+  const handleProfileClick = async (recipientId: number) => {
+    try {
+      const res = await fetch(`${API_URL}/caregiver/clients/${recipientId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      if (res.ok) {
+        router.push(`/caregiver/clients/${recipientId}`);
+      } else if (res.status === 404) {
+        alert(t('messages.profileNotAvailable') || 'This profile is no longer available');
+      } else {
+        alert(t('messages.profileError') || 'Unable to load profile');
+      }
+    } catch (error) {
+      console.error('Error checking profile access:', error);
+      alert(t('messages.profileError') || 'Unable to load profile');
+    }
+  };
+
+  const handleDeleteChat = async (conversationId: number) => {
+    if (!confirm(t('messages.deleteChatConfirm'))) return;
+    try {
+      const res = await fetch(`${API_URL}/messages/conversations/${conversationId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        setConversations(prev => prev.filter(c => c.id !== conversationId));
+        if (activeConversation?.id === conversationId) {
+          setActiveConversation(null);
+          setMessages([]);
+        }
+        setMenuOpenId(null);
+        setHeaderMenuOpen(false);
+      }
+    } catch (error) {
+      console.error('Failed to delete conversation:', error);
+    }
+  };
+
+  // Check if a settlement request can be sent again
+  // A caregiver can re-send if:
+  // - The last settlement flow was dismissed, OR
+  // - A previous settlement was confirmed but then cancelled (unsettled)
+  // We look at the most recent settlement-related message to decide
+  const settlementMessages = messages.filter(
+    m => m.messageType === 'settlement_request' || m.messageType === 'settlement_confirmed' || m.messageType === 'settlement_dismissed'
   );
+  const lastSettlementMsg = settlementMessages.length > 0 ? settlementMessages[settlementMessages.length - 1] : null;
+  
+  // There's a pending request if the last settlement message is a request (no response yet)
+  const hasPendingRequest = lastSettlementMsg?.messageType === 'settlement_request';
+  // The recipient is currently settled with this caregiver
+  const isCurrentlySettledWithMe = activeConversation && 
+    activeConversation.careRecipient.isSettled && 
+    activeConversation.careRecipient.settledWithCaregiverId === activeConversation.careGiverId;
   
   // Show settlement button only after 2+ messages exchanged (at least 1 from each side)
   const caregiverMessages = messages.filter(m => m.senderRole === 'care_giver' && m.messageType !== 'settlement_request');
   const recipientMessages = messages.filter(m => m.senderRole === 'care_recipient');
-  const canSendSettlement = caregiverMessages.length >= 1 && recipientMessages.length >= 1 && !hasSettlementRequest;
+  const canSendSettlement = caregiverMessages.length >= 1 && recipientMessages.length >= 1 && !hasPendingRequest && !isCurrentlySettledWithMe;
+
+  // Check if chatting is disabled (recipient settled with a different caregiver)
+  const isChatDisabled = activeConversation && 
+    activeConversation.careRecipient.isSettled && 
+    activeConversation.careRecipient.settledWithCaregiverId !== activeConversation.careGiverId;
 
   const formatTime = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -324,49 +398,90 @@ export default function CaregiverMessagesPage() {
               filteredConversations.map(conv => {
                 const other = getOtherUser(conv);
                 const isActive = activeConversation?.id === conv.id;
+                const isSettledWithMe = conv.careRecipient.isSettled && conv.careRecipient.settledWithCaregiverId === conv.careGiverId;
+                const isSettledWithOther = conv.careRecipient.isSettled && conv.careRecipient.settledWithCaregiverId !== conv.careGiverId;
                 return (
-                  <button
-                    key={conv.id}
-                    onClick={() => selectConversation(conv)}
-                    className={`w-full flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors cursor-pointer border-b border-gray-50 ${isActive ? 'bg-amber-50 hover:bg-amber-50' : ''}`}
-                  >
-                    <div className="relative flex-shrink-0">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-semibold overflow-hidden">
-                        {other.profileImageUrl ? (
-                          <img src={other.profileImageUrl} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <>{other.firstName[0]}{other.lastName[0]}</>
-                        )}
-                      </div>
-                      {conv.unreadCount > 0 && (
-                        <span className="absolute -top-1 -right-1 w-5 h-5 bg-amber-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
-                          {conv.unreadCount > 9 ? '9+' : conv.unreadCount}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0 text-left">
-                      <div className="flex items-center justify-between">
-                        <span className="font-semibold text-sm text-gray-900 truncate">
-                          {other.firstName} {other.lastName}
-                        </span>
-                        {conv.lastMessage && (
-                          <span className="text-xs text-gray-400 flex-shrink-0 ml-2">
-                            {formatTime(conv.lastMessage.createdAt)}
+                  <div key={conv.id} className="relative">
+                    <button
+                      onClick={() => selectConversation(conv)}
+                      className={`w-full flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors cursor-pointer border-b border-gray-50 ${isActive ? 'bg-amber-50 hover:bg-amber-50' : ''}`}
+                    >
+                      <div className="relative flex-shrink-0">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-semibold overflow-hidden">
+                          {other.profileImageUrl ? (
+                            <img src={other.profileImageUrl} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <>{other.firstName[0]}{other.lastName[0]}</>
+                          )}
+                        </div>
+                        {conv.unreadCount > 0 && (
+                          <span className="absolute -top-1 -right-1 w-5 h-5 bg-amber-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
+                            {conv.unreadCount > 9 ? '9+' : conv.unreadCount}
                           </span>
                         )}
                       </div>
-                      {conv.lastMessage ? (
-                        <p className={`text-xs truncate mt-0.5 ${conv.unreadCount > 0 ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
-                          {conv.lastMessage.senderRole === 'care_giver' && (
-                            <span className="text-gray-400">{t('messages.you')}: </span>
-                          )}
-                          {conv.lastMessage.content}
-                        </p>
-                      ) : (
-                        <p className="text-xs text-gray-400 mt-0.5">{t('messages.noMessages')}</p>
+                      <div className="flex-1 min-w-0 text-left">
+                        <div className="flex items-center justify-between">
+                          <span className="font-semibold text-sm text-gray-900 truncate">
+                            {other.firstName} {other.lastName}
+                          </span>
+                          <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                            {conv.lastMessage && (
+                              <span className="text-xs text-gray-400">
+                                {formatTime(conv.lastMessage.createdAt)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <p className="text-[11px] text-gray-400 truncate">{t('recipient.role')}</p>
+                        {(isSettledWithMe || isSettledWithOther) && (
+                          <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 mt-0.5 text-[10px] font-medium rounded-full border ${
+                            isSettledWithMe
+                              ? 'bg-green-50 text-green-600 border-green-200'
+                              : 'bg-gray-50 text-gray-400 border-gray-200'
+                          }`}>
+                            <Handshake className="w-2.5 h-2.5" />
+                            {t('settlement.settled')}
+                          </span>
+                        )}
+                        {!isSettledWithMe && !isSettledWithOther && conv.lastMessage ? (
+                          <p className={`text-xs truncate mt-0.5 ${conv.unreadCount > 0 ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
+                            {conv.lastMessage.senderRole === 'care_giver' && (
+                              <span className="text-gray-400">{t('messages.you')}: </span>
+                            )}
+                            {conv.lastMessage.messageType === 'settlement_request'
+                              ? t('settlement.requestTitle')
+                              : conv.lastMessage.messageType === 'settlement_confirmed'
+                              ? t('settlement.confirmedMessage')
+                              : conv.lastMessage.messageType === 'settlement_dismissed'
+                              ? t('settlement.dismissedMessage')
+                              : conv.lastMessage.content}
+                          </p>
+                        ) : !isSettledWithMe && !isSettledWithOther ? (
+                          <p className="text-xs text-gray-400 mt-0.5">{t('messages.noMessages')}</p>
+                        ) : null}
+                      </div>
+                    </button>
+                    <div className="absolute top-3 right-3 z-10">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setMenuOpenId(menuOpenId === conv.id ? null : conv.id); }}
+                        className="p-1 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors"
+                      >
+                        <MoreVertical className="w-4 h-4 text-gray-400" />
+                      </button>
+                      {menuOpenId === conv.id && (
+                        <div className="absolute right-0 top-8 bg-white rounded-xl shadow-lg border border-gray-200 py-1 min-w-[160px] z-50">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleDeleteChat(conv.id); }}
+                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            {t('messages.deleteChat')}
+                          </button>
+                        </div>
                       )}
                     </div>
-                  </button>
+                  </div>
                 );
               })
             )}
@@ -392,11 +507,79 @@ export default function CaregiverMessagesPage() {
                   )}
                 </div>
                 <div>
-                  <h2 className="font-semibold text-gray-900 text-sm">
-                    {getOtherUser(activeConversation).firstName} {getOtherUser(activeConversation).lastName}
-                  </h2>
+                  <div className="flex items-center gap-2">
+                    <h2 className="font-semibold text-gray-900 text-sm">
+                      <button
+                        onClick={() => handleProfileClick(getOtherUser(activeConversation).id)}
+                        className="hover:text-amber-600 transition-colors cursor-pointer"
+                      >
+                        {getOtherUser(activeConversation).firstName} {getOtherUser(activeConversation).lastName}
+                      </button>
+                    </h2>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <p className="text-xs text-gray-400">{t('recipient.role')}</p>
+                    {activeConversation.careRecipient.isSettled && (
+                      <div className="relative group/settled">
+                        <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium rounded-full border cursor-default ${
+                          activeConversation.careRecipient.settledWithCaregiverId === activeConversation.careGiverId
+                            ? 'bg-green-50 text-green-600 border-green-200'
+                            : 'bg-gray-50 text-gray-400 border-gray-200'
+                        }`}>
+                          <Handshake className="w-2.5 h-2.5" />
+                          {t('settlement.settled')}
+                        </span>
+                        {activeConversation.careRecipient.settledWithCaregiver && 
+                         activeConversation.careRecipient.settledWithCaregiverId !== activeConversation.careGiverId && (
+                          <div className="absolute top-full left-0 mt-1.5 z-50 hidden group-hover/settled:block">
+                            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 min-w-[200px]">
+                              <p className="text-[11px] text-gray-400 mb-2">{t('settlement.settledWith')}</p>
+                              <div className="flex items-center gap-2.5">
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-xs font-semibold overflow-hidden flex-shrink-0">
+                                  {activeConversation.careRecipient.settledWithCaregiver.profileImageUrl ? (
+                                    <img src={activeConversation.careRecipient.settledWithCaregiver.profileImageUrl} alt="" className="w-full h-full object-cover" />
+                                  ) : (
+                                    <>{activeConversation.careRecipient.settledWithCaregiver.firstName[0]}{activeConversation.careRecipient.settledWithCaregiver.lastName[0]}</>
+                                  )}
+                                </div>
+                                <span className="text-sm font-medium text-gray-900">
+                                  {activeConversation.careRecipient.settledWithCaregiver.firstName} {activeConversation.careRecipient.settledWithCaregiver.lastName}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        {activeConversation.careRecipient.settledWithCaregiverId === activeConversation.careGiverId && (
+                          <div className="absolute top-full left-0 mt-1.5 z-50 hidden group-hover/settled:block">
+                            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 min-w-[180px]">
+                              <p className="text-xs text-green-600 font-medium">{t('settlement.settledWithYou')}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                   {isTyping && (
                     <p className="text-xs text-amber-500">{t('messages.typing')}</p>
+                  )}
+                </div>
+                <div className="ml-auto relative">
+                  <button
+                    onClick={() => setHeaderMenuOpen(!headerMenuOpen)}
+                    className="p-2 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors"
+                  >
+                    <Settings className="w-5 h-5 text-gray-400" />
+                  </button>
+                  {headerMenuOpen && (
+                    <div className="absolute right-0 top-10 bg-white rounded-xl shadow-lg border border-gray-200 py-1 min-w-[160px] z-50">
+                      <button
+                        onClick={() => handleDeleteChat(activeConversation.id)}
+                        className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        {t('messages.deleteChat')}
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -487,37 +670,45 @@ export default function CaregiverMessagesPage() {
               </div>
 
               <div className="p-4 border-t border-gray-200 bg-white">
-                {canSendSettlement && (
-                  <div className="mb-3">
-                    <button
-                      onClick={handleSendSettlement}
-                      disabled={isSendingSettlement}
-                      className="flex items-center gap-2 w-full px-4 py-2.5 bg-amber-50 border border-amber-200 rounded-xl text-amber-700 text-sm font-medium hover:bg-amber-100 transition-colors disabled:opacity-50 cursor-pointer"
-                    >
-                      <Handshake className="w-4 h-4" />
-                      {isSendingSettlement ? t('settlement.sending') : t('settlement.sendRequest')}
-                    </button>
+                {isChatDisabled ? (
+                  <div className="text-center py-2">
+                    <p className="text-sm text-gray-400">{t('messages.chattingDisabled')}</p>
                   </div>
+                ) : (
+                  <>
+                    {canSendSettlement && (
+                      <div className="mb-3">
+                        <button
+                          onClick={handleSendSettlement}
+                          disabled={isSendingSettlement}
+                          className="flex items-center gap-2 w-full px-4 py-2.5 bg-amber-50 border border-amber-200 rounded-xl text-amber-700 text-sm font-medium hover:bg-amber-100 transition-colors disabled:opacity-50 cursor-pointer"
+                        >
+                          <Handshake className="w-4 h-4" />
+                          {isSendingSettlement ? t('settlement.sending') : t('settlement.sendRequest')}
+                        </button>
+                      </div>
+                    )}
+                    <div className="flex items-end gap-2">
+                      <textarea
+                        ref={inputRef}
+                        value={newMessage}
+                        onChange={e => { setNewMessage(e.target.value); handleTyping(); }}
+                        onKeyDown={handleKeyDown}
+                        placeholder={t('messages.typePlaceholder')}
+                        rows={1}
+                        className="flex-1 resize-none px-4 py-2.5 bg-gray-50 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 max-h-32"
+                        style={{ minHeight: '42px' }}
+                      />
+                      <button
+                        onClick={handleSend}
+                        disabled={!newMessage.trim() || isSending}
+                        className="p-2.5 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        <Send className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </>
                 )}
-                <div className="flex items-end gap-2">
-                  <textarea
-                    ref={inputRef}
-                    value={newMessage}
-                    onChange={e => { setNewMessage(e.target.value); handleTyping(); }}
-                    onKeyDown={handleKeyDown}
-                    placeholder={t('messages.typePlaceholder')}
-                    rows={1}
-                    className="flex-1 resize-none px-4 py-2.5 bg-gray-50 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 max-h-32"
-                    style={{ minHeight: '42px' }}
-                  />
-                  <button
-                    onClick={handleSend}
-                    disabled={!newMessage.trim() || isSending}
-                    className="p-2.5 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                  >
-                    <Send className="w-5 h-5" />
-                  </button>
-                </div>
               </div>
             </>
           ) : (

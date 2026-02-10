@@ -1,4 +1,7 @@
 {
+  "common": {
+    "justNow": "À l'instant"
+  },
   "nav": {
     "howItWorks": "Comment ça marche",
     "benefits": "Avantages",
@@ -609,8 +612,18 @@
       "myCaregivers": "Mes Aidants",
       "upcomingAppointments": "Rendez-vous à venir",
       "totalHoursOfCare": "Heures de Soins Totales",
-      "unreadMessages": "Messages Non Lus"
+      "unreadMessages": "Messages Non Lus",
+      "careNeeds": "Mes besoins en soins",
+      "activeChats": "Chats actifs",
+      "unreadMessages": "Messages non lus"
     },
+    "myCareNeeds": "Mes besoins en soins",
+    "profileSummary": "Résumé du profil",
+    "editCareNeeds": "Modifier les besoins en soins",
+    "viewProfile": "Voir le profil",
+    "settled": "Établi",
+    "recentMessages": "Messages récents",
+    "viewAllMessages": "Voir tous les messages",
     "findNewCaregivers": "Trouver de Nouveaux Aidants",
     "findNewCaregiversDesc": "Parcourez les aidants qualifiés dans votre région",
     "searchNow": "Rechercher Maintenant",
@@ -621,10 +634,13 @@
     "viewAllCaregivers": "Voir tous les aidants",
     "viewAllAppointments": "Voir tous les rendez-vous",
     "action": {
-      "findCaregivers": "Trouver des soignants",
-      "bookAppointment": "Réserver un rendez-vous",
+      "findCaregivers": "Trouver des aidants",
+      "bookAppointment": "Prendre rendez-vous",
       "sendMessage": "Envoyer un message",
-      "notifications": "Notifications"
+      "notifications": "Notifications",
+      "messages": "Messages",
+      "profile": "Mon profil",
+      "careNeeds": "Besoins en soins"
     },
     "profile": {
       "title": "Mon Profil",
@@ -703,11 +719,13 @@
       "tryDifferentFilters": "Essayez d'ajuster vos filtres ou termes de recherche",
       "endOfResults": "Vous avez atteint la fin des résultats",
       "noCitiesAvailable": "Aucune ville disponible pour ce pays",
-      "yearsExp": "ans d'exp.",
+      "year": "an",
+      "years": "ans",
       "noExperience": "Aucune expérience ajoutée",
       "viewProfile": "Voir le profil",
       "memberSince": "Membre depuis",
-      "newMember": "Nouveau membre"
+      "newMember": "Nouveau membre",
+      "noReviews": "Pas encore d'avis"
     },
     "caregiverProfile": {
       "memberSince": "Membre depuis",
@@ -726,7 +744,14 @@
       "notFoundMessage": "Le soignant que vous recherchez est introuvable ou n'est plus disponible.",
       "backToSearch": "Retour à la recherche",
       "experience": "Expérience & Statut",
-      "seeMore": "Voir plus"
+      "seeMore": "Voir plus",
+      "reviewsTitle": "Avis",
+      "leaveReview": "Laisser un avis",
+      "reviewPlaceholder": "Partagez votre expérience (facultatif)...",
+      "submitReview": "Soumettre l'avis",
+      "reviewSubmitted": "Merci pour votre avis !",
+      "noReviews": "Pas encore d'avis",
+      "ratingRequired": "Veuillez sélectionner une note"
     }
   },
   "messages": {
@@ -741,7 +766,13 @@
     "selectConversation": "Sélectionner une conversation",
     "selectConversationDesc": "Choisissez une conversation dans la liste pour commencer à discuter",
     "today": "Aujourd'hui",
-    "yesterday": "Hier"
+    "yesterday": "Hier",
+    "profileNotAvailable": "Ce profil n'est plus disponible",
+    "profileError": "Impossible de charger le profil",
+    "deleteChat": "Supprimer le chat",
+    "deleteChatConfirm": "Êtes-vous sûr de vouloir supprimer ce chat ? Cette action ne peut pas être annulée.",
+    "chatDeleted": "Chat supprimé avec succès",
+    "chattingDisabled": "Ce bénéficiaire est en arrangement avec un autre soignant"
   },
   "support": {
     "title": "Support",
@@ -861,6 +892,15 @@
     "currentlySettled": "Actuellement placé",
     "currentlySettledDesc": "Vous êtes actuellement attribué à un soignant.",
     "settledWith": "Placé auprès de",
+    "settledWithYou": "Placé auprès de vous",
+    "settled": "Placé",
     "unsettleWarning": "Si vous annulez le placement, votre profil sera à nouveau visible dans les recherches et pourra être consulté par tous les soignants."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "noNotifications": "Pas encore de notifications",
+    "justNow": "À l'instant",
+    "rateCaregiver": "Évaluez votre soignant",
+    "rateMessage": "Vous pouvez maintenant évaluer votre soignant. Partagez votre expérience !"
   }
 }

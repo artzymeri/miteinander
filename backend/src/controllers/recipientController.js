@@ -3,6 +3,7 @@ const { Op } = require('sequelize');
 const { successResponse, errorResponse } = require('../utils/helpers');
 
 const { CareGiver, CareNeed, CareRecipient } = models;
+const { createRatingNotification } = require('./notificationController');
 
 /**
  * Helper to resolve care need/skill IDs to their full data
@@ -574,6 +575,12 @@ const settleWithCaregiver = async (req, res, next) => {
       settledWithCaregiverId: caregiver.id,
       settledAt: new Date(),
     });
+    
+    // Schedule a rating notification after 1 day
+    const caregiverName = `${caregiver.firstName} ${caregiver.lastName}`;
+    setTimeout(() => {
+      createRatingNotification(recipientId, caregiver.id, caregiverName);
+    }, 24 * 60 * 60 * 1000); // 24 hours
     
     return successResponse(res, {
       settledWithCaregiverId: caregiver.id,

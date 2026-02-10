@@ -171,7 +171,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const sendSettlementRequest = useCallback(async (conversationId: number): Promise<MessageData | null> => {
-    return sendMessage(conversationId, 'Vermittlungsanfrage', 'settlement_request');
+    return sendMessage(conversationId, 'Settlement Request', 'settlement_request');
   }, [sendMessage]);
 
   const respondSettlement = useCallback(async (conversationId: number, messageId: number, accepted: boolean): Promise<MessageData | null> => {

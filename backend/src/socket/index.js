@@ -159,6 +159,22 @@ const setupSocket = (httpServer) => {
           return callback?.({ error: 'Only caregivers can send settlement requests' });
         }
 
+        // Prevent settlement request if recipient is already settled
+        if (messageType === 'settlement_request') {
+          const recipient = await models.CareRecipient.findByPk(conversation.careRecipientId);
+          if (recipient && recipient.isSettled) {
+            return callback?.({ error: 'Care recipient is already settled' });
+          }
+        }
+
+        // Block messages from caregivers to settled recipients (unless settled with them)
+        if (socket.userRole === 'care_giver') {
+          const recipient = await models.CareRecipient.findByPk(conversation.careRecipientId);
+          if (recipient && recipient.isSettled && recipient.settledWithCaregiverId !== socket.userId) {
+            return callback?.({ error: 'This care recipient is settled with another caregiver' });
+          }
+        }
+
         // Create message
         const message = await models.Message.create({
           conversationId: parseInt(conversationId),
@@ -235,8 +251,8 @@ const setupSocket = (httpServer) => {
 
         const responseType = accepted ? 'settlement_confirmed' : 'settlement_dismissed';
         const responseContent = accepted
-          ? 'Vermittlung bestätigt'
-          : 'Vermittlung abgelehnt';
+          ? 'Settlement confirmed'
+          : 'Settlement declined';
 
         // Create response message
         const message = await models.Message.create({

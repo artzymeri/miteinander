@@ -1,4 +1,7 @@
 {
+  "common": {
+    "justNow": "Gerade eben"
+  },
   "nav": {
     "howItWorks": "Wie es funktioniert",
     "benefits": "Vorteile",
@@ -608,9 +611,19 @@
     "stats": {
       "myCaregivers": "Meine Pflegekräfte",
       "upcomingAppointments": "Anstehende Termine",
-      "totalHoursOfCare": "Pflegestunden gesamt",
+      "totalHoursOfCare": "Gesamtstunden Pflege",
+      "unreadMessages": "Ungelesene Nachrichten",
+      "careNeeds": "Meine Pflegebedürfnisse",
+      "activeChats": "Aktive Chats",
       "unreadMessages": "Ungelesene Nachrichten"
     },
+    "myCareNeeds": "Meine Pflegebedürfnisse",
+    "profileSummary": "Profilzusammenfassung",
+    "editCareNeeds": "Pflegebedürfnisse bearbeiten",
+    "viewProfile": "Profil ansehen",
+    "settled": "Vermittelt",
+    "recentMessages": "Letzte Nachrichten",
+    "viewAllMessages": "Alle Nachrichten anzeigen",
     "findNewCaregivers": "Neue Pflegekräfte finden",
     "findNewCaregiversDesc": "Durchsuchen Sie qualifizierte Pflegekräfte in Ihrer Nähe",
     "searchNow": "Jetzt suchen",
@@ -621,10 +634,13 @@
     "viewAllCaregivers": "Alle Pflegekräfte anzeigen",
     "viewAllAppointments": "Alle Termine anzeigen",
     "action": {
-      "findCaregivers": "Pfleger finden",
+      "findCaregivers": "Pflegekräfte finden",
       "bookAppointment": "Termin buchen",
       "sendMessage": "Nachricht senden",
-      "notifications": "Benachrichtigungen"
+      "notifications": "Benachrichtigungen",
+      "messages": "Nachrichten",
+      "profile": "Mein Profil",
+      "careNeeds": "Pflegebedürfnisse"
     },
     "profile": {
       "title": "Mein Profil",
@@ -703,11 +719,13 @@
       "tryDifferentFilters": "Versuchen Sie, Ihre Filter oder Suchbegriffe anzupassen",
       "endOfResults": "Sie haben das Ende der Ergebnisse erreicht",
       "noCitiesAvailable": "Keine Städte für dieses Land verfügbar",
-      "yearsExp": "Jahre Erf.",
+      "year": "Jahr",
+      "years": "Jahre",
       "noExperience": "Keine Erfahrung angegeben",
       "viewProfile": "Profil ansehen",
       "memberSince": "Mitglied seit",
-      "newMember": "Neues Mitglied"
+      "newMember": "Neues Mitglied",
+      "noReviews": "Noch keine Bewertungen"
     },
     "caregiverProfile": {
       "memberSince": "Mitglied seit",
@@ -726,7 +744,14 @@
       "notFoundMessage": "Der gesuchte Pfleger konnte nicht gefunden werden oder ist nicht mehr verfügbar.",
       "backToSearch": "Zurück zur Suche",
       "experience": "Erfahrung & Status",
-      "seeMore": "Mehr anzeigen"
+      "seeMore": "Mehr anzeigen",
+      "reviewsTitle": "Bewertungen",
+      "leaveReview": "Bewertung abgeben",
+      "reviewPlaceholder": "Teilen Sie Ihre Erfahrung (optional)...",
+      "submitReview": "Bewertung absenden",
+      "reviewSubmitted": "Vielen Dank für Ihre Bewertung!",
+      "noReviews": "Noch keine Bewertungen",
+      "ratingRequired": "Bitte wählen Sie eine Bewertung"
     }
   },
   "messages": {
@@ -741,7 +766,13 @@
     "selectConversation": "Unterhaltung auswählen",
     "selectConversationDesc": "Wähle eine Unterhaltung aus der Liste, um zu chatten",
     "today": "Heute",
-    "yesterday": "Gestern"
+    "yesterday": "Gestern",
+    "profileNotAvailable": "Dieses Profil ist nicht mehr verfügbar",
+    "profileError": "Profil kann nicht geladen werden",
+    "deleteChat": "Chat löschen",
+    "deleteChatConfirm": "Sind Sie sicher, dass Sie diesen Chat löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "chatDeleted": "Chat erfolgreich gelöscht",
+    "chattingDisabled": "Dieser Pflegebedürftige ist mit einem anderen Pfleger vermittelt"
   },
   "support": {
     "title": "Support",
@@ -861,6 +892,15 @@
     "currentlySettled": "Aktuell vermittelt",
     "currentlySettledDesc": "Sie sind derzeit einer Pflegekraft zugewiesen.",
     "settledWith": "Vermittelt mit",
+    "settledWithYou": "Vermittelt mit Ihnen",
+    "settled": "Vermittelt",
     "unsettleWarning": "Wenn Sie die Vermittlung aufheben, wird Ihr Profil wieder in der Suche sichtbar und kann von allen Pflegekräften eingesehen werden."
+  },
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "noNotifications": "Noch keine Benachrichtigungen",
+    "justNow": "Gerade eben",
+    "rateCaregiver": "Bewerten Sie Ihre Pflegekraft",
+    "rateMessage": "Sie können jetzt Ihre Pflegekraft bewerten. Teilen Sie Ihre Erfahrung!"
   }
 }

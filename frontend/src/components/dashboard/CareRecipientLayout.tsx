@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,7 +19,22 @@ import {
   Menu,
   X,
   User,
+  CheckCircle,
+  Bell,
+  Star,
 } from 'lucide-react';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
+interface NotificationData {
+  id: number;
+  type: string;
+  title: string;
+  message: string;
+  isRead: boolean;
+  data: { caregiverId?: number } | null;
+  createdAt: string;
+}
 
 interface CareRecipientLayoutProps {
   children: ReactNode;
@@ -40,6 +55,13 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
   const router = useRouter();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSettled, setIsSettled] = useState(false);
+  const [settledCaregiver, setSettledCaregiver] = useState<{ id: number; firstName: string; lastName: string; profileImageUrl: string | null } | null>(null);
+  const [notifications, setNotifications] = useState<NotificationData[]>([]);
+  const [notifUnreadCount, setNotifUnreadCount] = useState(0);
+  const [showNotifPopover, setShowNotifPopover] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+  const mobileNotifRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -58,6 +80,119 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
       }
     }
   }, [isLoading, isAuthenticated, user, router]);
+
+  useEffect(() => {
+    const fetchSettledStatus = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const response = await fetch(`${API_URL}/recipient/profile`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setIsSettled(!!data.data.profile.isSettled);
+          setSettledCaregiver(data.data.profile.settledWithCaregiver || null);
+        }
+      } catch (error) {
+        console.error('Failed to fetch settled status:', error);
+      }
+    };
+    if (!isLoading && isAuthenticated && user?.role === 'care_recipient') {
+      fetchSettledStatus();
+    }
+  }, [isLoading, isAuthenticated, user]);
+
+  // Fetch notifications
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        const response = await fetch(`${API_URL}/recipient/notifications`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setNotifications(data.data.notifications);
+          setNotifUnreadCount(data.data.unreadCount);
+        }
+      } catch (error) {
+        console.error('Failed to fetch notifications:', error);
+      }
+    };
+    if (!isLoading && isAuthenticated && user?.role === 'care_recipient') {
+      fetchNotifications();
+      // Poll every 60 seconds
+      const interval = setInterval(fetchNotifications, 60000);
+      return () => clearInterval(interval);
+    }
+  }, [isLoading, isAuthenticated, user]);
+
+  // Close popover when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        notifRef.current && !notifRef.current.contains(event.target as Node) &&
+        mobileNotifRef.current && !mobileNotifRef.current.contains(event.target as Node)
+      ) {
+        setShowNotifPopover(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(event.target as Node) && !mobileNotifRef.current) {
+        setShowNotifPopover(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleOpenNotifications = async () => {
+    setShowNotifPopover(!showNotifPopover);
+    if (!showNotifPopover && notifUnreadCount > 0) {
+      // Mark visible notifications as read
+      const unreadIds = notifications.filter(n => !n.isRead).map(n => n.id);
+      if (unreadIds.length > 0) {
+        try {
+          const token = localStorage.getItem('token');
+          await fetch(`${API_URL}/recipient/notifications/mark-read`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({ notificationIds: unreadIds }),
+          });
+          setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+          setNotifUnreadCount(0);
+        } catch (error) {
+          console.error('Failed to mark notifications as read:', error);
+        }
+      }
+    }
+  };
+
+  const handleNotificationClick = (notif: NotificationData) => {
+    if (notif.type === 'rate_caregiver' && notif.data?.caregiverId) {
+      router.push(`/dashboard/caregivers/${notif.data.caregiverId}`);
+      setShowNotifPopover(false);
+      setIsSidebarOpen(false);
+    }
+  };
+
+  const formatNotifTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffHr = Math.floor(diffMs / 3600000);
+    const diffDay = Math.floor(diffMs / 86400000);
+
+    if (diffMin < 1) return t('notifications.justNow') || 'Just now';
+    if (diffMin < 60) return `${diffMin}m`;
+    if (diffHr < 24) return `${diffHr}h`;
+    return `${diffDay}d`;
+  };
 
   if (isLoading) {
     return (
@@ -142,6 +277,91 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
                 </Link>
               );
             })}
+
+            {/* Notification bell */}
+            <div className="relative" ref={notifRef}>
+              <button
+                onClick={handleOpenNotifications}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all w-full text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
+              >
+                <div className="relative">
+                  <Bell className="w-5 h-5" />
+                  {notifUnreadCount > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                      {notifUnreadCount > 9 ? '9+' : notifUnreadCount}
+                    </span>
+                  )}
+                </div>
+                <span>{t('notifications.title') || 'Notifications'}</span>
+              </button>
+
+              {/* Notification popover */}
+              <AnimatePresence>
+                {showNotifPopover && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -4, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute left-0 right-0 lg:left-auto lg:right-auto lg:w-80 mt-1 bg-white rounded-xl shadow-lg border border-gray-200 z-50 overflow-hidden"
+                  >
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <h3 className="font-semibold text-gray-900 text-sm">
+                        {t('notifications.title') || 'Notifications'}
+                      </h3>
+                    </div>
+                    <div className="max-h-64 overflow-y-auto">
+                      {notifications.length === 0 ? (
+                        <div className="p-6 text-center">
+                          <Bell className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                          <p className="text-sm text-gray-400">
+                            {t('notifications.noNotifications') || 'No notifications yet'}
+                          </p>
+                        </div>
+                      ) : (
+                        notifications.map(notif => (
+                          <button
+                            key={notif.id}
+                            onClick={() => handleNotificationClick(notif)}
+                            className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-b-0 cursor-pointer ${
+                              !notif.isRead ? 'bg-amber-50/50' : ''
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
+                              <div className={`mt-0.5 p-1.5 rounded-lg flex-shrink-0 ${
+                                notif.type === 'rate_caregiver'
+                                  ? 'bg-amber-100 text-amber-600'
+                                  : 'bg-gray-100 text-gray-500'
+                              }`}>
+                                {notif.type === 'rate_caregiver' ? (
+                                  <Star className="w-4 h-4" />
+                                ) : (
+                                  <Bell className="w-4 h-4" />
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-gray-900 truncate">
+                                  {notif.title}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">
+                                  {notif.message}
+                                </p>
+                                <p className="text-[11px] text-gray-400 mt-1">
+                                  {formatNotifTime(notif.createdAt)}
+                                </p>
+                              </div>
+                              {!notif.isRead && (
+                                <div className="w-2 h-2 bg-amber-500 rounded-full flex-shrink-0 mt-1.5" />
+                              )}
+                            </div>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </nav>
 
           {/* User section */}
@@ -163,6 +383,39 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
                   {user?.firstName} {user?.lastName}
                 </p>
                 <p className="text-xs text-gray-500 truncate">{t('recipient.role')}</p>
+                {isSettled && (
+                  <div className="relative group/settled mt-1">
+                    <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] font-medium rounded-full border border-emerald-200 cursor-default">
+                      <CheckCircle className="w-3 h-3" />
+                      {t('settlement.settled')}
+                    </span>
+                    {settledCaregiver && (
+                      <div className="absolute bottom-full left-0 mb-1.5 z-50 hidden group-hover/settled:block">
+                        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 min-w-[200px]">
+                          <p className="text-[11px] text-gray-400 mb-2">{t('settlement.settledWith')}</p>
+                          <button
+                            onClick={() => {
+                              router.push(`/dashboard/caregivers/${settledCaregiver.id}`);
+                              setIsSidebarOpen(false);
+                            }}
+                            className="flex items-center gap-2.5 w-full hover:bg-gray-50 rounded-lg p-1.5 -m-1.5 transition-colors cursor-pointer"
+                          >
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-xs font-semibold overflow-hidden flex-shrink-0">
+                              {settledCaregiver.profileImageUrl ? (
+                                <img src={settledCaregiver.profileImageUrl} alt="" className="w-full h-full object-cover" />
+                              ) : (
+                                <>{settledCaregiver.firstName[0]}{settledCaregiver.lastName[0]}</>
+                              )}
+                            </div>
+                            <span className="text-sm font-medium text-gray-900 hover:text-amber-600 transition-colors">
+                              {settledCaregiver.firstName} {settledCaregiver.lastName}
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
             <button
@@ -188,7 +441,86 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
               <Menu className="w-6 h-6 text-gray-600" />
             </button>
             <LogoBlack width={32} height={32} />
-            <div className="w-10" /> {/* Spacer for centering */}
+            <div className="relative" ref={mobileNotifRef}>
+              <button
+                onClick={handleOpenNotifications}
+                className="p-2 rounded-lg hover:bg-gray-100 transition-colors relative cursor-pointer"
+              >
+                <Bell className="w-5 h-5 text-gray-600" />
+                {notifUnreadCount > 0 && (
+                  <span className="absolute top-1 right-1 bg-red-500 text-white text-[9px] font-bold rounded-full min-w-[16px] h-[16px] flex items-center justify-center px-0.5">
+                    {notifUnreadCount > 9 ? '9+' : notifUnreadCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Mobile notification popover */}
+              <AnimatePresence>
+                {showNotifPopover && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -4, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 w-80 mt-2 bg-white rounded-xl shadow-lg border border-gray-200 z-50 overflow-hidden"
+                  >
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <h3 className="font-semibold text-gray-900 text-sm">
+                        {t('notifications.title') || 'Notifications'}
+                      </h3>
+                    </div>
+                    <div className="max-h-64 overflow-y-auto">
+                      {notifications.length === 0 ? (
+                        <div className="p-6 text-center">
+                          <Bell className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                          <p className="text-sm text-gray-400">
+                            {t('notifications.noNotifications') || 'No notifications yet'}
+                          </p>
+                        </div>
+                      ) : (
+                        notifications.map(notif => (
+                          <button
+                            key={notif.id}
+                            onClick={() => handleNotificationClick(notif)}
+                            className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-b-0 cursor-pointer ${
+                              !notif.isRead ? 'bg-amber-50/50' : ''
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
+                              <div className={`mt-0.5 p-1.5 rounded-lg flex-shrink-0 ${
+                                notif.type === 'rate_caregiver'
+                                  ? 'bg-amber-100 text-amber-600'
+                                  : 'bg-gray-100 text-gray-500'
+                              }`}>
+                                {notif.type === 'rate_caregiver' ? (
+                                  <Star className="w-4 h-4" />
+                                ) : (
+                                  <Bell className="w-4 h-4" />
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-gray-900 truncate">
+                                  {notif.title}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">
+                                  {notif.message}
+                                </p>
+                                <p className="text-[11px] text-gray-400 mt-1">
+                                  {formatNotifTime(notif.createdAt)}
+                                </p>
+                              </div>
+                              {!notif.isRead && (
+                                <div className="w-2 h-2 bg-amber-500 rounded-full flex-shrink-0 mt-1.5" />
+                              )}
+                            </div>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </header>
 

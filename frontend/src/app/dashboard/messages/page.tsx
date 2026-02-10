@@ -399,12 +399,18 @@ export default function RecipientMessagesPage() {
                           <span className="font-semibold text-sm text-gray-900 truncate">
                             {other.firstName} {other.lastName}
                           </span>
-                          <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                          <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
                             {conv.lastMessage && (
                               <span className="text-xs text-gray-400">
                                 {formatTime(conv.lastMessage.createdAt)}
                               </span>
                             )}
+                            <div
+                              onClick={(e) => { e.stopPropagation(); setMenuOpenId(menuOpenId === conv.id ? null : conv.id); }}
+                              className="p-0.5 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+                            >
+                              <MoreVertical className="w-3.5 h-3.5 text-gray-400" />
+                            </div>
                           </div>
                         </div>
                         {conv.lastMessage ? (
@@ -425,25 +431,17 @@ export default function RecipientMessagesPage() {
                         )}
                       </div>
                     </button>
-                    <div className="absolute top-3 right-3 z-10">
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setMenuOpenId(menuOpenId === conv.id ? null : conv.id); }}
-                        className="p-1 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors"
-                      >
-                        <MoreVertical className="w-4 h-4 text-gray-400" />
-                      </button>
-                      {menuOpenId === conv.id && (
-                        <div className="absolute right-0 top-8 bg-white rounded-xl shadow-lg border border-gray-200 py-1 min-w-[160px] z-50">
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleDeleteChat(conv.id); }}
-                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                            {t('messages.deleteChat')}
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                    {menuOpenId === conv.id && (
+                      <div className="absolute right-3 top-10 bg-white rounded-xl shadow-lg border border-gray-200 py-1 min-w-[160px] z-50">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleDeleteChat(conv.id); }}
+                          className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          {t('messages.deleteChat')}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 );
               })

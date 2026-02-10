@@ -390,7 +390,7 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
                       {t('settlement.settled')}
                     </span>
                     {settledCaregiver && (
-                      <div className="absolute bottom-full left-0 mb-1.5 z-50 hidden group-hover/settled:block">
+                      <div className="absolute bottom-full left-0 z-50 hidden group-hover/settled:block pb-1.5">
                         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 min-w-[200px]">
                           <p className="text-[11px] text-gray-400 mb-2">{t('settlement.settledWith')}</p>
                           <button

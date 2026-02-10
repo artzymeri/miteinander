@@ -425,12 +425,18 @@ export default function CaregiverMessagesPage() {
                           <span className="font-semibold text-sm text-gray-900 truncate">
                             {other.firstName} {other.lastName}
                           </span>
-                          <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                          <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
                             {conv.lastMessage && (
                               <span className="text-xs text-gray-400">
                                 {formatTime(conv.lastMessage.createdAt)}
                               </span>
                             )}
+                            <div
+                              onClick={(e) => { e.stopPropagation(); setMenuOpenId(menuOpenId === conv.id ? null : conv.id); }}
+                              className="p-0.5 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+                            >
+                              <MoreVertical className="w-3.5 h-3.5 text-gray-400" />
+                            </div>
                           </div>
                         </div>
                         <p className="text-[11px] text-gray-400 truncate">{t('recipient.role')}</p>
@@ -462,25 +468,17 @@ export default function CaregiverMessagesPage() {
                         ) : null}
                       </div>
                     </button>
-                    <div className="absolute top-3 right-3 z-10">
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setMenuOpenId(menuOpenId === conv.id ? null : conv.id); }}
-                        className="p-1 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors"
-                      >
-                        <MoreVertical className="w-4 h-4 text-gray-400" />
-                      </button>
-                      {menuOpenId === conv.id && (
-                        <div className="absolute right-0 top-8 bg-white rounded-xl shadow-lg border border-gray-200 py-1 min-w-[160px] z-50">
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleDeleteChat(conv.id); }}
-                            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                            {t('messages.deleteChat')}
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                    {menuOpenId === conv.id && (
+                      <div className="absolute right-3 top-10 bg-white rounded-xl shadow-lg border border-gray-200 py-1 min-w-[160px] z-50">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleDeleteChat(conv.id); }}
+                          className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          {t('messages.deleteChat')}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 );
               })
@@ -531,10 +529,13 @@ export default function CaregiverMessagesPage() {
                         </span>
                         {activeConversation.careRecipient.settledWithCaregiver && 
                          activeConversation.careRecipient.settledWithCaregiverId !== activeConversation.careGiverId && (
-                          <div className="absolute top-full left-0 mt-1.5 z-50 hidden group-hover/settled:block">
+                          <div className="absolute top-full left-0 z-50 hidden group-hover/settled:block pt-1.5">
                             <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 min-w-[200px]">
                               <p className="text-[11px] text-gray-400 mb-2">{t('settlement.settledWith')}</p>
-                              <div className="flex items-center gap-2.5">
+                              <button
+                                onClick={() => router.push(`/caregiver/clients/${activeConversation.careRecipient.settledWithCaregiver!.id}`)}
+                                className="flex items-center gap-2.5 w-full hover:bg-gray-50 rounded-lg p-1.5 -m-1.5 transition-colors cursor-pointer"
+                              >
                                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-xs font-semibold overflow-hidden flex-shrink-0">
                                   {activeConversation.careRecipient.settledWithCaregiver.profileImageUrl ? (
                                     <img src={activeConversation.careRecipient.settledWithCaregiver.profileImageUrl} alt="" className="w-full h-full object-cover" />
@@ -542,15 +543,15 @@ export default function CaregiverMessagesPage() {
                                     <>{activeConversation.careRecipient.settledWithCaregiver.firstName[0]}{activeConversation.careRecipient.settledWithCaregiver.lastName[0]}</>
                                   )}
                                 </div>
-                                <span className="text-sm font-medium text-gray-900">
+                                <span className="text-sm font-medium text-gray-900 hover:text-amber-600 transition-colors">
                                   {activeConversation.careRecipient.settledWithCaregiver.firstName} {activeConversation.careRecipient.settledWithCaregiver.lastName}
                                 </span>
-                              </div>
+                              </button>
                             </div>
                           </div>
                         )}
                         {activeConversation.careRecipient.settledWithCaregiverId === activeConversation.careGiverId && (
-                          <div className="absolute top-full left-0 mt-1.5 z-50 hidden group-hover/settled:block">
+                          <div className="absolute top-full left-0 z-50 hidden group-hover/settled:block pt-1.5">
                             <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-3 min-w-[180px]">
                               <p className="text-xs text-green-600 font-medium">{t('settlement.settledWithYou')}</p>
                             </div>

@@ -14,6 +14,8 @@ import {
   Star,
   Briefcase,
   CheckCircle,
+  Clock,
+  ArrowRight,
 } from 'lucide-react';
 import { useTranslation } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -54,6 +56,7 @@ interface Caregiver {
   skills: SkillData[];
   experienceYears: number | null;
   occupation: string | null;
+  bio: string | null;
   profileImageUrl: string | null;
   rating: number | null;
   reviewCount: number;
@@ -509,77 +512,120 @@ export default function FindCaregiversPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
                 onClick={() => router.push(`/dashboard/caregivers/${caregiver.id}`)}
-                className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md hover:border-amber-200 transition-all cursor-pointer"
+                className="group bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg hover:border-amber-200 transition-all duration-300 cursor-pointer flex flex-col"
               >
-                <div className="flex items-start gap-4">
-                  {caregiver.profileImageUrl ? (
-                    <img
-                      src={caregiver.profileImageUrl}
-                      alt={`${caregiver.firstName} ${caregiver.lastName}`}
-                      className="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-semibold flex-shrink-0">
-                      {caregiver.firstName[0]}{caregiver.lastName[0]}
-                    </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-semibold text-gray-900 truncate">
-                        {caregiver.firstName} {caregiver.lastName}
-                      </h3>
-                      {caregiver.isVerified && (
-                        <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      )}
-                    </div>
-                    {caregiver.occupation && (
-                      <div className="flex items-center gap-1 text-sm text-gray-600 mt-0.5">
-                        <Briefcase className="w-3.5 h-3.5" />
-                        <span className="truncate">{caregiver.occupation}</span>
+                {/* Card Top - Colored accent bar */}
+                <div className="h-1.5 bg-gradient-to-r from-amber-400 to-orange-500" />
+                
+                <div className="p-5 flex-1">
+                  {/* Avatar + Name row */}
+                  <div className="flex items-center gap-3.5">
+                    {caregiver.profileImageUrl ? (
+                      <img
+                        src={caregiver.profileImageUrl}
+                        alt={`${caregiver.firstName} ${caregiver.lastName}`}
+                        className="w-14 h-14 rounded-xl object-cover flex-shrink-0 ring-2 ring-gray-100"
+                      />
+                    ) : (
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-bold text-lg flex-shrink-0 shadow-sm">
+                        {caregiver.firstName[0]}{caregiver.lastName[0]}
                       </div>
                     )}
-                    <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
-                      <MapPin className="w-4 h-4" />
-                      <span className="truncate">{caregiver.city}, {caregiver.postalCode}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <h3 className="font-semibold text-gray-900 truncate text-[15px]">
+                          {caregiver.firstName} {caregiver.lastName}
+                        </h3>
+                        {caregiver.isVerified && (
+                          <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                        )}
+                      </div>
+                      {caregiver.occupation && (
+                        <p className="text-sm text-gray-500 truncate mt-0.5 flex items-center gap-1">
+                          <Briefcase className="w-3.5 h-3.5 flex-shrink-0" />
+                          {caregiver.occupation}
+                        </p>
+                      )}
+                      <p className="text-sm text-gray-400 truncate mt-0.5 flex items-center gap-1">
+                        <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                        {caregiver.city}{caregiver.postalCode ? `, ${caregiver.postalCode}` : ''}
+                      </p>
                     </div>
                   </div>
-                </div>
-                
-                {/* Rating and Experience */}
-                <div className="mt-3 flex items-center gap-4 text-sm">
-                  {caregiver.rating !== null && caregiver.rating > 0 && (
-                    <div className="flex items-center gap-1 text-amber-600">
-                      <Star className="w-4 h-4 fill-current" />
-                      <span>{Number(caregiver.rating).toFixed(1)}</span>
-                      <span className="text-gray-400">({caregiver.reviewCount})</span>
-                    </div>
+
+                  {/* Bio preview */}
+                  {caregiver.bio && (
+                    <p className="mt-3 text-sm text-gray-500 leading-relaxed line-clamp-2">
+                      {caregiver.bio}
+                    </p>
                   )}
-                  {caregiver.experienceYears && caregiver.experienceYears > 0 && (
-                    <span className="text-gray-500">
-                      {caregiver.experienceYears} {t('recipient.findCaregivers.yearsExp') || 'yrs exp'}
-                    </span>
-                  )}
-                </div>
-                
-                {caregiver.skills && caregiver.skills.length > 0 && (
-                  <div className="mt-3">
-                    <div className="flex flex-wrap gap-1.5">
+
+                  {/* Stats row */}
+                  <div className="mt-3.5 flex items-center gap-3 flex-wrap">
+                    {caregiver.rating !== null && caregiver.rating > 0 && (
+                      <div className="flex items-center gap-1 px-2.5 py-1 bg-amber-50 rounded-lg">
+                        <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                        <span className="text-xs font-semibold text-amber-700">{Number(caregiver.rating).toFixed(1)}</span>
+                        <span className="text-xs text-amber-500">({caregiver.reviewCount})</span>
+                      </div>
+                    )}
+                    {caregiver.experienceYears && caregiver.experienceYears > 0 ? (
+                      <div className="flex items-center gap-1 px-2.5 py-1 bg-blue-50 rounded-lg">
+                        <Clock className="w-3.5 h-3.5 text-blue-500" />
+                        <span className="text-xs font-medium text-blue-700">
+                          {caregiver.experienceYears} {t('recipient.findCaregivers.yearsExp') || 'yrs'}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1 px-2.5 py-1 bg-gray-50 rounded-lg">
+                        <Clock className="w-3.5 h-3.5 text-gray-400" />
+                        <span className="text-xs text-gray-400">
+                          {t('recipient.findCaregivers.noExperience') || 'No experience added'}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Skills */}
+                  {caregiver.skills && caregiver.skills.length > 0 ? (
+                    <div className="mt-3 flex flex-wrap gap-1.5">
                       {caregiver.skills.slice(0, 3).map(skill => (
                         <span
                           key={skill.id}
-                          className="px-2 py-1 bg-amber-50 text-amber-700 text-xs rounded-full"
+                          className="px-2.5 py-1 bg-gray-50 text-gray-600 text-xs rounded-lg font-medium"
                         >
                           {getSkillLabel(skill)}
                         </span>
                       ))}
                       {caregiver.skills.length > 3 && (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                        <span className="px-2.5 py-1 bg-gray-50 text-gray-400 text-xs rounded-lg">
                           +{caregiver.skills.length - 3}
                         </span>
                       )}
                     </div>
-                  </div>
-                )}
+                  ) : (
+                    <div className="mt-3">
+                      <div className="px-3 py-2 bg-gray-100/50 border border-gray-200 rounded-lg text-center">
+                        <span className="text-xs text-gray-400 italic">
+                          {t('recipient.caregiverProfile.noSkills') || 'No skills added'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                </div>
+
+                {/* Bottom bar - Member since + View Profile */}
+                <div className="mt-auto px-5 py-3 border-t border-gray-100 flex items-center justify-between bg-gray-50/50">
+                  <span className="text-[11px] text-gray-400">
+                    {t('recipient.findCaregivers.memberSince') || 'Member since'}{' '}
+                    {new Date(caregiver.createdAt).toLocaleDateString(language === 'de' ? 'de-DE' : language === 'fr' ? 'fr-FR' : 'en-US', { month: 'short', year: 'numeric' })}
+                  </span>
+                  <span className="text-xs font-medium text-amber-600 flex items-center gap-1 group-hover:gap-2 transition-all">
+                    {t('recipient.findCaregivers.viewProfile') || 'View Profile'}
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
+                </div>
               </motion.div>
             ))}
           </div>

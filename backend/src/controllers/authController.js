@@ -1,7 +1,7 @@
 const models = require('../models');
 const { generateToken } = require('../utils/jwt');
 const { successResponse, errorResponse, USER_ROLES, getModelByRole } = require('../utils/helpers');
-const { generateVerificationCode, sendVerificationEmail } = require('../utils/email');
+const { generateVerificationCode, sendVerificationEmail, sendWelcomeEmail } = require('../utils/email');
 
 const { CareNeed } = models;
 
@@ -57,6 +57,20 @@ const register = async (req, res, next) => {
       }
     }
     
+    // Validate role-specific required fields
+    if (role === USER_ROLES.CARE_GIVER) {
+      const skills = additionalData.skills;
+      if (!skills || !Array.isArray(skills) || skills.length === 0) {
+        return errorResponse(res, 'At least one skill is required', 400, 'MIN_SKILLS');
+      }
+    }
+    if (role === USER_ROLES.CARE_RECIPIENT) {
+      const careNeeds = additionalData.careNeeds;
+      if (!careNeeds || !Array.isArray(careNeeds) || careNeeds.length === 0) {
+        return errorResponse(res, 'At least one care need is required', 400, 'MIN_CARE_NEEDS');
+      }
+    }
+
     // Create user
     const user = await Model.create({
       email,
@@ -150,7 +164,12 @@ const verifyEmail = async (req, res, next) => {
       verificationCode: null,
       verificationCodeExpiresAt: null,
     });
-    
+
+    // Send welcome email (non-blocking)
+    sendWelcomeEmail(foundUser.email, foundUser.firstName).catch((err) => {
+      console.error('Failed to send welcome email:', err);
+    });
+
     const token = generateToken({
       id: foundUser.id,
       email: foundUser.email,

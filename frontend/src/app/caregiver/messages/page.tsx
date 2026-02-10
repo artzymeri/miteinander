@@ -118,11 +118,13 @@ export default function CaregiverMessagesPage() {
     fetchConversations();
   }, [fetchConversations]);
 
+  const urlConvHandledRef = useRef<string | null>(null);
   useEffect(() => {
     const convId = searchParams.get('conversation');
-    if (convId && conversations.length > 0) {
+    if (convId && conversations.length > 0 && urlConvHandledRef.current !== convId) {
       const conv = conversations.find(c => c.id === parseInt(convId));
       if (conv) {
+        urlConvHandledRef.current = convId;
         selectConversation(conv);
       }
     }

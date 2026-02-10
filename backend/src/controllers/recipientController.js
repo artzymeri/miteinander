@@ -115,6 +115,7 @@ const findCaregivers = async (req, res, next) => {
         'skills',
         'experienceYears',
         'occupation',
+        'bio',
         'profileImageUrl',
         'rating',
         'reviewCount',
@@ -140,6 +141,7 @@ const findCaregivers = async (req, res, next) => {
         skills: resolveSkills(caregiver.skills, careNeedsMap),
         experienceYears: caregiver.experienceYears,
         occupation: caregiver.occupation,
+        bio: caregiver.bio,
         profileImageUrl: caregiver.profileImageUrl,
         rating: caregiver.rating,
         reviewCount: caregiver.reviewCount,
@@ -426,6 +428,14 @@ const updateMyProfile = async (req, res, next) => {
         updates[field] = req.body[field];
       }
     });
+
+    // Validate: at least 1 care need required
+    if (updates.careNeeds !== undefined) {
+      const needsArr = Array.isArray(updates.careNeeds) ? updates.careNeeds : [];
+      if (needsArr.length === 0) {
+        return errorResponse(res, 'At least one care need is required', 400, 'MIN_CARE_NEEDS');
+      }
+    }
     
     await CareRecipient.update(updates, {
       where: { id: recipientId },

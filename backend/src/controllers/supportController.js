@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
 const models = require('../models');
 const { successResponse, errorResponse } = require('../utils/helpers');
+const { sendTicketClosedEmail, sendTicketAssignedEmail } = require('../utils/email');
 
 /**
  * Get or create user's active support ticket.
@@ -366,6 +367,21 @@ const closeTicket = async (req, res) => {
 
     await ticket.update({ status: 'closed' });
 
+    // Send ticket closed email to the user (non-blocking)
+    try {
+      const UserModel = ticket.userRole === 'care_giver' ? models.CareGiver : models.CareRecipient;
+      const ticketUser = await UserModel.findByPk(ticket.userId, {
+        attributes: ['firstName', 'email'],
+      });
+      if (ticketUser) {
+        sendTicketClosedEmail(ticketUser.email, ticketUser.firstName, ticket.id).catch((err) => {
+          console.error('Failed to send ticket closed email:', err);
+        });
+      }
+    } catch (emailErr) {
+      console.error('Error preparing ticket closed email:', emailErr);
+    }
+
     // Notify via socket
     try {
       const { getIO } = require('../socket');
@@ -462,6 +478,20 @@ const assignTicket = async (req, res) => {
       assignedToRole: 'support',
       assignedToId: supportId,
     });
+
+    // Send ticket assigned email to the support staff (non-blocking)
+    try {
+      const UserModel = ticket.userRole === 'care_giver' ? models.CareGiver : models.CareRecipient;
+      const ticketUser = await UserModel.findByPk(ticket.userId, {
+        attributes: ['firstName', 'lastName'],
+      });
+      const userName = ticketUser ? `${ticketUser.firstName} ${ticketUser.lastName}` : 'Unbekannt';
+      sendTicketAssignedEmail(support.email, support.firstName, ticket.id, userName).catch((err) => {
+        console.error('Failed to send ticket assigned email:', err);
+      });
+    } catch (emailErr) {
+      console.error('Error preparing ticket assigned email:', emailErr);
+    }
 
     // Notify via socket
     try {

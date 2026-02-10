@@ -460,9 +460,15 @@
       "settings": "Paramètres"
     },
     "stats": {
-      "profileViews": "Vues du Profil",
-      "averageRating": "Note Moyenne",
-      "messagesSent": "Messages Envoyés"
+      "profileViews": "Vues de profil",
+      "averageRating": "Note moyenne",
+      "messagesSent": "Messages envoyés",
+      "skills": "Compétences",
+      "expertise": "Domaines d'expertise",
+      "experience": "Expérience",
+      "yearsOfCare": "Années de soins",
+      "certifications": "Certifications",
+      "credentials": "Qualifications"
     },
     "recentMessages": "Messages Récents",
     "quickActions": "Actions Rapides",
@@ -473,11 +479,15 @@
     "yourProfile": "Votre Profil",
     "profileCompletion": "Complétion du Profil",
     "completeProfileHint": "Complétez votre profil pour attirer plus de clients",
-    "editProfile": "Modifier le Profil",
+    "editProfile": "Modifier le profil",
+    "viewProfile": "Voir le profil",
     "action": {
-      "findClients": "Trouver des Clients",
+      "findClients": "Trouver des clients",
       "sendMessage": "Envoyer un message",
-      "editProfile": "Modifier le Profil"
+      "editProfile": "Modifier le profil",
+      "messages": "Messages",
+      "profile": "Mon profil",
+      "settings": "Paramètres"
     },
     "findClients": {
       "title": "Trouver des Clients",
@@ -494,7 +504,12 @@
       "noResults": "Aucun client trouvé",
       "tryDifferentFilters": "Essayez d'ajuster vos filtres ou termes de recherche",
       "endOfResults": "Vous avez atteint la fin des résultats",
-      "noCitiesAvailable": "Aucune ville disponible pour ce pays"
+      "noCitiesAvailable": "Aucune ville disponible pour ce pays",
+      "viewProfile": "Voir le profil",
+      "memberSince": "Membre depuis",
+      "noBio": "Aucune description fournie pour le moment",
+      "lookingFor": "Cherche de l'aide pour",
+      "notSpecified": "Pas encore spécifié"
     },
     "clientProfile": {
       "memberSince": "Membre depuis",
@@ -548,6 +563,7 @@
       "selectSkills": "Sélectionnez vos compétences",
       "selectSkillsDesc": "Choisissez les domaines de soins dans lesquels vous vous spécialisez",
       "skillsUpdated": "Compétences mises à jour avec succès",
+      "minOneSkill": "Veuillez sélectionner au moins une compétence",
       "manageCertifications": "Gérer les certifications",
       "manageCertificationsDesc": "Ajoutez ou supprimez vos certifications professionnelles et qualifications",
       "certificationPlaceholder": "Entrez le nom de la certification...",
@@ -650,6 +666,7 @@
       "selectCareNeeds": "Sélectionnez vos besoins de soins",
       "selectCareNeedsDesc": "Choisissez les types de soutien en matière de soins dont vous avez besoin",
       "careNeedsUpdated": "Besoins de soins mis à jour avec succès",
+      "minOneCareNeed": "Veuillez sélectionner au moins un besoin de soins",
       "changePassword": "Changer le mot de passe",
       "changePasswordDesc": "Mettez à jour votre mot de passe pour sécuriser votre compte",
       "currentPassword": "Mot de passe actuel",
@@ -686,7 +703,11 @@
       "tryDifferentFilters": "Essayez d'ajuster vos filtres ou termes de recherche",
       "endOfResults": "Vous avez atteint la fin des résultats",
       "noCitiesAvailable": "Aucune ville disponible pour ce pays",
-      "yearsExp": "ans d'exp."
+      "yearsExp": "ans d'exp.",
+      "noExperience": "Aucune expérience ajoutée",
+      "viewProfile": "Voir le profil",
+      "memberSince": "Membre depuis",
+      "newMember": "Nouveau membre"
     },
     "caregiverProfile": {
       "memberSince": "Membre depuis",

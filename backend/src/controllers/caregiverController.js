@@ -112,6 +112,7 @@ const findClients = async (req, res, next) => {
         'postalCode',
         'country',
         'careNeeds',
+        'bio',
         'profileImageUrl',
         'createdAt',
         // Explicitly exclude sensitive fields
@@ -132,6 +133,7 @@ const findClients = async (req, res, next) => {
         postalCode: client.postalCode,
         country: client.country,
         careNeeds: resolveCareNeeds(client.careNeeds, careNeedsMap),
+        bio: client.bio,
         profileImageUrl: client.profileImageUrl,
         createdAt: client.createdAt,
       })),
@@ -394,6 +396,14 @@ const updateMyProfile = async (req, res, next) => {
         updates[field] = req.body[field];
       }
     });
+
+    // Validate: at least 1 skill required
+    if (updates.skills !== undefined) {
+      const skillsArr = Array.isArray(updates.skills) ? updates.skills : [];
+      if (skillsArr.length === 0) {
+        return errorResponse(res, 'At least one skill is required', 400, 'MIN_SKILLS');
+      }
+    }
     
     await CareGiver.update(updates, {
       where: { id: caregiverId },

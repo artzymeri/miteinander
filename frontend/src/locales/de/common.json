@@ -462,7 +462,13 @@
     "stats": {
       "profileViews": "Profilaufrufe",
       "averageRating": "Durchschnittliche Bewertung",
-      "messagesSent": "Gesendete Nachrichten"
+      "messagesSent": "Gesendete Nachrichten",
+      "skills": "Fähigkeiten",
+      "expertise": "Fachgebiete",
+      "experience": "Erfahrung",
+      "yearsOfCare": "Jahre Pflege",
+      "certifications": "Zertifizierungen",
+      "credentials": "Qualifikationen"
     },
     "recentMessages": "Aktuelle Nachrichten",
     "quickActions": "Schnellaktionen",
@@ -474,10 +480,14 @@
     "profileCompletion": "Profilvollständigkeit",
     "completeProfileHint": "Vervollständigen Sie Ihr Profil, um mehr Klienten anzuziehen",
     "editProfile": "Profil bearbeiten",
+    "viewProfile": "Profil ansehen",
     "action": {
       "findClients": "Klienten finden",
       "sendMessage": "Nachricht senden",
-      "editProfile": "Profil bearbeiten"
+      "editProfile": "Profil bearbeiten",
+      "messages": "Nachrichten",
+      "profile": "Mein Profil",
+      "settings": "Einstellungen"
     },
     "findClients": {
       "title": "Klienten finden",
@@ -494,7 +504,12 @@
       "noResults": "Keine Klienten gefunden",
       "tryDifferentFilters": "Versuchen Sie, Ihre Filter oder Suchbegriffe anzupassen",
       "endOfResults": "Sie haben das Ende der Ergebnisse erreicht",
-      "noCitiesAvailable": "Keine Städte für dieses Land verfügbar"
+      "noCitiesAvailable": "Keine Städte für dieses Land verfügbar",
+      "viewProfile": "Profil ansehen",
+      "memberSince": "Mitglied seit",
+      "noBio": "Noch keine Beschreibung vorhanden",
+      "lookingFor": "Sucht Hilfe bei",
+      "notSpecified": "Noch nicht angegeben"
     },
     "clientProfile": {
       "memberSince": "Mitglied seit",
@@ -548,6 +563,7 @@
       "selectSkills": "Wählen Sie Ihre Fähigkeiten",
       "selectSkillsDesc": "Wählen Sie die Pflegebereiche, auf die Sie spezialisiert sind",
       "skillsUpdated": "Fähigkeiten erfolgreich aktualisiert",
+      "minOneSkill": "Bitte wählen Sie mindestens eine Fähigkeit aus",
       "manageCertifications": "Zertifizierungen verwalten",
       "manageCertificationsDesc": "Fügen Sie Ihre beruflichen Zertifizierungen und Qualifikationen hinzu oder entfernen Sie sie",
       "certificationPlaceholder": "Zertifizierungsname eingeben...",
@@ -650,6 +666,7 @@
       "selectCareNeeds": "Wählen Sie Ihre Pflegebedürfnisse",
       "selectCareNeedsDesc": "Wählen Sie die Arten der Pflegeunterstützung, die Sie benötigen",
       "careNeedsUpdated": "Pflegebedürfnisse erfolgreich aktualisiert",
+      "minOneCareNeed": "Bitte wählen Sie mindestens ein Pflegebedürfnis aus",
       "changePassword": "Passwort ändern",
       "changePasswordDesc": "Aktualisieren Sie Ihr Passwort, um Ihr Konto zu schützen",
       "currentPassword": "Aktuelles Passwort",
@@ -686,7 +703,11 @@
       "tryDifferentFilters": "Versuchen Sie, Ihre Filter oder Suchbegriffe anzupassen",
       "endOfResults": "Sie haben das Ende der Ergebnisse erreicht",
       "noCitiesAvailable": "Keine Städte für dieses Land verfügbar",
-      "yearsExp": "Jahre Erf."
+      "yearsExp": "Jahre Erf.",
+      "noExperience": "Keine Erfahrung angegeben",
+      "viewProfile": "Profil ansehen",
+      "memberSince": "Mitglied seit",
+      "newMember": "Neues Mitglied"
     },
     "caregiverProfile": {
       "memberSince": "Mitglied seit",

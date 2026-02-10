@@ -462,7 +462,13 @@
     "stats": {
       "profileViews": "Profile Views",
       "averageRating": "Average Rating",
-      "messagesSent": "Messages Sent"
+      "messagesSent": "Messages Sent",
+      "skills": "Skills",
+      "expertise": "Expertise areas",
+      "experience": "Experience",
+      "yearsOfCare": "Years of care",
+      "certifications": "Certifications",
+      "credentials": "Credentials"
     },
     "recentMessages": "Recent Messages",
     "quickActions": "Quick Actions",
@@ -474,10 +480,14 @@
     "profileCompletion": "Profile Completion",
     "completeProfileHint": "Complete your profile to attract more clients",
     "editProfile": "Edit Profile",
+    "viewProfile": "View Profile",
     "action": {
       "findClients": "Find Clients",
       "sendMessage": "Send Message",
-      "editProfile": "Edit Profile"
+      "editProfile": "Edit Profile",
+      "messages": "Messages",
+      "profile": "My Profile",
+      "settings": "Settings"
     },
     "findClients": {
       "title": "Find Clients",
@@ -494,7 +504,12 @@
       "noResults": "No clients found",
       "tryDifferentFilters": "Try adjusting your filters or search terms",
       "endOfResults": "You've reached the end of results",
-      "noCitiesAvailable": "No cities available for this country"
+      "noCitiesAvailable": "No cities available for this country",
+      "viewProfile": "View Profile",
+      "memberSince": "Member since",
+      "noBio": "No description provided yet",
+      "lookingFor": "Looking for help with",
+      "notSpecified": "Not specified yet"
     },
     "clientProfile": {
       "memberSince": "Member since",
@@ -548,6 +563,7 @@
       "selectSkills": "Select Your Skills",
       "selectSkillsDesc": "Choose the care areas you specialize in",
       "skillsUpdated": "Skills updated successfully",
+      "minOneSkill": "Please select at least one skill",
       "manageCertifications": "Manage Certifications",
       "manageCertificationsDesc": "Add or remove your professional certifications and qualifications",
       "certificationPlaceholder": "Enter certification name...",
@@ -650,6 +666,7 @@
       "selectCareNeeds": "Select Your Care Needs",
       "selectCareNeedsDesc": "Choose the types of care support you need",
       "careNeedsUpdated": "Care needs updated successfully",
+      "minOneCareNeed": "Please select at least one care need",
       "changePassword": "Change Password",
       "changePasswordDesc": "Update your password to keep your account secure",
       "currentPassword": "Current Password",
@@ -686,7 +703,11 @@
       "tryDifferentFilters": "Try adjusting your filters or search terms",
       "endOfResults": "You've reached the end of results",
       "noCitiesAvailable": "No cities available for this country",
-      "yearsExp": "years exp"
+      "yearsExp": "years exp",
+      "noExperience": "No experience added",
+      "viewProfile": "View Profile",
+      "memberSince": "Member since",
+      "newMember": "New member"
     },
     "caregiverProfile": {
       "memberSince": "Member since",

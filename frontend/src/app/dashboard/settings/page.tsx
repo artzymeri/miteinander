@@ -206,6 +206,10 @@ export default function CareRecipientSettingsPage() {
   };
 
   const handleCareNeedsSave = async () => {
+    if (selectedCareNeeds.length === 0) {
+      showMessage('error', t('recipient.settings.minOneCareNeed'));
+      return;
+    }
     setSaving(true);
     try {
       const token = localStorage.getItem('token');
@@ -385,11 +389,13 @@ export default function CareRecipientSettingsPage() {
   };
 
   const toggleCareNeed = (careNeedId: number) => {
-    setSelectedCareNeeds(prev =>
-      prev.includes(careNeedId)
-        ? prev.filter(id => id !== careNeedId)
-        : [...prev, careNeedId]
-    );
+    setSelectedCareNeeds(prev => {
+      if (prev.includes(careNeedId)) {
+        if (prev.length <= 1) return prev; // Must keep at least 1 care need
+        return prev.filter(id => id !== careNeedId);
+      }
+      return [...prev, careNeedId];
+    });
   };
 
   const tabs = [

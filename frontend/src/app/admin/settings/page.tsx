@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/context/LanguageContext';
-import AdminLayout from '@/components/admin/AdminLayout';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { Globe } from 'lucide-react';
 
@@ -10,8 +9,7 @@ export default function AdminSettingsPage() {
   const { t } = useTranslation();
 
   return (
-    <AdminLayout>
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -51,6 +49,5 @@ export default function AdminSettingsPage() {
           </div>
         </motion.div>
       </div>
-    </AdminLayout>
   );
 }

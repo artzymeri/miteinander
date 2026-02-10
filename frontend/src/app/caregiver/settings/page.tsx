@@ -207,6 +207,10 @@ export default function CareGiverSettingsPage() {
   };
 
   const handleSkillsSave = async () => {
+    if (selectedSkills.length === 0) {
+      showMessage('error', t('caregiver.settings.minOneSkill'));
+      return;
+    }
     setSaving(true);
     try {
       const token = localStorage.getItem('token');
@@ -313,11 +317,13 @@ export default function CareGiverSettingsPage() {
   };
 
   const toggleSkill = (skillId: number) => {
-    setSelectedSkills(prev =>
-      prev.includes(skillId)
-        ? prev.filter(id => id !== skillId)
-        : [...prev, skillId]
-    );
+    setSelectedSkills(prev => {
+      if (prev.includes(skillId)) {
+        if (prev.length <= 1) return prev; // Must keep at least 1 skill
+        return prev.filter(id => id !== skillId);
+      }
+      return [...prev, skillId];
+    });
   };
 
   const addCertification = () => {

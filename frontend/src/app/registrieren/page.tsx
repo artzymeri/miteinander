@@ -248,7 +248,7 @@ export default function RegisterPage() {
         if (selectedRole === 'care_recipient') {
           return formData.careNeeds.length > 0;
         } else {
-          return formData.bio.length > 0;
+          return formData.bio.length > 0 && formData.skills.length > 0;
         }
       case 5:
         if (selectedRole === 'care_recipient') {

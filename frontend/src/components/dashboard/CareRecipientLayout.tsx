@@ -277,9 +277,10 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
                 </Link>
               );
             })}
+          </nav>
 
-            {/* Notification bell */}
-            <div className="relative" ref={notifRef}>
+          {/* Notification bell - outside nav to avoid overflow clipping */}
+          <div className="px-4 pb-2 relative" ref={notifRef}>
               <button
                 onClick={handleOpenNotifications}
                 className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all w-full text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
@@ -303,7 +304,7 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -4, scale: 0.95 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute left-0 right-0 lg:left-auto lg:right-auto lg:w-80 mt-1 bg-white rounded-xl shadow-lg border border-gray-200 z-50 overflow-hidden"
+                    className="absolute left-full bottom-0 ml-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 z-50 overflow-hidden"
                   >
                     <div className="px-4 py-3 border-b border-gray-100">
                       <h3 className="font-semibold text-gray-900 text-sm">
@@ -361,8 +362,7 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
-          </nav>
+          </div>
 
           {/* User section */}
           <div className="p-4 border-t border-gray-100">

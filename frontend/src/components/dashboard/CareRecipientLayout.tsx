@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/LanguageContext';
 import { useSocket } from '@/context/SocketContext';
-import { LogoBlack } from '@/components/Logo';
 import SupportChatWidget from '@/components/support/SupportChatWidget';
 import {
   LayoutDashboard,
@@ -23,6 +22,7 @@ import {
   Bell,
   Star,
 } from 'lucide-react';
+import Logo from '../Logo';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -243,7 +243,7 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
           {/* Logo */}
           <div className="p-6 border-b border-gray-100">
             <Link href="/dashboard" className="flex items-center gap-3">
-              <LogoBlack width={40} height={40} />
+              <Logo accentStroke='red' mainStroke='red' width={40} height={40} />
               <span className="text-xl font-bold text-gray-900">Miteinander</span>
             </Link>
           </div>
@@ -440,7 +440,7 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
             >
               <Menu className="w-6 h-6 text-gray-600" />
             </button>
-            <LogoBlack width={32} height={32} />
+            <Logo accentStroke='lightgray' mainStroke='orangered' width={32} height={32} />
             <div className="relative" ref={mobileNotifRef}>
               <button
                 onClick={handleOpenNotifications}

@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/LanguageContext';
 import { useSocket } from '@/context/SocketContext';
-import { LogoBlack } from '@/components/Logo';
+import Logo from '@/components/Logo';
 import SupportChatWidget from '@/components/support/SupportChatWidget';
 import {
   LayoutDashboard,
@@ -110,7 +110,7 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
           {/* Logo */}
           <div className="p-6 border-b border-gray-100">
             <Link href="/caregiver" className="flex items-center gap-3">
-              <LogoBlack width={40} height={40} />
+              <Logo accentStroke='lightgray' mainStroke='orangered' width={40} height={40} />
               <span className="text-xl font-bold text-gray-900">Miteinander</span>
             </Link>
           </div>
@@ -189,7 +189,7 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
             >
               <Menu className="w-6 h-6 text-gray-600" />
             </button>
-            <LogoBlack width={32} height={32} />
+            <Logo accentStroke='lightgray' mainStroke='orangered' width={32} height={32} />
             <div className="w-10" /> {/* Spacer for centering */}
           </div>
         </header>

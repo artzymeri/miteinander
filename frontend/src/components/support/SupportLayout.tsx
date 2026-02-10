@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/LanguageContext';
 import { useSocket } from '@/context/SocketContext';
-import { LogoBlack } from '@/components/Logo';
 import {
   LayoutDashboard,
   HeartHandshake,
@@ -19,6 +18,7 @@ import {
   X,
   Globe,
 } from 'lucide-react';
+import Logo from '../Logo';
 
 interface SupportLayoutProps {
   children: ReactNode;
@@ -158,7 +158,7 @@ export default function SupportLayout({ children }: SupportLayoutProps) {
           {/* Logo */}
           <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
             <Link href="/support" className="flex items-center gap-2">
-              <LogoBlack width={32} height={32} />
+              <Logo accentStroke='lightgray' mainStroke='gray' width={32} height={32} />
               <span className="font-bold text-lg text-gray-900">{t('support.title')}</span>
             </Link>
             <button

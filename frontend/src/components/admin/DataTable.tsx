@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/context/LanguageContext';
 import {
@@ -60,7 +61,18 @@ export default function DataTable<T extends { id: number | string }>({
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeDropdown, setActiveDropdown] = useState<string | number | null>(null);
+  const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number } | null>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const buttonRefs = useRef<Record<string | number, HTMLButtonElement | null>>({});
+
+  const openDropdown = useCallback((id: string | number) => {
+    const btn = buttonRefs.current[id];
+    if (btn) {
+      const rect = btn.getBoundingClientRect();
+      setDropdownPos({ top: rect.bottom + 4, left: rect.right });
+    }
+    setActiveDropdown(id);
+  }, []);
 
   // Debounced search
   useEffect(() => {
@@ -172,69 +184,68 @@ export default function DataTable<T extends { id: number | string }>({
                   ))}
                   {(onView || onEdit || onDelete) && (
                     <td className="px-4 py-4 text-right">
-                      <div className="relative">
-                        <button
-                          onClick={() =>
-                            setActiveDropdown(activeDropdown === item[idKey] ? null : item[idKey] as string | number)
-                          }
-                          className="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
-                        >
-                          <MoreVertical size={18} className="text-gray-500" />
-                        </button>
-                        <AnimatePresence>
-                          {activeDropdown === item[idKey] && (
-                            <>
-                              <div
-                                className="fixed inset-0 z-10"
-                                onClick={() => setActiveDropdown(null)}
-                              />
-                              <motion.div
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                className="absolute right-0 bottom-full mb-1 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20 overflow-hidden"
+                      <button
+                        ref={(el) => { buttonRefs.current[item[idKey] as string | number] = el; }}
+                        onClick={() =>
+                          activeDropdown === item[idKey] ? setActiveDropdown(null) : openDropdown(item[idKey] as string | number)
+                        }
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <MoreVertical size={18} className="text-gray-500" />
+                      </button>
+                      {activeDropdown === item[idKey] && dropdownPos && createPortal(
+                        <>
+                          <div
+                            className="fixed inset-0 z-[9998]"
+                            onClick={() => setActiveDropdown(null)}
+                          />
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            style={{ top: dropdownPos.top, left: dropdownPos.left }}
+                            className="fixed -translate-x-full w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-[9999]"
+                          >
+                            {onView && (
+                              <button
+                                onClick={() => {
+                                  onView(item);
+                                  setActiveDropdown(null);
+                                }}
+                                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer rounded-t-lg"
                               >
-                                {onView && (
-                                  <button
-                                    onClick={() => {
-                                      onView(item);
-                                      setActiveDropdown(null);
-                                    }}
-                                    className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
-                                  >
-                                    <Eye size={16} />
-                                    {t('admin.table.view')}
-                                  </button>
-                                )}
-                                {onEdit && (
-                                  <button
-                                    onClick={() => {
-                                      onEdit(item);
-                                      setActiveDropdown(null);
-                                    }}
-                                    className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
-                                  >
-                                    <Edit size={16} />
-                                    {t('admin.table.edit')}
-                                  </button>
-                                )}
-                                {onDelete && (
-                                  <button
-                                    onClick={() => {
-                                      onDelete(item);
-                                      setActiveDropdown(null);
-                                    }}
-                                    className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
-                                  >
-                                    <Trash2 size={16} />
-                                    {t('admin.table.delete')}
-                                  </button>
-                                )}
-                              </motion.div>
-                            </>
-                          )}
-                        </AnimatePresence>
-                      </div>
+                                <Eye size={16} />
+                                {t('admin.table.view')}
+                              </button>
+                            )}
+                            {onEdit && (
+                              <button
+                                onClick={() => {
+                                  onEdit(item);
+                                  setActiveDropdown(null);
+                                }}
+                                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
+                              >
+                                <Edit size={16} />
+                                {t('admin.table.edit')}
+                              </button>
+                            )}
+                            {onDelete && (
+                              <button
+                                onClick={() => {
+                                  onDelete(item);
+                                  setActiveDropdown(null);
+                                }}
+                                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 cursor-pointer rounded-b-lg"
+                              >
+                                <Trash2 size={16} />
+                                {t('admin.table.delete')}
+                              </button>
+                            )}
+                          </motion.div>
+                        </>,
+                        document.body
+                      )}
                     </td>
                   )}
                 </tr>

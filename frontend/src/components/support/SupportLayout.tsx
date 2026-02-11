@@ -16,7 +16,7 @@ import {
   ChevronRight,
   Menu,
   X,
-  Globe,
+  Settings,
 } from 'lucide-react';
 import Logo from '../Logo';
 
@@ -29,7 +29,7 @@ const navItems = [
   { key: 'tickets', href: '/support/tickets', icon: MessageSquare },
   { key: 'careGivers', href: '/support/care-givers', icon: HeartHandshake },
   { key: 'careRecipients', href: '/support/care-recipients', icon: UserCheck },
-  { key: 'settings', href: '/support/settings', icon: Globe },
+  { key: 'settings', href: '/support/settings', icon: Settings },
 ];
 
 export default function SupportLayout({ children }: SupportLayoutProps) {

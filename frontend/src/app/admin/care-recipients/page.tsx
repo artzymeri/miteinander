@@ -77,11 +77,15 @@ export default function CareRecipientsPage() {
       label: t('admin.fields.name'),
       render: (item: CareRecipient) => (
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
-            <span className="text-purple-700 font-medium text-xs">
-              {item.firstName[0]}{item.lastName[0]}
-            </span>
-          </div>
+          {item.profileImageUrl ? (
+            <img src={item.profileImageUrl} alt="" className="w-8 h-8 rounded-full object-cover" />
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+              <span className="text-purple-700 font-medium text-xs">
+                {item.firstName[0]}{item.lastName[0]}
+              </span>
+            </div>
+          )}
           <span className="font-medium">{item.firstName} {item.lastName}</span>
         </div>
       ),

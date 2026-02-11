@@ -33,8 +33,8 @@ const navItems = [
   { key: 'supportTickets', href: '/admin/support-tickets', icon: MessageSquare },
   { key: 'careGivers', href: '/admin/care-givers', icon: HeartHandshake },
   { key: 'careRecipients', href: '/admin/care-recipients', icon: UserCheck },
-  { key: 'configurations', href: '/admin/configurations', icon: Settings },
-  { key: 'settings', href: '/admin/settings', icon: Globe },
+  { key: 'configurations', href: '/admin/configurations', icon: Globe },
+  { key: 'settings', href: '/admin/settings', icon: Settings },
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {

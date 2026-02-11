@@ -25,9 +25,9 @@ export const metadata: Metadata = {
   keywords: "Pflege, Seniorenbetreuung, Pflegekräfte, Deutschland, häusliche Pflege, Betreuung",
   authors: [{ name: "Miteinander" }],
   icons: {
-    icon: "/logo.svg",
-    shortcut: "/logo.svg",
-    apple: "/logo.svg",
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
   },
   openGraph: {
     title: "Miteinander | Die Plattform, die verbindet",

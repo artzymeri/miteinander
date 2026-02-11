@@ -197,6 +197,7 @@ export interface CareGiver {
   email: string;
   phone: string | null;
   city: string | null;
+  profileImageUrl: string | null;
   isActive: boolean;
   isVerified: boolean;
   createdAt: string;
@@ -210,6 +211,7 @@ export interface CareRecipient {
   email: string;
   phone: string | null;
   city: string | null;
+  profileImageUrl: string | null;
   isActive: boolean;
   createdAt: string;
   lastLoginAt: string | null;

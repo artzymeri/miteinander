@@ -17,6 +17,9 @@
     "20260203000015_create_support_tickets_table.js",
     "20260203000016_add_email_verification_fields.js",
     "20260203000017_add_settlement_system.js",
-    "20260203000018_create_notifications_and_reviews.js"
+    "20260203000018_create_notifications_and_reviews.js",
+    "20260203000019_add_reset_password_fields.js",
+    "20260203000020_add_subscription_fields.js",
+    "20260203000021_add_subscription_ends_at.js"
   ]
 }

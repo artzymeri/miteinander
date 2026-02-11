@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, UserPlus } from 'lucide-react';
 import { useTranslation } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
-import { LogoBlack } from '@/components/Logo';
+import Logo from '@/components/Logo';
 
 export default function LoginPage() {
   const { t } = useTranslation();
@@ -43,6 +43,12 @@ export default function LoginPage() {
       const result = await login(email, password);
       
       if (result.success && result.role) {
+        // If subscription is required, redirect to plans page
+        if (result.subscriptionRequired) {
+          router.push('/plans');
+          return;
+        }
+
         // Redirect based on role returned from API
         if (result.role === 'admin') {
           router.push('/admin');
@@ -92,7 +98,7 @@ export default function LoginPage() {
           <div className="flex items-center justify-between h-16">
             {/* Logo - far left */}
             <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
-              <LogoBlack width={48} height={40} className="w-10 h-8 sm:w-12 sm:h-10" />
+              <Logo mainStroke="orangered" accentStroke="orangered" width={48} height={40} className="w-10 h-8 sm:w-12 sm:h-10" />
             </Link>
             
             {/* Register button - filled style */}

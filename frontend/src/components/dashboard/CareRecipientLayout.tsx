@@ -63,23 +63,34 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
   const notifRef = useRef<HTMLDivElement>(null);
   const mobileNotifRef = useRef<HTMLDivElement>(null);
 
+  // Compute subscription access synchronously
+  const subscriptionStatus = user?.subscriptionStatus;
+  const hasSubscriptionAccess = isAuthenticated && user?.role === 'care_recipient' && (
+    subscriptionStatus === 'active' ||
+    subscriptionStatus === 'trial'
+  );
+
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (isLoading) return;
+
+    if (!isAuthenticated) {
       router.push('/login');
+      return;
     }
-    if (!isLoading && user && user.role !== 'care_recipient') {
-      // Redirect to appropriate dashboard based on role
-      if (user.role === 'admin') {
-        router.push('/admin');
-      } else if (user.role === 'support') {
-        router.push('/support');
-      } else if (user.role === 'care_giver') {
-        router.push('/caregiver');
-      } else {
-        router.push('/');
-      }
+
+    if (user && user.role !== 'care_recipient') {
+      if (user.role === 'admin') router.push('/admin');
+      else if (user.role === 'support') router.push('/support');
+      else if (user.role === 'care_giver') router.push('/caregiver');
+      else router.push('/');
+      return;
     }
-  }, [isLoading, isAuthenticated, user, router]);
+
+    // Redirect to plans page if subscription is not valid
+    if (user?.role === 'care_recipient' && !hasSubscriptionAccess) {
+      router.push('/plans');
+    }
+  }, [isLoading, isAuthenticated, user, router, hasSubscriptionAccess]);
 
   useEffect(() => {
     const fetchSettledStatus = async () => {
@@ -202,8 +213,13 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
     );
   }
 
-  if (!isAuthenticated || user?.role !== 'care_recipient') {
-    return null;
+  // Block ALL dashboard content if not authenticated, wrong role, or no subscription access
+  if (!isAuthenticated || user?.role !== 'care_recipient' || !hasSubscriptionAccess) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500" />
+      </div>
+    );
   }
 
   const handleLogout = () => {

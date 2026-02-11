@@ -97,6 +97,32 @@
     "invalidCredentials": "Invalid email or password",
     "emailNotVerified": "Your email has not been verified yet. Please check your inbox."
   },
+  "forgotPassword": {
+    "title": "Forgot your password?",
+    "subtitle": "Enter your email address and we'll send you a code to reset your password.",
+    "sendCode": "Send reset code",
+    "sendFailed": "Failed to send reset code. Please try again.",
+    "checkEmail": "Check your email",
+    "codeSent": "We've sent a 6-digit code to",
+    "enterAllDigits": "Please enter all 6 digits",
+    "verifyCode": "Continue",
+    "invalidCode": "Invalid reset code. Please try again.",
+    "codeExpired": "Reset code has expired. Please request a new one.",
+    "noCode": "Didn't receive the code?",
+    "resendCode": "Resend code",
+    "resendIn": "Resend in",
+    "changeEmail": "Change email address",
+    "newPasswordTitle": "Set new password",
+    "newPasswordSubtitle": "Choose a strong password with at least 8 characters.",
+    "newPassword": "New password",
+    "newPasswordPlaceholder": "Enter new password",
+    "confirmPasswordPlaceholder": "Confirm new password",
+    "resetPassword": "Reset password",
+    "resetFailed": "Failed to reset password. Please try again.",
+    "successTitle": "Password reset!",
+    "successMessage": "Your password has been reset successfully. You will be redirected to the login page.",
+    "backToLogin": "Back to login"
+  },
   "register": {
     "welcome": "Welcome to Miteinander",
     "chooseRole": "Choose how you want to use our platform",
@@ -751,7 +777,10 @@
       "submitReview": "Submit Review",
       "reviewSubmitted": "Thank you for your review!",
       "noReviews": "No reviews yet",
-      "ratingRequired": "Please select a rating"
+      "ratingRequired": "Please select a rating",
+      "reviewNotSettled": "You can leave a review after being settled with this caregiver for at least 24 hours.",
+      "reviewTooEarly": "You can leave a review after 24 hours of being settled with this caregiver.",
+      "reviewCountdown": "Review available in"
     }
   },
   "messages": {
@@ -837,7 +866,14 @@
     "title": "Settings",
     "subtitle": "Manage your preferences",
     "language": "Language",
-    "languageDesc": "Choose your preferred language for the interface"
+    "languageDesc": "Choose your preferred language for the interface",
+    "subscriptionActive": "Active subscription",
+    "subscriptionTrial": "Free trial",
+    "subscriptionNone": "No active subscription",
+    "subscriptionCanceling": "Subscription ending soon",
+    "subscriptionEndsOn": "Your subscription ends on {{date}} ({{days}} days remaining)",
+    "cancelingInfo": "Your subscription has been canceled",
+    "cancelingDesc": "You can continue using all features until your current billing period ends. After that, you'll need to resubscribe."
   },
   "verification": {
     "title": "Verify your email",
@@ -902,5 +938,36 @@
     "justNow": "Just now",
     "rateCaregiver": "Rate your caregiver",
     "rateMessage": "You can now rate your caregiver. Share your experience!"
+  },
+  "plans": {
+    "choosePlan": "Choose your plan",
+    "subscriptionRequired": "Subscription required",
+    "title": "Unlock the full Miteinander experience",
+    "subtitle": "Choose a plan to continue using all features.",
+    "trialExpiredDesc": "Your free trial has ended. Choose a plan to regain access to your account.",
+    "recipientDesc": "To start using Miteinander, please choose a subscription plan.",
+    "trialActive": "Your free trial is active — {{days}} days remaining",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "perMonth": "month",
+    "perYear": "year",
+    "selected": "Selected",
+    "bestValue": "Best value",
+    "discount": "Discount",
+    "feature1": "Unlimited messaging",
+    "feature2": "Full profile access",
+    "feature3": "Priority support",
+    "feature4": "All platform features",
+    "subscribe": "Continue to payment",
+    "processing": "Processing...",
+    "securePayment": "Secure payment powered by Stripe. Cancel anytime.",
+    "error": "Something went wrong. Please try again.",
+    "verifying": "Verifying your payment...",
+    "successTitle": "Subscription activated! 🎉",
+    "successDesc": "Your subscription is now active. You have full access to all Miteinander features.",
+    "pendingTitle": "Payment received",
+    "pendingDesc": "Your payment is being processed. You can start using the platform.",
+    "goToDashboard": "Go to dashboard",
+    "manageSubscription": "Manage subscription"
   }
 }

@@ -332,7 +332,7 @@ export default function CareGiverDashboard() {
                           <p className={`font-medium text-gray-900 ${conv.unreadCount > 0 ? 'font-bold' : ''}`}>{displayName}</p>
                           <p className="text-xs text-gray-400">{conv.lastMessage ? formatTimeAgo(conv.lastMessage.createdAt) : ''}</p>
                         </div>
-                        <p className="text-sm text-gray-600 truncate">{conv.lastMessage?.content || t('common.noMessages') || 'No messages yet'}</p>
+                        <p className="text-sm text-gray-600 truncate">{conv.lastMessage?.content || t('messages.noMessages') || 'No messages yet'}</p>
                       </div>
                       {conv.unreadCount > 0 && (
                         <span className="bg-amber-500 text-white text-xs font-medium rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 mt-1">
@@ -345,7 +345,7 @@ export default function CareGiverDashboard() {
               ) : (
                 <div className="text-center py-8 text-gray-400">
                   <MessageSquare className="w-10 h-10 mx-auto mb-2 text-gray-300" />
-                  <p className="text-sm">{t('common.noMessages') || 'No messages yet'}</p>
+                  <p className="text-sm">{t('messages.noMessages') || 'No messages yet'}</p>
                 </div>
               )}
               <button 

@@ -140,6 +140,46 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       field: 'settled_at',
     },
+    resetPasswordCode: {
+      type: DataTypes.STRING(6),
+      allowNull: true,
+      field: 'reset_password_code',
+    },
+    resetPasswordCodeExpiresAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      field: 'reset_password_code_expires_at',
+    },
+    stripeCustomerId: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      field: 'stripe_customer_id',
+    },
+    subscriptionStatus: {
+      type: DataTypes.ENUM('trial', 'active', 'past_due', 'canceled', 'none'),
+      defaultValue: 'none',
+      field: 'subscription_status',
+    },
+    subscriptionId: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      field: 'subscription_id',
+    },
+    trialEndsAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      field: 'trial_ends_at',
+    },
+    subscriptionEndsAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      field: 'subscription_ends_at',
+    },
+    trialReminderSent: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      field: 'trial_reminder_sent',
+    },
     lastLoginAt: {
       type: DataTypes.DATE,
       allowNull: true,
@@ -173,6 +213,9 @@ module.exports = (sequelize, DataTypes) => {
     delete values.password;
     delete values.verificationCode;
     delete values.verificationCodeExpiresAt;
+    delete values.resetPasswordCode;
+    delete values.resetPasswordCodeExpiresAt;
+    delete values.stripeCustomerId;
     return values;
   };
 

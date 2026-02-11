@@ -19,9 +19,11 @@ import {
   Globe,
   Handshake,
   Loader2,
+  CreditCard,
 } from 'lucide-react';
 import ImageCropper from '@/components/shared/ImageCropper';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import SubscriptionTab from '@/components/shared/SubscriptionTab';
 
 interface CareNeed {
   id: number;
@@ -57,7 +59,7 @@ interface Profile {
   } | null;
 }
 
-type SettingsTab = 'profile' | 'careNeeds' | 'password' | 'email' | 'settlement' | 'language';
+type SettingsTab = 'profile' | 'careNeeds' | 'password' | 'email' | 'settlement' | 'subscription' | 'language';
 
 export default function CareRecipientSettingsPage() {
   const { t, language } = useTranslation();
@@ -404,6 +406,7 @@ export default function CareRecipientSettingsPage() {
     { key: 'settlement' as SettingsTab, label: t('settlement.tabTitle'), icon: Handshake },
     { key: 'password' as SettingsTab, label: t('recipient.settings.tabs.password'), icon: Lock },
     { key: 'email' as SettingsTab, label: t('recipient.settings.tabs.email'), icon: Mail },
+    { key: 'subscription' as SettingsTab, label: t('plans.manageSubscription'), icon: CreditCard },
     { key: 'language' as SettingsTab, label: t('settings.language'), icon: Globe },
   ];
 
@@ -886,6 +889,11 @@ export default function CareRecipientSettingsPage() {
                 </div>
               )}
             </div>
+          )}
+
+          {/* Subscription Tab */}
+          {activeTab === 'subscription' && (
+            <SubscriptionTab />
           )}
 
           {/* Language Tab */}

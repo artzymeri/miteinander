@@ -1,7 +1,7 @@
 const models = require('../models');
 const { generateToken } = require('../utils/jwt');
 const { successResponse, errorResponse, USER_ROLES, getModelByRole } = require('../utils/helpers');
-const { generateVerificationCode, sendVerificationEmail, sendWelcomeEmail } = require('../utils/email');
+const { generateVerificationCode, sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail } = require('../utils/email');
 
 const { CareNeed } = models;
 
@@ -72,13 +72,26 @@ const register = async (req, res, next) => {
     }
 
     // Create user
-    const user = await Model.create({
+    const userData = {
       email,
       password,
       firstName,
       lastName,
       ...additionalData,
-    });
+    };
+
+    // Set trial for caregivers: 7-day free trial
+    if (role === USER_ROLES.CARE_GIVER) {
+      userData.subscriptionStatus = 'trial';
+      userData.trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+    }
+
+    // Care recipients have no trial — status defaults to 'none' (must choose plan)
+    if (role === USER_ROLES.CARE_RECIPIENT) {
+      userData.subscriptionStatus = 'none';
+    }
+
+    const user = await Model.create(userData);
     
     // Generate and send email verification code
     const verificationCode = generateVerificationCode();
@@ -180,6 +193,9 @@ const verifyEmail = async (req, res, next) => {
       user: foundUser.toJSON(),
       token,
       role: userRole,
+      subscriptionStatus: foundUser.subscriptionStatus || 'none',
+      trialEndsAt: foundUser.trialEndsAt || null,
+      subscriptionEndsAt: foundUser.subscriptionEndsAt || null,
     }, 'Email verified successfully');
   } catch (error) {
     next(error);
@@ -316,6 +332,43 @@ const login = async (req, res, next) => {
       email: foundUser.email,
       role: userRole,
     });
+
+    // Check subscription status for care_giver and care_recipient
+    if (userRole === USER_ROLES.CARE_GIVER || userRole === USER_ROLES.CARE_RECIPIENT) {
+      let subStatus = foundUser.subscriptionStatus || 'none';
+
+      // For caregivers on trial, check if trial expired
+      if (subStatus === 'trial' && foundUser.trialEndsAt) {
+        if (new Date() > new Date(foundUser.trialEndsAt)) {
+          subStatus = 'expired';
+        }
+      }
+
+      // If subscription is not active AND (trial expired or care_recipient with 'none'),
+      // return SUBSCRIPTION_REQUIRED so frontend redirects to plans page
+      if (subStatus === 'expired' || subStatus === 'canceled' || 
+          (subStatus === 'none' && userRole === USER_ROLES.CARE_RECIPIENT)) {
+        return successResponse(res, {
+          user: foundUser.toJSON(),
+          token,
+          role: userRole,
+          subscriptionStatus: subStatus,
+          trialEndsAt: foundUser.trialEndsAt || null,
+          subscriptionEndsAt: foundUser.subscriptionEndsAt || null,
+          subscriptionRequired: true,
+        }, 'Login successful — subscription required');
+      }
+
+      // Otherwise return normal login with subscription info
+      return successResponse(res, {
+        user: foundUser.toJSON(),
+        token,
+        role: userRole,
+        subscriptionStatus: subStatus,
+        trialEndsAt: foundUser.trialEndsAt || null,
+        subscriptionEndsAt: foundUser.subscriptionEndsAt || null,
+      }, 'Login successful');
+    }
     
     return successResponse(res, {
       user: foundUser.toJSON(),
@@ -410,6 +463,124 @@ const getCareNeeds = async (req, res, next) => {
   }
 };
 
+/**
+ * Forgot password — send reset code to email
+ * POST /api/auth/forgot-password
+ * Body: { email: string }
+ */
+const forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return errorResponse(res, 'Email is required', 400, 'MISSING_FIELDS');
+    }
+
+    const { Admin, Support, CareGiver, CareRecipient } = models;
+
+    const userTables = [
+      { model: Admin, role: USER_ROLES.ADMIN },
+      { model: Support, role: USER_ROLES.SUPPORT },
+      { model: CareGiver, role: USER_ROLES.CARE_GIVER },
+      { model: CareRecipient, role: USER_ROLES.CARE_RECIPIENT },
+    ];
+
+    let foundUser = null;
+
+    for (const { model } of userTables) {
+      const user = await model.findOne({ where: { email } });
+      if (user) {
+        foundUser = user;
+        break;
+      }
+    }
+
+    // Always return success to prevent email enumeration
+    if (!foundUser) {
+      return successResponse(res, null, 'If the email exists, a reset code has been sent');
+    }
+
+    // Generate code and save
+    const resetCode = generateVerificationCode();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+    await foundUser.update({
+      resetPasswordCode: resetCode,
+      resetPasswordCodeExpiresAt: expiresAt,
+    });
+
+    // Send email (non-blocking for the response, but we await to ensure it's sent)
+    sendPasswordResetEmail(email, foundUser.firstName, resetCode).catch(err => {
+      console.error('Failed to send password reset email:', err);
+    });
+
+    return successResponse(res, null, 'If the email exists, a reset code has been sent');
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Reset password with code
+ * POST /api/auth/reset-password
+ * Body: { email: string, code: string, newPassword: string }
+ */
+const resetPassword = async (req, res, next) => {
+  try {
+    const { email, code, newPassword } = req.body;
+
+    if (!email || !code || !newPassword) {
+      return errorResponse(res, 'Email, code, and new password are required', 400, 'MISSING_FIELDS');
+    }
+
+    if (newPassword.length < 8) {
+      return errorResponse(res, 'Password must be at least 8 characters', 400, 'PASSWORD_TOO_SHORT');
+    }
+
+    const { Admin, Support, CareGiver, CareRecipient } = models;
+
+    const userTables = [
+      { model: Admin, role: USER_ROLES.ADMIN },
+      { model: Support, role: USER_ROLES.SUPPORT },
+      { model: CareGiver, role: USER_ROLES.CARE_GIVER },
+      { model: CareRecipient, role: USER_ROLES.CARE_RECIPIENT },
+    ];
+
+    let foundUser = null;
+
+    for (const { model } of userTables) {
+      const user = await model.findOne({ where: { email } });
+      if (user) {
+        foundUser = user;
+        break;
+      }
+    }
+
+    if (!foundUser) {
+      return errorResponse(res, 'Invalid email or code', 400, 'INVALID_CODE');
+    }
+
+    if (!foundUser.resetPasswordCode || foundUser.resetPasswordCode !== code) {
+      return errorResponse(res, 'Invalid reset code', 400, 'INVALID_CODE');
+    }
+
+    if (new Date() > new Date(foundUser.resetPasswordCodeExpiresAt)) {
+      return errorResponse(res, 'Reset code has expired', 400, 'CODE_EXPIRED');
+    }
+
+    // Update password and clear reset fields
+    await foundUser.update({
+      password: newPassword,
+      resetPasswordCode: null,
+      resetPasswordCodeExpiresAt: null,
+    });
+
+    return successResponse(res, null, 'Password reset successfully');
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   verifyEmail,
@@ -419,4 +590,6 @@ module.exports = {
   updateProfile,
   changePassword,
   getCareNeeds,
+  forgotPassword,
+  resetPassword,
 };

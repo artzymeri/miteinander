@@ -21,7 +21,7 @@ interface LanguageContextType {
   locale: Locale;
   language: Locale;
   setLocale: (locale: Locale) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string | number>) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -47,7 +47,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   // Translation function - supports nested keys like "nav.howItWorks"
-  const t = (key: string): string => {
+  // Also supports interpolation: t('key', { name: 'John' }) replaces {{name}} with John
+  const t = (key: string, params?: Record<string, string | number>): string => {
     const keys = key.split('.');
     let value: unknown = translations[locale];
     
@@ -60,7 +61,16 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       }
     }
     
-    return typeof value === 'string' ? value : key;
+    let result = typeof value === 'string' ? value : key;
+
+    // Interpolate params like {{days}}
+    if (params) {
+      for (const [paramKey, paramValue] of Object.entries(params)) {
+        result = result.replace(new RegExp(`\\{\\{${paramKey}\\}\\}`, 'g'), String(paramValue));
+      }
+    }
+
+    return result;
   };
 
   // Prevent hydration mismatch by showing nothing until hydrated

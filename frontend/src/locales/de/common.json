@@ -97,6 +97,32 @@
     "invalidCredentials": "Ungültige E-Mail oder Passwort",
     "emailNotVerified": "Ihre E-Mail-Adresse wurde noch nicht bestätigt. Bitte überprüfen Sie Ihr Postfach."
   },
+  "forgotPassword": {
+    "title": "Passwort vergessen?",
+    "subtitle": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Code zur Zurücksetzung Ihres Passworts.",
+    "sendCode": "Code senden",
+    "sendFailed": "Code konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+    "checkEmail": "Prüfen Sie Ihre E-Mail",
+    "codeSent": "Wir haben einen 6-stelligen Code gesendet an",
+    "enterAllDigits": "Bitte geben Sie alle 6 Ziffern ein",
+    "verifyCode": "Weiter",
+    "invalidCode": "Ungültiger Code. Bitte versuchen Sie es erneut.",
+    "codeExpired": "Der Code ist abgelaufen. Bitte fordern Sie einen neuen an.",
+    "noCode": "Keinen Code erhalten?",
+    "resendCode": "Code erneut senden",
+    "resendIn": "Erneut senden in",
+    "changeEmail": "E-Mail-Adresse ändern",
+    "newPasswordTitle": "Neues Passwort festlegen",
+    "newPasswordSubtitle": "Wählen Sie ein starkes Passwort mit mindestens 8 Zeichen.",
+    "newPassword": "Neues Passwort",
+    "newPasswordPlaceholder": "Neues Passwort eingeben",
+    "confirmPasswordPlaceholder": "Neues Passwort bestätigen",
+    "resetPassword": "Passwort zurücksetzen",
+    "resetFailed": "Passwort konnte nicht zurückgesetzt werden. Bitte versuchen Sie es erneut.",
+    "successTitle": "Passwort zurückgesetzt!",
+    "successMessage": "Ihr Passwort wurde erfolgreich zurückgesetzt. Sie werden zur Anmeldeseite weitergeleitet.",
+    "backToLogin": "Zurück zur Anmeldung"
+  },
   "register": {
     "welcome": "Willkommen bei Miteinander",
     "chooseRole": "Wählen Sie aus, wie Sie unsere Plattform nutzen möchten",
@@ -751,7 +777,10 @@
       "submitReview": "Bewertung absenden",
       "reviewSubmitted": "Vielen Dank für Ihre Bewertung!",
       "noReviews": "Noch keine Bewertungen",
-      "ratingRequired": "Bitte wählen Sie eine Bewertung"
+      "ratingRequired": "Bitte wählen Sie eine Bewertung",
+      "reviewNotSettled": "Sie können eine Bewertung abgeben, nachdem Sie mindestens 24 Stunden mit dieser Pflegekraft vermittelt sind.",
+      "reviewTooEarly": "Sie können eine Bewertung abgeben, nachdem Sie 24 Stunden mit dieser Pflegekraft vermittelt sind.",
+      "reviewCountdown": "Bewertung verfügbar in"
     }
   },
   "messages": {
@@ -837,7 +866,14 @@
     "title": "Einstellungen",
     "subtitle": "Verwalten Sie Ihre Präferenzen",
     "language": "Sprache",
-    "languageDesc": "Wählen Sie Ihre bevorzugte Sprache für die Oberfläche"
+    "languageDesc": "Wählen Sie Ihre bevorzugte Sprache für die Benutzeroberfläche",
+    "subscriptionActive": "Aktives Abonnement",
+    "subscriptionTrial": "Kostenlose Testphase",
+    "subscriptionNone": "Kein aktives Abonnement",
+    "subscriptionCanceling": "Abonnement endet bald",
+    "subscriptionEndsOn": "Ihr Abonnement endet am {{date}} (noch {{days}} Tage)",
+    "cancelingInfo": "Ihr Abonnement wurde gekündigt",
+    "cancelingDesc": "Sie können alle Funktionen bis zum Ende Ihres aktuellen Abrechnungszeitraums weiterhin nutzen. Danach müssen Sie sich erneut anmelden."
   },
   "verification": {
     "title": "E-Mail bestätigen",
@@ -902,5 +938,36 @@
     "justNow": "Gerade eben",
     "rateCaregiver": "Bewerten Sie Ihre Pflegekraft",
     "rateMessage": "Sie können jetzt Ihre Pflegekraft bewerten. Teilen Sie Ihre Erfahrung!"
+  },
+  "plans": {
+    "choosePlan": "Wählen Sie Ihren Plan",
+    "subscriptionRequired": "Abonnement erforderlich",
+    "title": "Erleben Sie Miteinander in vollem Umfang",
+    "subtitle": "Wählen Sie einen Plan, um alle Funktionen weiter nutzen zu können.",
+    "trialExpiredDesc": "Ihre kostenlose Testphase ist abgelaufen. Wählen Sie einen Plan, um wieder Zugang zu Ihrem Konto zu erhalten.",
+    "recipientDesc": "Um Miteinander nutzen zu können, wählen Sie bitte einen Abonnement-Plan.",
+    "trialActive": "Ihre kostenlose Testphase ist aktiv — noch {{days}} Tage übrig",
+    "monthly": "Monatlich",
+    "yearly": "Jährlich",
+    "perMonth": "Monat",
+    "perYear": "Jahr",
+    "selected": "Ausgewählt",
+    "bestValue": "Bestes Angebot",
+    "discount": "Rabatt",
+    "feature1": "Unbegrenzte Nachrichten",
+    "feature2": "Voller Profilzugriff",
+    "feature3": "Prioritäts-Support",
+    "feature4": "Alle Plattform-Funktionen",
+    "subscribe": "Weiter zur Zahlung",
+    "processing": "Wird verarbeitet...",
+    "securePayment": "Sichere Zahlung über Stripe. Jederzeit kündbar.",
+    "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "verifying": "Zahlung wird überprüft...",
+    "successTitle": "Abonnement aktiviert! 🎉",
+    "successDesc": "Ihr Abonnement ist jetzt aktiv. Sie haben vollen Zugriff auf alle Miteinander-Funktionen.",
+    "pendingTitle": "Zahlung erhalten",
+    "pendingDesc": "Ihre Zahlung wird verarbeitet. Sie können die Plattform jetzt nutzen.",
+    "goToDashboard": "Zum Dashboard",
+    "manageSubscription": "Abonnement verwalten"
   }
 }

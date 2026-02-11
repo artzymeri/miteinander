@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft,
@@ -17,6 +17,7 @@ import {
   X,
   Send,
   MessageCircle,
+  Info,
 } from 'lucide-react';
 import { useTranslation } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -65,6 +66,35 @@ interface ReviewData {
   };
 }
 
+/** Small countdown that ticks every second until the 24-hour mark. */
+function ReviewCountdown({ settledAt, label }: { settledAt: string; label: string }) {
+  const calcRemaining = useCallback(() => {
+    const target = new Date(settledAt).getTime() + 24 * 60 * 60 * 1000;
+    return Math.max(0, target - Date.now());
+  }, [settledAt]);
+
+  const [remaining, setRemaining] = useState(calcRemaining);
+
+  useEffect(() => {
+    const id = setInterval(() => setRemaining(calcRemaining()), 1000);
+    return () => clearInterval(id);
+  }, [calcRemaining]);
+
+  if (remaining <= 0) return null;
+
+  const hrs = Math.floor(remaining / 3_600_000);
+  const mins = Math.floor((remaining % 3_600_000) / 60_000);
+  const secs = Math.floor((remaining % 60_000) / 1000);
+
+  const pad = (n: number) => String(n).padStart(2, '0');
+
+  return (
+    <p className="text-xs text-amber-500/70 mt-1.5 tabular-nums">
+      {label} {pad(hrs)}:{pad(mins)}:{pad(secs)}
+    </p>
+  );
+}
+
 export default function CaregiverProfilePage() {
   const { t, language } = useTranslation();
   const { token } = useAuth();
@@ -87,6 +117,10 @@ export default function CaregiverProfilePage() {
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [reviewError, setReviewError] = useState<string | null>(null);
   const [reviewSuccess, setReviewSuccess] = useState(false);
+
+  // Settlement status (for review eligibility)
+  const [isSettledWithThisCaregiver, setIsSettledWithThisCaregiver] = useState(false);
+  const [settledAt, setSettledAt] = useState<string | null>(null);
 
   const BIO_LIMIT = 700;
 
@@ -118,6 +152,34 @@ export default function CaregiverProfilePage() {
 
     if (caregiverId && token) {
       fetchCaregiver();
+    }
+  }, [caregiverId, token]);
+
+  // Fetch recipient's settlement status
+  useEffect(() => {
+    const fetchSettlementStatus = async () => {
+      try {
+        const response = await fetch(`${API_URL}/recipient/profile`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          const profile = data.data;
+          if (profile.isSettled && profile.settledWithCaregiver?.id === Number(caregiverId)) {
+            setIsSettledWithThisCaregiver(true);
+            setSettledAt(profile.settledAt);
+          } else {
+            setIsSettledWithThisCaregiver(false);
+            setSettledAt(null);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch settlement status:', err);
+      }
+    };
+
+    if (caregiverId && token) {
+      fetchSettlementStatus();
     }
   }, [caregiverId, token]);
 
@@ -525,70 +587,113 @@ export default function CaregiverProfilePage() {
           </h2>
 
           {/* Submit Review Form (only if settled with this caregiver & not yet reviewed) */}
-          {!hasReviewed && !reviewSuccess && (
-            <div className="mb-6 p-5 bg-gray-50 rounded-xl border border-gray-100">
-              <h3 className="text-sm font-semibold text-gray-900 mb-3">
-                {t('recipient.caregiverProfile.leaveReview') || 'Leave a Review'}
-              </h3>
+          {!hasReviewed && !reviewSuccess && (() => {
+            // Determine review eligibility
+            const isSettledLongEnough = isSettledWithThisCaregiver && settledAt
+              ? (new Date().getTime() - new Date(settledAt).getTime()) >= 24 * 60 * 60 * 1000
+              : false;
+            const canReview = isSettledWithThisCaregiver && isSettledLongEnough;
 
-              {/* Star rating */}
-              <div className="flex items-center gap-1 mb-3">
-                {[1, 2, 3, 4, 5].map(star => (
-                  <button
-                    key={star}
-                    type="button"
-                    onClick={() => setReviewRating(star)}
-                    onMouseEnter={() => setReviewHover(star)}
-                    onMouseLeave={() => setReviewHover(0)}
-                    className="p-0.5 cursor-pointer transition-transform hover:scale-110"
-                  >
-                    <Star
-                      className={`w-7 h-7 transition-colors ${
-                        star <= (reviewHover || reviewRating)
-                          ? 'text-amber-400 fill-amber-400'
-                          : 'text-gray-300'
-                      }`}
-                    />
-                  </button>
-                ))}
-                {reviewRating > 0 && (
-                  <span className="ml-2 text-sm text-gray-500">
-                    {reviewRating}/5
-                  </span>
+            // Not settled with this caregiver at all
+            if (!isSettledWithThisCaregiver) {
+              return (
+                <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3">
+                  <Info className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-amber-800">
+                      {t('recipient.caregiverProfile.reviewNotSettled') || 'You must be settled with this caregiver to leave a review.'}
+                    </p>
+                  </div>
+                </div>
+              );
+            }
+
+            // Settled but less than 24 hours
+            if (!isSettledLongEnough) {
+              return (
+                <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3">
+                  <Info className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-amber-800">
+                      {t('recipient.caregiverProfile.reviewTooEarly') || 'You can leave a review after 24 hours of being settled with this caregiver.'}
+                    </p>
+                    {settledAt && (
+                      <ReviewCountdown
+                        settledAt={settledAt}
+                        label={t('recipient.caregiverProfile.reviewCountdown') || 'Review available in'}
+                      />
+                    )}
+                  </div>
+                </div>
+              );
+            }
+
+            // Eligible to review
+            return (
+              <div className="mb-6 p-5 bg-gray-50 rounded-xl border border-gray-100">
+                <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                  {t('recipient.caregiverProfile.leaveReview') || 'Leave a Review'}
+                </h3>
+
+                {/* Star rating */}
+                <div className="flex items-center gap-1 mb-3">
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setReviewRating(star)}
+                      onMouseEnter={() => setReviewHover(star)}
+                      onMouseLeave={() => setReviewHover(0)}
+                      className="p-0.5 cursor-pointer transition-transform hover:scale-110"
+                    >
+                      <Star
+                        className={`w-7 h-7 transition-colors ${
+                          star <= (reviewHover || reviewRating)
+                            ? 'text-amber-400 fill-amber-400'
+                            : 'text-gray-300'
+                        }`}
+                      />
+                    </button>
+                  ))}
+                  {reviewRating > 0 && (
+                    <span className="ml-2 text-sm text-gray-500">
+                      {reviewRating}/5
+                    </span>
+                  )}
+                </div>
+
+                {/* Comment textarea */}
+                <textarea
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  placeholder={t('recipient.caregiverProfile.reviewPlaceholder') || 'Share your experience (optional)...'}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 resize-none"
+                  rows={3}
+                  maxLength={500}
+                />
+                <div className="flex items-center justify-between mt-2">
+                  <span className="text-xs text-gray-400">{reviewComment.length}/500</span>
+                </div>
+
+                {reviewError && (
+                  <p className="text-sm text-red-500 mt-2">{reviewError}</p>
                 )}
+
+                <button
+                  onClick={handleSubmitReview}
+                  disabled={isSubmittingReview || reviewRating === 0}
+                  className="mt-3 flex items-center gap-2 px-5 py-2.5 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors cursor-pointer font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmittingReview ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Send className="w-4 h-4" />
+                  )}
+                  {t('recipient.caregiverProfile.submitReview') || 'Submit Review'}
+                </button>
               </div>
-
-              {/* Comment textarea */}
-              <textarea
-                value={reviewComment}
-                onChange={(e) => setReviewComment(e.target.value)}
-                placeholder={t('recipient.caregiverProfile.reviewPlaceholder') || 'Share your experience (optional)...'}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 resize-none"
-                rows={3}
-                maxLength={500}
-              />
-              <div className="flex items-center justify-between mt-2">
-                <span className="text-xs text-gray-400">{reviewComment.length}/500</span>
-              </div>
-
-              {reviewError && (
-                <p className="text-sm text-red-500 mt-2">{reviewError}</p>
-              )}
-
-              <button
-                onClick={handleSubmitReview}
-                disabled={isSubmittingReview || reviewRating === 0}
-                className="mt-3 flex items-center gap-2 px-5 py-2.5 bg-amber-500 text-white rounded-xl hover:bg-amber-600 transition-colors cursor-pointer font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmittingReview ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Send className="w-4 h-4" />
-                )}
-                {t('recipient.caregiverProfile.submitReview') || 'Submit Review'}
-              </button>
-            </div>
-          )}
+            );
+          })()}
 
           {/* Success message */}
           {reviewSuccess && (

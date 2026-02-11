@@ -42,6 +42,16 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: true,
       field: 'is_active',
     },
+    resetPasswordCode: {
+      type: DataTypes.STRING(6),
+      allowNull: true,
+      field: 'reset_password_code',
+    },
+    resetPasswordCodeExpiresAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      field: 'reset_password_code_expires_at',
+    },
     lastLoginAt: {
       type: DataTypes.DATE,
       allowNull: true,
@@ -73,11 +83,9 @@ module.exports = (sequelize, DataTypes) => {
   Support.prototype.toJSON = function() {
     const values = { ...this.get() };
     delete values.password;
+    delete values.resetPasswordCode;
+    delete values.resetPasswordCodeExpiresAt;
     return values;
-  };
-
-  // Associations
-  Support.associate = (models) => {
     // Add associations here when needed
   };
 

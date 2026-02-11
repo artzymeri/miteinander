@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const routes = require('./routes');
 const { errorHandler, notFoundHandler } = require('./middlewares/errorHandler');
 const config = require('./config/config');
+const { handleWebhook } = require('./controllers/subscriptionController');
 
 const app = express();
 
@@ -19,6 +20,9 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+// Stripe webhook endpoint — MUST be before express.json() to receive raw body
+app.post('/api/subscription/webhook', express.raw({ type: 'application/json' }), handleWebhook);
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));

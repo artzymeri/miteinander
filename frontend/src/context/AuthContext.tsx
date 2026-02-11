@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface User {
   id: number;
@@ -9,16 +10,21 @@ interface User {
   lastName: string;
   role: 'admin' | 'support' | 'care_giver' | 'care_recipient';
   profileImageUrl?: string | null;
+  subscriptionStatus?: 'trial' | 'active' | 'past_due' | 'canceled' | 'none' | 'expired';
+  trialEndsAt?: string | null;
+  subscriptionEndsAt?: string | null;
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; role?: string; code?: string; data?: { email?: string } }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; role?: string; code?: string; data?: { email?: string }; subscriptionRequired?: boolean }>;
   logout: () => void;
   isAuthenticated: boolean;
   updateProfileImage: (imageUrl: string | null) => void;
+  updateSubscriptionStatus: (status: string) => void;
+  handleUnauthorized: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,6 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     // Check for stored auth on mount
@@ -55,8 +62,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const data = await response.json();
 
       if (data.success) {
-        const { token: newToken, user: userData, role } = data.data;
-        const userWithRole = { ...userData, role };
+        const { token: newToken, user: userData, role, subscriptionStatus, trialEndsAt, subscriptionEndsAt, subscriptionRequired } = data.data;
+        const userWithRole = { ...userData, role, subscriptionStatus, trialEndsAt, subscriptionEndsAt };
         
         localStorage.setItem('token', newToken);
         localStorage.setItem('user', JSON.stringify(userWithRole));
@@ -64,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setToken(newToken);
         setUser(userWithRole);
         
-        return { success: true, role };
+        return { success: true, role, subscriptionRequired: !!subscriptionRequired };
       } else {
         return { success: false, error: data.error?.message || 'Login failed', code: data.error?.code, data: data.error?.data };
       }
@@ -81,9 +88,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  // Auto-logout on 401 — called when any API returns unauthorized
+  const handleUnauthorized = useCallback(() => {
+    // Only act if currently logged in to avoid redirect loops
+    if (!token && !localStorage.getItem('token')) return;
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setToken(null);
+    setUser(null);
+    router.push('/login');
+  }, [token, router]);
+
+  // Global fetch interceptor: automatically detect 401 responses
+  useEffect(() => {
+    const originalFetch = window.fetch;
+    window.fetch = async (...args) => {
+      const response = await originalFetch(...args);
+      if (response.status === 401) {
+        // Only auto-logout for our API calls, not third-party requests
+        const url = typeof args[0] === 'string' ? args[0] : (args[0] as Request)?.url || '';
+        if (url.includes('/api/') && !url.includes('/api/auth/login')) {
+          handleUnauthorized();
+        }
+      }
+      return response;
+    };
+    return () => {
+      window.fetch = originalFetch;
+    };
+  }, [handleUnauthorized]);
+
   const updateProfileImage = (imageUrl: string | null) => {
     if (user) {
       const updatedUser = { ...user, profileImageUrl: imageUrl };
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    }
+  };
+
+  const updateSubscriptionStatus = (status: string) => {
+    if (user) {
+      const updatedUser = { ...user, subscriptionStatus: status as User['subscriptionStatus'] };
       setUser(updatedUser);
       localStorage.setItem('user', JSON.stringify(updatedUser));
     }
@@ -99,6 +144,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         isAuthenticated: !!user && !!token,
         updateProfileImage,
+        updateSubscriptionStatus,
+        handleUnauthorized,
       }}
     >
       {children}

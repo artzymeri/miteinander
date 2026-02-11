@@ -8,7 +8,6 @@ import {
   HeartHandshake,
   UserCheck,
   Headphones,
-  TrendingUp,
   Calendar,
   CheckCircle,
 } from 'lucide-react';
@@ -33,7 +32,6 @@ export default function AdminDashboard() {
       color: 'bg-green-500',
       lightColor: 'bg-green-50',
       textColor: 'text-green-600',
-      subtitle: `${analytics.verified.careGivers} ${t('admin.stats.verified')}`,
     },
     {
       title: t('admin.stats.careRecipients'),
@@ -110,16 +108,13 @@ export default function AdminDashboard() {
               </div>
               <p className="text-sm text-gray-500 font-medium">{stat.title}</p>
               <p className="text-3xl font-bold text-gray-900 mt-1">{stat.value}</p>
-              {stat.subtitle && (
-                <p className="text-xs text-gray-400 mt-1">{stat.subtitle}</p>
-              )}
             </motion.div>
           );
         })}
       </div>
 
       {/* Secondary stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -180,27 +175,6 @@ export default function AdminDashboard() {
           </div>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="bg-white rounded-xl p-6 shadow-sm border border-gray-100"
-        >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-blue-50 rounded-lg">
-              <TrendingUp className="text-blue-600" size={20} />
-            </div>
-            <span className="font-medium text-gray-900">{t('admin.stats.verificationRate')}</span>
-          </div>
-          <p className="text-4xl font-bold text-gray-900">
-            {analytics && analytics.totals.careGivers > 0
-              ? Math.round((analytics.verified.careGivers / analytics.totals.careGivers) * 100)
-              : 0}%
-          </p>
-          <p className="text-gray-500 text-sm mt-2">
-            {t('admin.stats.careGiversVerified')}
-          </p>
-        </motion.div>
       </div>
 
       {/* Recent registrations */}
@@ -236,17 +210,6 @@ export default function AdminDashboard() {
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-gray-400">{formatDate(user.createdAt)}</p>
-                    <div className="flex gap-1 mt-1 justify-end">
-                      {user.isVerified ? (
-                        <span className="px-2 py-0.5 text-xs bg-green-100 text-green-700 rounded-full">
-                          {t('admin.status.verified')}
-                        </span>
-                      ) : (
-                        <span className="px-2 py-0.5 text-xs bg-yellow-100 text-yellow-700 rounded-full">
-                          {t('admin.status.pending')}
-                        </span>
-                      )}
-                    </div>
                   </div>
                 </div>
               </div>

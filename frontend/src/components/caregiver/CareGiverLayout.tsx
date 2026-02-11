@@ -43,24 +43,37 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push('/login');
-    }
-    if (!isLoading && user && user.role !== 'care_giver') {
-      // Redirect to appropriate dashboard based on role
-      if (user.role === 'admin') {
-        router.push('/admin');
-      } else if (user.role === 'support') {
-        router.push('/support');
-      } else if (user.role === 'care_recipient') {
-        router.push('/dashboard');
-      } else {
-        router.push('/');
-      }
-    }
-  }, [isLoading, isAuthenticated, user, router]);
+  // Compute subscription access synchronously
+  const subscriptionStatus = user?.subscriptionStatus;
+  const trialExpired = subscriptionStatus === 'trial' && user?.trialEndsAt && new Date() > new Date(user.trialEndsAt);
+  const hasSubscriptionAccess = isAuthenticated && user?.role === 'care_giver' && (
+    subscriptionStatus === 'active' ||
+    (subscriptionStatus === 'trial' && !trialExpired)
+  );
 
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+
+    if (user && user.role !== 'care_giver') {
+      if (user.role === 'admin') router.push('/admin');
+      else if (user.role === 'support') router.push('/support');
+      else if (user.role === 'care_recipient') router.push('/dashboard');
+      else router.push('/');
+      return;
+    }
+
+    // Redirect to plans page if subscription expired or not active
+    if (user?.role === 'care_giver' && !hasSubscriptionAccess) {
+      router.push('/plans');
+    }
+  }, [isLoading, isAuthenticated, user, router, hasSubscriptionAccess]);
+
+  // Show loading spinner while auth is loading
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -69,8 +82,13 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
     );
   }
 
-  if (!isAuthenticated || user?.role !== 'care_giver') {
-    return null;
+  // Block ALL dashboard content if not authenticated, wrong role, or no subscription access
+  if (!isAuthenticated || user?.role !== 'care_giver' || !hasSubscriptionAccess) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500" />
+      </div>
+    );
   }
 
   const handleLogout = () => {

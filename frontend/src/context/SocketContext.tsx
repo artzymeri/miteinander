@@ -49,7 +49,7 @@ interface SocketContextType {
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export function SocketProvider({ children }: { children: ReactNode }) {
-  const { token, user, isAuthenticated } = useAuth();
+  const { token, user, isAuthenticated, handleUnauthorized } = useAuth();
   const socketRef = useRef<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -119,6 +119,9 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
     socket.on('connect_error', (err) => {
       console.error('Socket connection error:', err.message);
+      if (err.message === 'Invalid token' || err.message === 'Token expired' || err.message === 'Authentication required') {
+        handleUnauthorized();
+      }
     });
 
     // Listen for incoming notifications (when not in conversation view)

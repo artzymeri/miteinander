@@ -6,6 +6,7 @@ const caregiverRoutes = require('./caregiverRoutes');
 const recipientRoutes = require('./recipientRoutes');
 const messageRoutes = require('./messageRoutes');
 const supportRoutes = require('./supportRoutes');
+const subscriptionRoutes = require('./subscriptionRoutes');
 
 // Health check endpoint
 router.get('/health', (req, res) => {
@@ -23,5 +24,6 @@ router.use('/caregiver', caregiverRoutes);
 router.use('/recipient', recipientRoutes);
 router.use('/messages', messageRoutes);
 router.use('/support', supportRoutes);
+router.use('/subscription', subscriptionRoutes);
 
 module.exports = router;

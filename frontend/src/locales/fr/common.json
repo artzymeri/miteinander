@@ -873,7 +873,8 @@
     "subscriptionCanceling": "Abonnement se termine bientôt",
     "subscriptionEndsOn": "Votre abonnement se termine le {{date}} ({{days}} jours restants)",
     "cancelingInfo": "Votre abonnement a été annulé",
-    "cancelingDesc": "Vous pouvez continuer à utiliser toutes les fonctionnalités jusqu'à la fin de votre période de facturation actuelle. Après cela, vous devrez vous réabonner."
+    "cancelingDesc": "Vous pouvez continuer à utiliser toutes les fonctionnalités jusqu'à la fin de votre période de facturation actuelle. Après cela, vous devrez vous réabonner.",
+    "activeUntil": "Se renouvelle le {{date}}"
   },
   "verification": {
     "title": "Vérifiez votre e-mail",

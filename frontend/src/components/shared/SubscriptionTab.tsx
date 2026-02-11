@@ -13,6 +13,9 @@ export default function SubscriptionTab() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [subscriptionEndsAt, setSubscriptionEndsAt] = useState<string | null>(user?.subscriptionEndsAt || null);
+  const [currentPeriodEnd, setCurrentPeriodEnd] = useState<string | null>(null);
+  const [plan, setPlan] = useState<string | null>(null);
+  const [statusLoading, setStatusLoading] = useState(true);
 
   const subscriptionStatus = user?.subscriptionStatus || 'none';
   const isTrial = subscriptionStatus === 'trial';
@@ -22,7 +25,7 @@ export default function SubscriptionTab() {
   // Fetch latest subscription status on mount
   useEffect(() => {
     const fetchStatus = async () => {
-      if (!token) return;
+      if (!token) { setStatusLoading(false); return; }
       try {
         const response = await fetch(`${API_URL}/subscription/status`, {
           headers: { 'Authorization': `Bearer ${token}` },
@@ -30,9 +33,13 @@ export default function SubscriptionTab() {
         const data = await response.json();
         if (data.success) {
           setSubscriptionEndsAt(data.data.subscriptionEndsAt || null);
+          setCurrentPeriodEnd(data.data.currentPeriodEnd || null);
+          setPlan(data.data.plan || null);
         }
       } catch {
         // Ignore — use local state
+      } finally {
+        setStatusLoading(false);
       }
     };
     fetchStatus();
@@ -93,6 +100,11 @@ export default function SubscriptionTab() {
       </div>
 
       {/* Status card */}
+      {statusLoading ? (
+        <div className="rounded-xl p-5 border-2 bg-gray-50 border-gray-200 flex items-center justify-center">
+          <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+        </div>
+      ) : (
       <div className={`rounded-xl p-5 border-2 ${
         isCanceling
           ? 'bg-amber-50 border-amber-200'
@@ -125,6 +137,16 @@ export default function SubscriptionTab() {
                     : t('settings.subscriptionNone')
               }
             </p>
+            {isActive && !isCanceling && plan && (
+              <p className="text-sm text-green-600 mt-0.5">
+                {plan === 'monthly' ? t('plans.monthly') : t('plans.yearly')} — {plan === 'monthly' ? '€8,99/' + t('plans.perMonth') : '€86,30/' + t('plans.perYear')}
+              </p>
+            )}
+            {isActive && !isCanceling && currentPeriodEnd && (
+              <p className="text-sm text-green-600 mt-0.5">
+                {t('settings.activeUntil', { date: formatDate(currentPeriodEnd) })}
+              </p>
+            )}
             {isCanceling && subscriptionEndsAt && (
               <p className="text-sm text-amber-600 mt-0.5">
                 {t('settings.subscriptionEndsOn', { date: formatDate(subscriptionEndsAt), days: cancelDaysLeft })}
@@ -138,6 +160,7 @@ export default function SubscriptionTab() {
           </div>
         </div>
       </div>
+      )}
 
       {/* Canceling info banner */}
       {isCanceling && (

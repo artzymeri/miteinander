@@ -7,6 +7,7 @@ import { useSocket } from '@/context/SocketContext';
 import { useTranslation } from '@/context/LanguageContext';
 import { useSearchParams, useRouter } from 'next/navigation';
 import CareRecipientLayout from '@/components/dashboard/CareRecipientLayout';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import {
   Search,
   Send,
@@ -82,6 +83,7 @@ export default function RecipientMessagesPage() {
   const [respondingTo, setRespondingTo] = useState<number | null>(null);
   const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
+  const [dialogState, setDialogState] = useState<{ isOpen: boolean; title: string; message: string; variant: 'danger' | 'info'; showCancel: boolean; onConfirm: () => void }>({ isOpen: false, title: '', message: '', variant: 'danger', showCancel: true, onConfirm: () => {} });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -279,25 +281,33 @@ export default function RecipientMessagesPage() {
     );
   };
 
-  const handleDeleteChat = async (conversationId: number) => {
-    if (!confirm(t('messages.deleteChatConfirm'))) return;
-    try {
-      const res = await fetch(`${API_URL}/messages/conversations/${conversationId}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        setConversations(prev => prev.filter(c => c.id !== conversationId));
-        if (activeConversation?.id === conversationId) {
-          setActiveConversation(null);
-          setMessages([]);
+  const handleDeleteChat = (conversationId: number) => {
+    setDialogState({
+      isOpen: true,
+      title: t('messages.deleteChat'),
+      message: t('messages.deleteChatConfirm'),
+      variant: 'danger',
+      showCancel: true,
+      onConfirm: async () => {
+        try {
+          const res = await fetch(`${API_URL}/messages/conversations/${conversationId}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            setConversations(prev => prev.filter(c => c.id !== conversationId));
+            if (activeConversation?.id === conversationId) {
+              setActiveConversation(null);
+              setMessages([]);
+            }
+            setMenuOpenId(null);
+            setHeaderMenuOpen(false);
+          }
+        } catch (error) {
+          console.error('Failed to delete conversation:', error);
         }
-        setMenuOpenId(null);
-        setHeaderMenuOpen(false);
-      }
-    } catch (error) {
-      console.error('Failed to delete conversation:', error);
-    }
+      },
+    });
   };
 
   const formatTime = (dateStr: string) => {
@@ -578,12 +588,12 @@ export default function RecipientMessagesPage() {
 
                         return (
                           <div key={msg.id} className={`flex ${isMine ? 'justify-end' : 'justify-start'} mb-2`}>
-                            <div className={`max-w-[75%] px-4 py-2.5 rounded-2xl ${
+                            <div className={`max-w-[75%] px-4 py-2.5 rounded-2xl overflow-hidden ${
                               isMine
                                 ? 'bg-amber-500 text-white rounded-br-md'
                                 : 'bg-white text-gray-900 border border-gray-200 rounded-bl-md'
                             }`}>
-                              <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
+                              <p className="text-sm whitespace-pre-wrap break-all">{msg.content}</p>
                               <div className={`flex items-center gap-1 mt-1 ${isMine ? 'justify-end' : 'justify-start'}`}>
                                 <span className={`text-[10px] ${isMine ? 'text-white/70' : 'text-gray-400'}`}>
                                   {formatTime(msg.createdAt)}
@@ -640,6 +650,17 @@ export default function RecipientMessagesPage() {
           )}
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={dialogState.isOpen}
+        onClose={() => setDialogState(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={() => { dialogState.onConfirm(); setDialogState(prev => ({ ...prev, isOpen: false })); }}
+        title={dialogState.title}
+        message={dialogState.message}
+        variant={dialogState.variant}
+        showCancel={dialogState.showCancel}
+        confirmText={dialogState.variant === 'danger' ? t('messages.deleteChat') : 'OK'}
+      />
     </CareRecipientLayout>
   );
 }

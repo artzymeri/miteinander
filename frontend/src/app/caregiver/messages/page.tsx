@@ -7,6 +7,7 @@ import { useSocket } from '@/context/SocketContext';
 import { useTranslation } from '@/context/LanguageContext';
 import { useSearchParams, useRouter } from 'next/navigation';
 import CareGiverLayout from '@/components/caregiver/CareGiverLayout';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import {
   Search,
   Send,
@@ -90,6 +91,7 @@ export default function CaregiverMessagesPage() {
   const [isSendingSettlement, setIsSendingSettlement] = useState(false);
   const [menuOpenId, setMenuOpenId] = useState<number | null>(null);
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
+  const [dialogState, setDialogState] = useState<{ isOpen: boolean; title: string; message: string; variant: 'danger' | 'info'; showCancel: boolean; onConfirm: () => void }>({ isOpen: false, title: '', message: '', variant: 'danger', showCancel: true, onConfirm: () => {} });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -269,35 +271,43 @@ export default function CaregiverMessagesPage() {
       if (res.ok) {
         router.push(`/caregiver/clients/${recipientId}`);
       } else if (res.status === 404) {
-        alert(t('messages.profileNotAvailable') || 'This profile is no longer available');
+        setDialogState({ isOpen: true, title: t('messages.profileNotAvailable'), message: t('messages.profileNotAvailable'), variant: 'info', showCancel: false, onConfirm: () => {} });
       } else {
-        alert(t('messages.profileError') || 'Unable to load profile');
+        setDialogState({ isOpen: true, title: t('messages.profileError'), message: t('messages.profileError'), variant: 'info', showCancel: false, onConfirm: () => {} });
       }
     } catch (error) {
       console.error('Error checking profile access:', error);
-      alert(t('messages.profileError') || 'Unable to load profile');
+      setDialogState({ isOpen: true, title: t('messages.profileError'), message: t('messages.profileError'), variant: 'info', showCancel: false, onConfirm: () => {} });
     }
   };
 
-  const handleDeleteChat = async (conversationId: number) => {
-    if (!confirm(t('messages.deleteChatConfirm'))) return;
-    try {
-      const res = await fetch(`${API_URL}/messages/conversations/${conversationId}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        setConversations(prev => prev.filter(c => c.id !== conversationId));
-        if (activeConversation?.id === conversationId) {
-          setActiveConversation(null);
-          setMessages([]);
+  const handleDeleteChat = (conversationId: number) => {
+    setDialogState({
+      isOpen: true,
+      title: t('messages.deleteChat'),
+      message: t('messages.deleteChatConfirm'),
+      variant: 'danger',
+      showCancel: true,
+      onConfirm: async () => {
+        try {
+          const res = await fetch(`${API_URL}/messages/conversations/${conversationId}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            setConversations(prev => prev.filter(c => c.id !== conversationId));
+            if (activeConversation?.id === conversationId) {
+              setActiveConversation(null);
+              setMessages([]);
+            }
+            setMenuOpenId(null);
+            setHeaderMenuOpen(false);
+          }
+        } catch (error) {
+          console.error('Failed to delete conversation:', error);
         }
-        setMenuOpenId(null);
-        setHeaderMenuOpen(false);
-      }
-    } catch (error) {
-      console.error('Failed to delete conversation:', error);
-    }
+      },
+    });
   };
 
   // Check if a settlement request can be sent again
@@ -440,32 +450,34 @@ export default function CaregiverMessagesPage() {
                           </div>
                         </div>
                         <p className="text-[11px] text-gray-400 truncate">{t('recipient.role')}</p>
-                        {(isSettledWithMe || isSettledWithOther) && (
-                          <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 mt-0.5 text-[10px] font-medium rounded-full border ${
-                            isSettledWithMe
-                              ? 'bg-green-50 text-green-600 border-green-200'
-                              : 'bg-gray-50 text-gray-400 border-gray-200'
-                          }`}>
-                            <Handshake className="w-2.5 h-2.5" />
-                            {t('settlement.settled')}
-                          </span>
-                        )}
-                        {!isSettledWithMe && !isSettledWithOther && conv.lastMessage ? (
-                          <p className={`text-xs truncate mt-0.5 ${conv.unreadCount > 0 ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
-                            {conv.lastMessage.senderRole === 'care_giver' && (
-                              <span className="text-gray-400">{t('messages.you')}: </span>
-                            )}
-                            {conv.lastMessage.messageType === 'settlement_request'
-                              ? t('settlement.requestTitle')
-                              : conv.lastMessage.messageType === 'settlement_confirmed'
-                              ? t('settlement.confirmedMessage')
-                              : conv.lastMessage.messageType === 'settlement_dismissed'
-                              ? t('settlement.dismissedMessage')
-                              : conv.lastMessage.content}
-                          </p>
-                        ) : !isSettledWithMe && !isSettledWithOther ? (
-                          <p className="text-xs text-gray-400 mt-0.5">{t('messages.noMessages')}</p>
-                        ) : null}
+                        <div className="flex items-center gap-1.5 mt-0.5 min-w-0">
+                          {(isSettledWithMe || isSettledWithOther) && (
+                            <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-medium rounded-full border flex-shrink-0 ${
+                              isSettledWithMe
+                                ? 'bg-green-50 text-green-600 border-green-200'
+                                : 'bg-gray-50 text-gray-400 border-gray-200'
+                            }`}>
+                              <Handshake className="w-2.5 h-2.5" />
+                              {t('settlement.settled')}
+                            </span>
+                          )}
+                          {conv.lastMessage ? (
+                            <p className={`text-xs truncate min-w-0 ${conv.unreadCount > 0 ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
+                              {conv.lastMessage.senderRole === 'care_giver' && (
+                                <span className="text-gray-400">{t('messages.you')}: </span>
+                              )}
+                              {conv.lastMessage.messageType === 'settlement_request'
+                                ? t('settlement.requestTitle')
+                                : conv.lastMessage.messageType === 'settlement_confirmed'
+                                ? t('settlement.confirmedMessage')
+                                : conv.lastMessage.messageType === 'settlement_dismissed'
+                                ? t('settlement.dismissedMessage')
+                                : conv.lastMessage.content}
+                            </p>
+                          ) : (
+                            <p className="text-xs text-gray-400">{t('messages.noMessages')}</p>
+                          )}
+                        </div>
                       </div>
                     </button>
                     {menuOpenId === conv.id && (
@@ -642,12 +654,12 @@ export default function CaregiverMessagesPage() {
 
                         return (
                           <div key={msg.id} className={`flex ${isMine ? 'justify-end' : 'justify-start'} mb-2`}>
-                            <div className={`max-w-[75%] px-4 py-2.5 rounded-2xl ${
+                            <div className={`max-w-[75%] px-4 py-2.5 rounded-2xl overflow-hidden ${
                               isMine
                                 ? 'bg-amber-500 text-white rounded-br-md'
                                 : 'bg-white text-gray-900 border border-gray-200 rounded-bl-md'
                             }`}>
-                              <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
+                              <p className="text-sm whitespace-pre-wrap break-all">{msg.content}</p>
                               <div className={`flex items-center gap-1 mt-1 ${isMine ? 'justify-end' : 'justify-start'}`}>
                                 <span className={`text-[10px] ${isMine ? 'text-white/70' : 'text-gray-400'}`}>
                                   {formatTime(msg.createdAt)}
@@ -723,6 +735,17 @@ export default function CaregiverMessagesPage() {
           )}
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={dialogState.isOpen}
+        onClose={() => setDialogState(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={() => { dialogState.onConfirm(); setDialogState(prev => ({ ...prev, isOpen: false })); }}
+        title={dialogState.title}
+        message={dialogState.message}
+        variant={dialogState.variant}
+        showCancel={dialogState.showCancel}
+        confirmText={dialogState.variant === 'danger' ? t('messages.deleteChat') : 'OK'}
+      />
     </CareGiverLayout>
   );
 }

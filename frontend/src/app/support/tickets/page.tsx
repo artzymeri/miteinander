@@ -545,7 +545,7 @@ export default function SupportTicketsPage() {
                           className={`flex ${isAgent ? 'justify-end' : 'justify-start'}`}
                         >
                           <div
-                            className={`max-w-[75%] px-4 py-2.5 rounded-2xl ${
+                            className={`max-w-[75%] px-4 py-2.5 rounded-2xl overflow-hidden ${
                               isAgent
                                 ? 'bg-amber-500 text-white rounded-br-md'
                                 : 'bg-gray-100 text-gray-900 rounded-bl-md'
@@ -556,7 +556,7 @@ export default function SupportTicketsPage() {
                                 {msg.senderName || roleLabel} <span className="font-normal opacity-75">· {roleLabel}</span>
                               </p>
                             )}
-                            <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
+                            <p className="text-sm whitespace-pre-wrap break-all">{msg.content}</p>
                             <p className={`text-xs mt-1 ${isAgent ? 'text-amber-100' : 'text-gray-400'}`}>
                               {new Date(msg.createdAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
                             </p>

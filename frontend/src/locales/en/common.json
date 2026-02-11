@@ -873,7 +873,8 @@
     "subscriptionCanceling": "Subscription ending soon",
     "subscriptionEndsOn": "Your subscription ends on {{date}} ({{days}} days remaining)",
     "cancelingInfo": "Your subscription has been canceled",
-    "cancelingDesc": "You can continue using all features until your current billing period ends. After that, you'll need to resubscribe."
+    "cancelingDesc": "You can continue using all features until your current billing period ends. After that, you'll need to resubscribe.",
+    "activeUntil": "Renews on {{date}}"
   },
   "verification": {
     "title": "Verify your email",

@@ -235,7 +235,7 @@ export default function SupportChatWidget() {
                         className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}
                       >
                         <div
-                          className={`max-w-[80%] px-3 py-2 rounded-2xl ${
+                          className={`max-w-[80%] px-3 py-2 rounded-2xl overflow-hidden ${
                             isMe
                               ? 'bg-amber-500 text-white rounded-br-md'
                               : 'bg-gray-100 text-gray-900 rounded-bl-md'
@@ -244,7 +244,7 @@ export default function SupportChatWidget() {
                           {!isMe && (
                             <p className="text-xs font-medium text-amber-600 mb-0.5">{t('supportChat.agent')}</p>
                           )}
-                          <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
+                          <p className="text-sm whitespace-pre-wrap break-all">{msg.content}</p>
                           <p className={`text-xs mt-1 ${isMe ? 'text-amber-100' : 'text-gray-400'}`}>
                             {new Date(msg.createdAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
                           </p>

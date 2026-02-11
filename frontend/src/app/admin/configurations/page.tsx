@@ -10,6 +10,7 @@ import {
   useDeleteCareNeed,
 } from '@/hooks/useAdminApi';
 import { DeleteConfirmModal } from '@/components/admin';
+import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import { CareNeed, CareNeedFormData } from '@/lib/api';
 import {
   Settings,
@@ -175,6 +176,7 @@ export default function ConfigurationsPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formData, setFormData] = useState<CareNeedFormData>(initialFormData);
   const [deleteTarget, setDeleteTarget] = useState<CareNeed | null>(null);
+  const [validationDialogOpen, setValidationDialogOpen] = useState(false);
 
   // React Query hooks
   const { data: careNeeds = [], isLoading } = useCareNeeds(true);
@@ -221,7 +223,7 @@ export default function ConfigurationsPage() {
   const handleSave = async () => {
     // Validate required fields
     if (!formData.labelEn || !formData.labelDe || !formData.labelFr) {
-      alert(t('admin.config.careNeeds.allLabelsRequired'));
+      setValidationDialogOpen(true);
       return;
     }
     
@@ -521,6 +523,17 @@ export default function ConfigurationsPage() {
         onConfirm={handleConfirmDelete}
         itemName={deleteTarget ? getLabelByLanguage(deleteTarget) : ''}
         isLoading={deleteMutation.isPending}
+      />
+
+      <ConfirmDialog
+        isOpen={validationDialogOpen}
+        onClose={() => setValidationDialogOpen(false)}
+        onConfirm={() => setValidationDialogOpen(false)}
+        title={t('admin.config.careNeeds.allLabelsRequired')}
+        message={t('admin.config.careNeeds.allLabelsRequired')}
+        variant="info"
+        showCancel={false}
+        confirmText="OK"
       />
     </div>
   );

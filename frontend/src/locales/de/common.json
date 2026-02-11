@@ -873,7 +873,8 @@
     "subscriptionCanceling": "Abonnement endet bald",
     "subscriptionEndsOn": "Ihr Abonnement endet am {{date}} (noch {{days}} Tage)",
     "cancelingInfo": "Ihr Abonnement wurde gekündigt",
-    "cancelingDesc": "Sie können alle Funktionen bis zum Ende Ihres aktuellen Abrechnungszeitraums weiterhin nutzen. Danach müssen Sie sich erneut anmelden."
+    "cancelingDesc": "Sie können alle Funktionen bis zum Ende Ihres aktuellen Abrechnungszeitraums weiterhin nutzen. Danach müssen Sie sich erneut anmelden.",
+    "activeUntil": "Verlängert sich am {{date}}"
   },
   "verification": {
     "title": "E-Mail bestätigen",

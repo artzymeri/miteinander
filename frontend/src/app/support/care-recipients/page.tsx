@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/LanguageContext';
 import SupportLayout from '@/components/support/SupportLayout';
+import SupportProfileModal from '@/components/support/SupportProfileModal';
 import { UserCheck, Loader2, Search, X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -17,6 +18,14 @@ interface CareRecipient {
   city: string | null;
   isActive: boolean;
   createdAt: string;
+  profileImageUrl: string | null;
+  subscriptionStatus: string;
+  trialEndsAt: string | null;
+  subscriptionEndsAt: string | null;
+  lastLoginAt: string | null;
+  address: string | null;
+  postalCode: string | null;
+  dateOfBirth: string | null;
 }
 
 interface PaginatedData {
@@ -35,6 +44,8 @@ export default function SupportCareRecipientsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedUser, setSelectedUser] = useState<CareRecipient | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Debounce search
   useEffect(() => {
@@ -68,6 +79,22 @@ export default function SupportCareRecipientsPage() {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const handleRowClick = (item: CareRecipient) => {
+    setSelectedUser(item);
+    setIsModalOpen(true);
+  };
+
+  const getSubscriptionColor = (status: string) => {
+    const colors: Record<string, string> = {
+      active: 'bg-green-100 text-green-700',
+      trial: 'bg-blue-100 text-blue-700',
+      past_due: 'bg-yellow-100 text-yellow-700',
+      canceled: 'bg-red-100 text-red-700',
+      none: 'bg-gray-100 text-gray-600',
+    };
+    return colors[status] || colors.none;
+  };
 
   return (
     <SupportLayout>
@@ -111,7 +138,7 @@ export default function SupportCareRecipientsPage() {
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.fields.name')}</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.fields.email')}</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.fields.city')}</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.fields.status')}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.fields.subscribed')}</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.fields.createdAt')}</th>
                 </tr>
               </thead>
@@ -130,20 +157,28 @@ export default function SupportCareRecipientsPage() {
                   </tr>
                 ) : (
                   data.items.map(item => (
-                    <tr key={item.id} className="hover:bg-gray-50">
+                    <tr key={item.id} className="hover:bg-gray-50 cursor-pointer transition-colors" onClick={() => handleRowClick(item)}>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
-                            <span className="text-purple-700 font-medium text-xs">{item.firstName[0]}{item.lastName[0]}</span>
-                          </div>
+                          {item.profileImageUrl ? (
+                            <img 
+                              src={item.profileImageUrl} 
+                              alt={`${item.firstName} ${item.lastName}`}
+                              className="w-8 h-8 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                              <span className="text-purple-700 font-medium text-xs">{item.firstName[0]}{item.lastName[0]}</span>
+                            </div>
+                          )}
                           <span className="font-medium text-sm text-gray-900">{item.firstName} {item.lastName}</span>
                         </div>
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600">{item.email}</td>
                       <td className="px-4 py-3 text-sm text-gray-600">{item.city || '-'}</td>
                       <td className="px-4 py-3">
-                        <span className={`px-2 py-1 text-xs rounded-full ${item.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
-                          {item.isActive ? t('admin.status.active') : t('admin.status.inactive')}
+                        <span className={`px-2 py-1 text-xs rounded-full ${getSubscriptionColor(item.subscriptionStatus || 'none')}`}>
+                          {t(`admin.status.subscription_${item.subscriptionStatus || 'none'}`)}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600">
@@ -199,6 +234,14 @@ export default function SupportCareRecipientsPage() {
           )}
         </div>
       </div>
+
+      {/* Profile Modal */}
+      <SupportProfileModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        user={selectedUser}
+        userType="careRecipient"
+      />
     </SupportLayout>
   );
 }

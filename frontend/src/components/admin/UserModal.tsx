@@ -3,10 +3,22 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/context/LanguageContext';
-import { X, Save, User, Mail, Phone, MapPin, Calendar } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { X, Save, User, Mail, Phone, MapPin, Calendar, CreditCard, Loader2 } from 'lucide-react';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type UserData = Record<string, any>;
+
+interface SubscriptionDetails {
+  subscriptionStatus: string;
+  trialEndsAt: string | null;
+  subscriptionEndsAt: string | null;
+  currentPeriodEnd: string | null;
+  plan: string | null;
+  isCanceling: boolean;
+}
 
 interface UserModalProps {
   isOpen: boolean;
@@ -26,13 +38,42 @@ export default function UserModal({
   userType,
 }: UserModalProps) {
   const { t } = useTranslation();
+  const { token } = useAuth();
   const [formData, setFormData] = useState<UserData>({});
+  const [subDetails, setSubDetails] = useState<SubscriptionDetails | null>(null);
+  const [subLoading, setSubLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
       setFormData(user);
     }
   }, [user]);
+
+  // Fetch subscription details from Stripe when modal opens for care givers/recipients
+  useEffect(() => {
+    if (!isOpen || !user || !token || userType === 'support') {
+      setSubDetails(null);
+      return;
+    }
+    const fetchSubDetails = async () => {
+      setSubLoading(true);
+      try {
+        const ut = userType === 'careGiver' ? 'care-giver' : 'care-recipient';
+        const res = await fetch(`${API_URL}/admin/subscription/${ut}/${user.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const json = await res.json();
+          setSubDetails(json.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch subscription details:', err);
+      } finally {
+        setSubLoading(false);
+      }
+    };
+    fetchSubDetails();
+  }, [isOpen, user, token, userType]);
 
   const handleChange = (key: string, value: unknown) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -71,10 +112,16 @@ export default function UserModal({
       : []),
   ];
 
-  const statusFields = [
-    { key: 'isActive', label: t('admin.fields.isActive') },
-    ...(userType === 'careGiver' ? [{ key: 'isVerified', label: t('admin.fields.isVerified') }] : []),
-  ];
+  const getSubscriptionColor = (status: string) => {
+    const colors: Record<string, string> = {
+      active: 'bg-green-100 text-green-700',
+      trial: 'bg-blue-100 text-blue-700',
+      past_due: 'bg-yellow-100 text-yellow-700',
+      canceled: 'bg-red-100 text-red-700',
+      none: 'bg-gray-100 text-gray-600',
+    };
+    return colors[status] || colors.none;
+  };
 
   if (!isOpen) return null;
 
@@ -111,12 +158,20 @@ export default function UserModal({
           <form onSubmit={handleSubmit} className="p-6">
             {/* User avatar and basic info */}
             <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
-              <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center">
-                <span className="text-amber-700 font-semibold text-xl">
-                  {String(formData.firstName || '')[0]}
-                  {String(formData.lastName || '')[0]}
-                </span>
-              </div>
+              {formData.profileImageUrl ? (
+                <img
+                  src={String(formData.profileImageUrl)}
+                  alt={`${String(formData.firstName || '')} ${String(formData.lastName || '')}`}
+                  className="w-16 h-16 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center">
+                  <span className="text-amber-700 font-semibold text-xl">
+                    {String(formData.firstName || '')[0]}
+                    {String(formData.lastName || '')[0]}
+                  </span>
+                </div>
+              )}
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">
                   {String(formData.firstName || '')} {String(formData.lastName || '')}
@@ -159,39 +214,54 @@ export default function UserModal({
               })}
             </div>
 
-            {/* Status toggles */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              {statusFields.map((field) => (
-                <div key={field.key} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <span className="text-sm font-medium text-gray-700">{field.label}</span>
-                  {mode === 'view' ? (
-                    <span
-                      className={`px-2 py-1 text-xs rounded-full ${
-                        formData[field.key]
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-gray-200 text-gray-600'
-                      }`}
-                    >
-                      {formData[field.key] ? t('admin.status.yes') : t('admin.status.no')}
-                    </span>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => handleChange(field.key, !formData[field.key])}
-                      className={`relative w-12 h-6 rounded-full transition-colors cursor-pointer ${
-                        formData[field.key] ? 'bg-amber-500' : 'bg-gray-300'
-                      }`}
-                    >
-                      <span
-                        className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                          formData[field.key] ? 'translate-x-6' : ''
-                        }`}
-                      />
-                    </button>
-                  )}
+            {/* Subscription Info (for care givers and care recipients) */}
+            {userType !== 'support' && (
+              <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                <div className="flex items-center gap-2 mb-3">
+                  <CreditCard size={18} className="text-gray-500" />
+                  <h4 className="text-sm font-semibold text-gray-700">{t('admin.fields.subscriptionInfo')}</h4>
                 </div>
-              ))}
-            </div>
+                {subLoading ? (
+                  <div className="flex items-center gap-2 py-2">
+                    <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
+                    <span className="text-sm text-gray-400">{t('admin.modal.loading')}</span>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">{t('admin.fields.subscribed')}</p>
+                      <span className={`px-2 py-1 text-xs rounded-full ${getSubscriptionColor((subDetails?.subscriptionStatus) || formData.subscriptionStatus || 'none')}`}>
+                        {t(`admin.status.subscription_${(subDetails?.subscriptionStatus) || formData.subscriptionStatus || 'none'}`)}
+                      </span>
+                    </div>
+                    {subDetails?.plan && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">{t('admin.fields.plan')}</p>
+                        <p className="text-sm text-gray-900 capitalize">{subDetails.plan}</p>
+                      </div>
+                    )}
+                    {(subDetails?.subscriptionStatus === 'trial' || subDetails?.subscriptionStatus === 'expired') && (subDetails?.trialEndsAt || formData.trialEndsAt) && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">{t('admin.fields.trialEndsAt')}</p>
+                        <p className="text-sm text-gray-900">{new Date(String(subDetails?.trialEndsAt || formData.trialEndsAt)).toLocaleDateString('de-DE')}</p>
+                      </div>
+                    )}
+                    {subDetails?.currentPeriodEnd && !subDetails.isCanceling && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">{t('admin.fields.nextRenewal')}</p>
+                        <p className="text-sm text-gray-900">{new Date(subDetails.currentPeriodEnd).toLocaleDateString('de-DE')}</p>
+                      </div>
+                    )}
+                    {subDetails?.isCanceling && subDetails.currentPeriodEnd && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">{t('admin.fields.subscribedUntil')}</p>
+                        <p className="text-sm text-orange-600 font-medium">{new Date(subDetails.currentPeriodEnd).toLocaleDateString('de-DE')}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Metadata */}
             <div className="text-xs text-gray-400 space-y-1 border-t border-gray-100 pt-4">

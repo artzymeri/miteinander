@@ -369,7 +369,13 @@
       "verified": "Verifiziert",
       "pending": "Ausstehend",
       "yes": "Ja",
-      "no": "Nein"
+      "no": "Nein",
+      "subscription_active": "Aktiv",
+      "subscription_trial": "Testphase",
+      "subscription_past_due": "Überfällig",
+      "subscription_canceled": "Gekündigt",
+      "subscription_none": "Keine",
+      "subscription_expired": "Abgelaufen"
     },
     "table": {
       "search": "Suchen",
@@ -398,7 +404,13 @@
       "dateOfBirth": "Geburtsdatum",
       "isActive": "Aktiv",
       "isVerified": "Verifiziert",
-      "lastLogin": "Letzte Anmeldung"
+      "lastLogin": "Letzte Anmeldung",
+      "subscribed": "Abonniert",
+      "subscriptionInfo": "Abonnement-Informationen",
+      "trialEndsAt": "Testphase endet",
+      "nextRenewal": "Nächste Verlängerung",
+      "subscribedUntil": "Abonniert bis",
+      "plan": "Plan"
     },
     "modal": {
       "viewUser": "Benutzerdetails",
@@ -409,7 +421,8 @@
       "delete": "Löschen",
       "deleting": "Löschen...",
       "deleteConfirmTitle": "Löschbestätigung",
-      "deleteConfirmText": "Sind Sie sicher, dass Sie löschen möchten"
+      "deleteConfirmText": "Sind Sie sicher, dass Sie löschen möchten",
+      "loading": "Laden..."
     },
     "supports": {
       "title": "Support-Mitarbeiter",

@@ -185,10 +185,16 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       field: 'last_login_at',
     },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      field: 'deleted_at',
+    },
   }, {
     tableName: 'care_recipients',
     timestamps: true,
     underscored: true,
+    paranoid: true,
     hooks: {
       beforeCreate: async (careRecipient) => {
         if (careRecipient.password) {
@@ -216,6 +222,7 @@ module.exports = (sequelize, DataTypes) => {
     delete values.resetPasswordCode;
     delete values.resetPasswordCodeExpiresAt;
     delete values.stripeCustomerId;
+    delete values.deletedAt;
     return values;
   };
 

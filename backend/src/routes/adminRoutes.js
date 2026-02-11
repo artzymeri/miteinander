@@ -30,6 +30,9 @@ router.get('/care-recipients/:id', adminController.getCareRecipientById);
 router.put('/care-recipients/:id', adminController.updateCareRecipient);
 router.delete('/care-recipients/:id', adminController.deleteCareRecipient);
 
+// Subscription details for a user
+router.get('/subscription/:userType/:userId', adminController.getUserSubscriptionDetails);
+
 // Configuration - Care Needs
 router.get('/config/care-needs', adminController.getAllCareNeeds);
 router.post('/config/care-needs', adminController.createCareNeed);

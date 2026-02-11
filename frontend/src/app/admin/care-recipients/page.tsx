@@ -93,15 +93,23 @@ export default function CareRecipientsPage() {
     { key: 'email', label: t('admin.fields.email') },
     { key: 'city', label: t('admin.fields.city') },
     {
-      key: 'isActive',
-      label: t('admin.fields.status'),
-      render: (item: CareRecipient) => (
-        <span className={`px-2 py-1 text-xs rounded-full ${
-          item.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
-        }`}>
-          {item.isActive ? t('admin.status.active') : t('admin.status.inactive')}
-        </span>
-      ),
+      key: 'subscriptionStatus',
+      label: t('admin.fields.subscribed'),
+      render: (item: CareRecipient) => {
+        const status = item.subscriptionStatus || 'none';
+        const colors: Record<string, string> = {
+          active: 'bg-green-100 text-green-700',
+          trial: 'bg-blue-100 text-blue-700',
+          past_due: 'bg-yellow-100 text-yellow-700',
+          canceled: 'bg-red-100 text-red-700',
+          none: 'bg-gray-100 text-gray-600',
+        };
+        return (
+          <span className={`px-2 py-1 text-xs rounded-full ${colors[status] || colors.none}`}>
+            {t(`admin.status.subscription_${status}`)}
+          </span>
+        );
+      },
     },
     {
       key: 'createdAt',

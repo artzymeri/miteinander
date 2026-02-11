@@ -26,6 +26,9 @@ router.put('/tickets/:ticketId/assign', authenticate, adminOrSupport, supportCon
 // Admin: get active support staff for assignment dropdown
 router.get('/staff', authenticate, adminOrSupport, supportController.getActiveStaff);
 
+// Subscription details for a user
+router.get('/subscription/:userType/:userId', authenticate, adminOrSupport, adminController.getUserSubscriptionDetails);
+
 // Support-accessible read-only routes (reuse admin controller)
 router.get('/care-givers', authenticate, adminOrSupport, adminController.getAllCareGivers);
 router.get('/care-givers/:id', authenticate, adminOrSupport, adminController.getCareGiverById);

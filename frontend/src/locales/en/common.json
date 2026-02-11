@@ -369,7 +369,13 @@
       "verified": "Verified",
       "pending": "Pending",
       "yes": "Yes",
-      "no": "No"
+      "no": "No",
+      "subscription_active": "Active",
+      "subscription_trial": "Trial",
+      "subscription_past_due": "Past Due",
+      "subscription_canceled": "Canceled",
+      "subscription_none": "None",
+      "subscription_expired": "Expired"
     },
     "table": {
       "search": "Search",
@@ -398,7 +404,13 @@
       "dateOfBirth": "Date of Birth",
       "isActive": "Active",
       "isVerified": "Verified",
-      "lastLogin": "Last Login"
+      "lastLogin": "Last Login",
+      "subscribed": "Subscribed",
+      "subscriptionInfo": "Subscription Information",
+      "trialEndsAt": "Trial Ends",
+      "nextRenewal": "Next Renewal",
+      "subscribedUntil": "Subscribed Until",
+      "plan": "Plan"
     },
     "modal": {
       "viewUser": "User Details",
@@ -409,7 +421,8 @@
       "delete": "Delete",
       "deleting": "Deleting...",
       "deleteConfirmTitle": "Delete Confirmation",
-      "deleteConfirmText": "Are you sure you want to delete"
+      "deleteConfirmText": "Are you sure you want to delete",
+      "loading": "Loading..."
     },
     "supports": {
       "title": "Support Staff",

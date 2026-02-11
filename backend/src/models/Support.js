@@ -57,10 +57,16 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       field: 'last_login_at',
     },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      field: 'deleted_at',
+    },
   }, {
     tableName: 'supports',
     timestamps: true,
     underscored: true,
+    paranoid: true,
     hooks: {
       beforeCreate: async (support) => {
         if (support.password) {
@@ -85,6 +91,7 @@ module.exports = (sequelize, DataTypes) => {
     delete values.password;
     delete values.resetPasswordCode;
     delete values.resetPasswordCodeExpiresAt;
+    delete values.deletedAt;
     return values;
     // Add associations here when needed
   };

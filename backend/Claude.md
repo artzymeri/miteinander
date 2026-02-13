@@ -1,4 +1,4 @@
-# Backend Development Guidelines - Miteinander Platform
+# Backend Development Guidelines - MyHelper Platform
 
 ## Technology Stack
 
@@ -60,7 +60,7 @@ DB_HOST=localhost
 DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=password
-DB_NAME=miteinander
+DB_NAME=myhelper
 
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
 JWT_EXPIRES_IN=7d

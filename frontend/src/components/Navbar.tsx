@@ -47,14 +47,14 @@ export default function Navbar() {
             >
               <Image
                 src="/logo.svg"
-                alt="Miteinander Logo"
+                alt="MyHelper Logo"
                 width={40}
                 height={34}
                 className="w-full h-full"
               />
             </motion.div>
             <span className="font-serif text-xl text-primary font-semibold hidden sm:inline">
-              Miteinander
+              MyHelper
             </span>
           </Link>
 

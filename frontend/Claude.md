@@ -1,4 +1,4 @@
-# Frontend Development Guidelines - Miteinander Platform
+# Frontend Development Guidelines - MyHelper Platform
 
 ## UI/UX Design Philosophy
 
@@ -10,7 +10,7 @@
 - **Imagery**: High-quality, human-centered photography when applicable
 
 ### Branding Requirements
-- **Logo Usage**: Always use the app logo (`/public/logo.svg`) instead of plain text "Miteinander"
+- **Logo Usage**: Always use the app logo (`/public/logo.svg`) instead of plain text "MyHelper"
 - **Logo as Home Link**: The logo should always link back to the homepage
 - **Logo Sizing**: Use responsive sizing (w-8 h-8 on mobile, w-10 h-10 on larger screens)
 
@@ -127,7 +127,7 @@ const WelcomeComponent = () => {
 // locales/en/common.json
 {
   "welcome": {
-    "title": "Welcome to Miteinander",
+    "title": "Welcome to MyHelper",
     "description": "Find care or provide care services"
   }
 }
@@ -135,7 +135,7 @@ const WelcomeComponent = () => {
 // locales/de/common.json
 {
   "welcome": {
-    "title": "Willkommen bei Miteinander",
+    "title": "Willkommen bei MyHelper",
     "description": "Finden Sie Pflege oder bieten Sie Pflegedienste an"
   }
 }
@@ -143,7 +143,7 @@ const WelcomeComponent = () => {
 // locales/fr/common.json
 {
   "welcome": {
-    "title": "Bienvenue chez Miteinander",
+    "title": "Bienvenue chez MyHelper",
     "description": "Trouvez des soins ou offrez des services de soins"
   }
 }

@@ -37,14 +37,14 @@ export default function Footer() {
               <div className="w-14 h-14 bg-primary rounded-xl flex items-center justify-center p-1.5">
                 <Image
                   src="/logo.svg"
-                  alt="Miteinander Logo"
+                  alt="MyHelper Logo"
                   width={48}
                   height={40}
                   className="w-full h-full"
                 />
               </div>
               <span className="font-serif text-xl font-semibold">
-                Miteinander
+                MyHelper
               </span>
             </div>
             <p className="text-white/70 text-sm leading-relaxed max-w-xs">

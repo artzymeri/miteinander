@@ -38,7 +38,7 @@
   },
   "difference": {
     "badge": "Our difference",
-    "title": "Why Miteinander?",
+    "title": "Why MyHelper?",
     "subtitle": "We combine technology with humanity",
     "card1Title": "Personal matching",
     "card1Desc": "No anonymous agencies - direct contact between families and caregivers.",
@@ -64,7 +64,7 @@
     "title": "Ready to start?",
     "subtitle": "Join our community and experience how easy care can be.",
     "newUser": "New here?",
-    "newUserDesc": "Create a free account and discover how Miteinander can help you.",
+    "newUserDesc": "Create a free account and discover how MyHelper can help you.",
     "registerBtn": "Register now",
     "noCreditCard": "No credit card required",
     "existingUser": "Already a member?",
@@ -82,7 +82,7 @@
     "imprint": "Imprint",
     "privacy": "Privacy Policy",
     "terms": "Terms & Conditions",
-    "copyright": "© 2026 Miteinander. All rights reserved."
+    "copyright": "© 2026 MyHelper. All rights reserved."
   },
   "login": {
     "welcome": "Welcome back",
@@ -124,7 +124,7 @@
     "backToLogin": "Back to login"
   },
   "register": {
-    "welcome": "Welcome to Miteinander",
+    "welcome": "Welcome to MyHelper",
     "chooseRole": "Choose how you want to use our platform",
     "seekingCare": "I'm seeking support",
     "seekingCareDesc": "Find qualified caregivers for yourself or your relatives",
@@ -323,15 +323,15 @@
   "terms": {
     "title": "Terms and Conditions",
     "scope": "§ 1 Scope",
-    "scopeText": "These General Terms and Conditions apply to all business relationships between Miteinander GmbH and its users. The version valid at the time of contract conclusion shall apply.",
+    "scopeText": "These General Terms and Conditions apply to all business relationships between MyHelper GmbH and its users. The version valid at the time of contract conclusion shall apply.",
     "contractPartner": "§ 2 Contracting Partner",
     "contractPartnerText": "The contract is concluded with:",
     "serviceDescription": "§ 3 Service Description",
-    "serviceDescriptionText": "The Miteinander platform enables the matching of people in need of care or their relatives with independent caregivers. Miteinander acts solely as a matching platform and is not a contracting party to the care agreements concluded between users.",
+    "serviceDescriptionText": "The MyHelper platform enables the matching of people in need of care or their relatives with independent caregivers. MyHelper acts solely as a matching platform and is not a contracting party to the care agreements concluded between users.",
     "registration": "§ 4 Registration",
     "registrationText": "Registration is required for the use of certain functions. The user is obliged to provide truthful information during registration and to keep it up to date.",
     "liability": "§ 5 Liability",
-    "liabilityText": "Miteinander is not liable for the quality of care services arranged through the platform. The responsibility for the proper provision of care services lies solely with the respective caregivers."
+    "liabilityText": "MyHelper is not liable for the quality of care services arranged through the platform. The responsibility for the proper provision of care services lies solely with the respective caregivers."
   },
   "admin": {
     "logout": "Logout",
@@ -956,10 +956,10 @@
   "plans": {
     "choosePlan": "Choose your plan",
     "subscriptionRequired": "Subscription required",
-    "title": "Unlock the full Miteinander experience",
+    "title": "Unlock the full MyHelper experience",
     "subtitle": "Choose a plan to continue using all features.",
     "trialExpiredDesc": "Your free trial has ended. Choose a plan to regain access to your account.",
-    "recipientDesc": "To start using Miteinander, please choose a subscription plan.",
+    "recipientDesc": "To start using MyHelper, please choose a subscription plan.",
     "trialActive": "Your free trial is active — {{days}} days remaining",
     "monthly": "Monthly",
     "yearly": "Yearly",
@@ -978,7 +978,7 @@
     "error": "Something went wrong. Please try again.",
     "verifying": "Verifying your payment...",
     "successTitle": "Subscription activated! 🎉",
-    "successDesc": "Your subscription is now active. You have full access to all Miteinander features.",
+    "successDesc": "Your subscription is now active. You have full access to all MyHelper features.",
     "pendingTitle": "Payment received",
     "pendingDesc": "Your payment is being processed. You can start using the platform.",
     "goToDashboard": "Go to dashboard",

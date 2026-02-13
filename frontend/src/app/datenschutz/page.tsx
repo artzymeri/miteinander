@@ -48,7 +48,7 @@ export default function Datenschutz() {
             {t('privacy.responsiblePartyText')}
           </p>
           <p>
-            Miteinander GmbH
+            MyHelper GmbH
             <br />
             Musterstraße 123
             <br />
@@ -59,7 +59,7 @@ export default function Datenschutz() {
           <p>
             Telefon: +49 (0) 30 12345678
             <br />
-            E-Mail: datenschutz@miteinander.de
+            E-Mail: datenschutz@myhelper.de
           </p>
 
           <h2 className="text-2xl font-serif text-primary mt-8 mb-4">

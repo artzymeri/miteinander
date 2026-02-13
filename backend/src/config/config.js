@@ -7,7 +7,7 @@ module.exports = {
     port: parseInt(process.env.DB_PORT, 10) || 3306,
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
-    name: process.env.DB_NAME || 'miteinander',
+    name: process.env.DB_NAME || 'myhelper',
     dialect: 'mysql',
   },
   

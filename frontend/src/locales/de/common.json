@@ -38,7 +38,7 @@
   },
   "difference": {
     "badge": "Unser Unterschied",
-    "title": "Warum Miteinander?",
+    "title": "Warum MyHelper?",
     "subtitle": "Wir verbinden Technologie mit Menschlichkeit",
     "card1Title": "Persönliches Matching",
     "card1Desc": "Keine anonymen Agenturen - direkter Kontakt zwischen Familien und Pflegekräften.",
@@ -64,7 +64,7 @@
     "title": "Bereit anzufangen?",
     "subtitle": "Werden Sie Teil unserer Gemeinschaft und erleben Sie, wie einfach Pflege sein kann.",
     "newUser": "Neu hier?",
-    "newUserDesc": "Erstellen Sie kostenlos ein Konto und entdecken Sie, wie Miteinander Ihnen helfen kann.",
+    "newUserDesc": "Erstellen Sie kostenlos ein Konto und entdecken Sie, wie MyHelper Ihnen helfen kann.",
     "registerBtn": "Jetzt registrieren",
     "noCreditCard": "Keine Kreditkarte erforderlich",
     "existingUser": "Bereits Mitglied?",
@@ -82,7 +82,7 @@
     "imprint": "Impressum",
     "privacy": "Datenschutz",
     "terms": "AGB",
-    "copyright": "© 2026 Miteinander. Alle Rechte vorbehalten."
+    "copyright": "© 2026 MyHelper. Alle Rechte vorbehalten."
   },
   "login": {
     "welcome": "Willkommen zurück",
@@ -124,7 +124,7 @@
     "backToLogin": "Zurück zur Anmeldung"
   },
   "register": {
-    "welcome": "Willkommen bei Miteinander",
+    "welcome": "Willkommen bei MyHelper",
     "chooseRole": "Wählen Sie aus, wie Sie unsere Plattform nutzen möchten",
     "seekingCare": "Ich suche Unterstützung",
     "seekingCareDesc": "Finden Sie qualifizierte Pflegekräfte für sich selbst oder Ihre Angehörigen",
@@ -323,15 +323,15 @@
   "terms": {
     "title": "Allgemeine Geschäftsbedingungen",
     "scope": "§ 1 Geltungsbereich",
-    "scopeText": "Diese Allgemeinen Geschäftsbedingungen gelten für alle Geschäftsbeziehungen zwischen der Miteinander GmbH und ihren Nutzern. Maßgeblich ist die jeweils bei Vertragsschluss gültige Fassung.",
+    "scopeText": "Diese Allgemeinen Geschäftsbedingungen gelten für alle Geschäftsbeziehungen zwischen der MyHelper GmbH und ihren Nutzern. Maßgeblich ist die jeweils bei Vertragsschluss gültige Fassung.",
     "contractPartner": "§ 2 Vertragspartner",
     "contractPartnerText": "Der Vertrag kommt zustande mit:",
     "serviceDescription": "§ 3 Leistungsbeschreibung",
-    "serviceDescriptionText": "Die Plattform Miteinander ermöglicht die Vermittlung zwischen pflegebedürftigen Personen bzw. deren Angehörigen und unabhängigen Pflegekräften. Miteinander tritt dabei lediglich als Vermittlungsplattform auf und ist nicht Vertragspartner der zwischen Nutzern geschlossenen Pflegevereinbarungen.",
+    "serviceDescriptionText": "Die Plattform MyHelper ermöglicht die Vermittlung zwischen pflegebedürftigen Personen bzw. deren Angehörigen und unabhängigen Pflegekräften. MyHelper tritt dabei lediglich als Vermittlungsplattform auf und ist nicht Vertragspartner der zwischen Nutzern geschlossenen Pflegevereinbarungen.",
     "registration": "§ 4 Registrierung",
     "registrationText": "Für die Nutzung bestimmter Funktionen ist eine Registrierung erforderlich. Der Nutzer ist verpflichtet, bei der Registrierung wahrheitsgemäße Angaben zu machen und diese aktuell zu halten.",
     "liability": "§ 5 Haftung",
-    "liabilityText": "Miteinander haftet nicht für die Qualität der über die Plattform vermittelten Pflegeleistungen. Die Verantwortung für die ordnungsgemäße Erbringung der Pflegeleistungen liegt allein bei den jeweiligen Pflegekräften."
+    "liabilityText": "MyHelper haftet nicht für die Qualität der über die Plattform vermittelten Pflegeleistungen. Die Verantwortung für die ordnungsgemäße Erbringung der Pflegeleistungen liegt allein bei den jeweiligen Pflegekräften."
   },
   "admin": {
     "logout": "Abmelden",
@@ -956,10 +956,10 @@
   "plans": {
     "choosePlan": "Wählen Sie Ihren Plan",
     "subscriptionRequired": "Abonnement erforderlich",
-    "title": "Erleben Sie Miteinander in vollem Umfang",
+    "title": "Erleben Sie MyHelper in vollem Umfang",
     "subtitle": "Wählen Sie einen Plan, um alle Funktionen weiter nutzen zu können.",
     "trialExpiredDesc": "Ihre kostenlose Testphase ist abgelaufen. Wählen Sie einen Plan, um wieder Zugang zu Ihrem Konto zu erhalten.",
-    "recipientDesc": "Um Miteinander nutzen zu können, wählen Sie bitte einen Abonnement-Plan.",
+    "recipientDesc": "Um MyHelper nutzen zu können, wählen Sie bitte einen Abonnement-Plan.",
     "trialActive": "Ihre kostenlose Testphase ist aktiv — noch {{days}} Tage übrig",
     "monthly": "Monatlich",
     "yearly": "Jährlich",
@@ -978,7 +978,7 @@
     "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
     "verifying": "Zahlung wird überprüft...",
     "successTitle": "Abonnement aktiviert! 🎉",
-    "successDesc": "Ihr Abonnement ist jetzt aktiv. Sie haben vollen Zugriff auf alle Miteinander-Funktionen.",
+    "successDesc": "Ihr Abonnement ist jetzt aktiv. Sie haben vollen Zugriff auf alle MyHelper-Funktionen.",
     "pendingTitle": "Zahlung erhalten",
     "pendingDesc": "Ihre Zahlung wird verarbeitet. Sie können die Plattform jetzt nutzen.",
     "goToDashboard": "Zum Dashboard",

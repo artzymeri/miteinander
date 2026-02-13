@@ -260,7 +260,7 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
           <div className="p-6 border-b border-gray-100">
             <Link href="/dashboard" className="flex items-center gap-3">
               <Logo accentStroke='red' mainStroke='red' width={40} height={40} />
-              <span className="text-xl font-bold text-gray-900">Miteinander</span>
+              <span className="text-xl font-bold text-gray-900">MyHelper</span>
             </Link>
           </div>
 

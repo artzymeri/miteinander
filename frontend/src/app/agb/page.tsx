@@ -35,7 +35,7 @@ export default function AGB() {
             {t('terms.contractPartnerText')}
             <br />
             <br />
-            Miteinander GmbH
+            MyHelper GmbH
             <br />
             Musterstraße 123
             <br />

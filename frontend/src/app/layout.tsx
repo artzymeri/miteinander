@@ -20,17 +20,17 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Miteinander | Fürsorge, die verbindet",
+  title: "MyHelper | Fürsorge, die verbindet",
   description: "Finden Sie die perfekte Unterstützung für Ihre Liebsten. Direkt, persönlich, menschlich. Die deutsche Plattform für Pflege.",
   keywords: "Pflege, Seniorenbetreuung, Pflegekräfte, Deutschland, häusliche Pflege, Betreuung",
-  authors: [{ name: "Miteinander" }],
+  authors: [{ name: "MyHelper" }],
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
     apple: "/favicon.svg",
   },
   openGraph: {
-    title: "Miteinander | Die Plattform, die verbindet",
+    title: "MyHelper | Die Plattform, die verbindet",
     description: "Finden Sie die perfekte Unterstützung für Ihre Liebsten. Direkt, persönlich, menschlich.",
     type: "website",
     images: [
@@ -38,13 +38,13 @@ export const metadata: Metadata = {
         url: "/logo.svg",
         width: 512,
         height: 512,
-        alt: "Miteinander Logo",
+        alt: "MyHelper Logo",
       },
     ],
   },
   twitter: {
     card: "summary",
-    title: "Miteinander | Die Plattform, die verbindet",
+    title: "MyHelper | Die Plattform, die verbindet",
     description: "Finden Sie die perfekte Unterstützung für Ihre Liebsten. Direkt, persönlich, menschlich.",
     images: ["/logo.svg"],
   },

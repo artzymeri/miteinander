@@ -71,7 +71,7 @@ const sendVerificationEmail = async (to, firstName, code) => {
               <!-- Header -->
               <tr>
                 <td style="background: linear-gradient(135deg, #f59e0b, #ea580c); padding: 32px; text-align: center;">
-                  <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0;">Miteinander</h1>
+                  <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0;">MyHelper</h1>
                   <p style="color: rgba(255,255,255,0.9); font-size: 14px; margin: 8px 0 0 0;">Pflegeplattform</p>
                 </td>
               </tr>
@@ -82,7 +82,7 @@ const sendVerificationEmail = async (to, firstName, code) => {
                     Hallo ${firstName},
                   </h2>
                   <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 0 0 24px 0;">
-                    Vielen Dank für Ihre Registrierung bei Miteinander. Bitte verwenden Sie den folgenden Code, um Ihre E-Mail-Adresse zu bestätigen:
+                    Vielen Dank für Ihre Registrierung bei MyHelper. Bitte verwenden Sie den folgenden Code, um Ihre E-Mail-Adresse zu bestätigen:
                   </p>
                   <!-- Code Box -->
                   <div style="background-color: #fffbeb; border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; text-align: center; margin: 0 0 24px 0;">
@@ -105,7 +105,7 @@ const sendVerificationEmail = async (to, firstName, code) => {
               <tr>
                 <td style="padding: 24px 32px; border-top: 1px solid #f3f4f6; text-align: center;">
                   <p style="color: #9ca3af; font-size: 12px; margin: 0;">
-                    © ${new Date().getFullYear()} Miteinander. Alle Rechte vorbehalten.
+                    © ${new Date().getFullYear()} MyHelper. Alle Rechte vorbehalten.
                   </p>
                 </td>
               </tr>
@@ -118,9 +118,9 @@ const sendVerificationEmail = async (to, firstName, code) => {
   `;
 
   const mailOptions = {
-    from: `Miteinander <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
+    from: `MyHelper <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
     to: recipient,
-    subject: 'Miteinander – Ihr Bestätigungscode',
+    subject: 'MyHelper – Ihr Bestätigungscode',
     html,
   };
 
@@ -178,7 +178,7 @@ const sendWelcomeEmail = async (to, firstName) => {
               <!-- Header -->
               <tr>
                 <td style="background: linear-gradient(135deg, #f59e0b, #ea580c); padding: 32px; text-align: center;">
-                  <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0;">Miteinander</h1>
+                  <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0;">MyHelper</h1>
                   <p style="color: rgba(255,255,255,0.9); font-size: 14px; margin: 8px 0 0 0;">Pflegeplattform</p>
                 </td>
               </tr>
@@ -189,7 +189,7 @@ const sendWelcomeEmail = async (to, firstName) => {
                     Willkommen, ${firstName}! 🎉
                   </h2>
                   <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 0 0 24px 0;">
-                    Ihre E-Mail-Adresse wurde erfolgreich bestätigt. Ihr Konto ist jetzt aktiv und Sie können alle Funktionen von Miteinander nutzen.
+                    Ihre E-Mail-Adresse wurde erfolgreich bestätigt. Ihr Konto ist jetzt aktiv und Sie können alle Funktionen von MyHelper nutzen.
                   </p>
                   <!-- Welcome Box -->
                   <div style="background-color: #fffbeb; border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; margin: 0 0 24px 0;">
@@ -212,7 +212,7 @@ const sendWelcomeEmail = async (to, firstName) => {
               <tr>
                 <td style="padding: 24px 32px; border-top: 1px solid #f3f4f6; text-align: center;">
                   <p style="color: #9ca3af; font-size: 12px; margin: 0;">
-                    © ${new Date().getFullYear()} Miteinander. Alle Rechte vorbehalten.
+                    © ${new Date().getFullYear()} MyHelper. Alle Rechte vorbehalten.
                   </p>
                 </td>
               </tr>
@@ -225,9 +225,9 @@ const sendWelcomeEmail = async (to, firstName) => {
   `;
 
   const mailOptions = {
-    from: `Miteinander <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
+    from: `MyHelper <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
     to: recipient,
-    subject: 'Willkommen bei Miteinander! 🎉',
+    subject: 'Willkommen bei MyHelper! 🎉',
     html,
   };
 
@@ -275,7 +275,7 @@ const sendTicketClosedEmail = async (to, firstName, ticketId) => {
               <!-- Header -->
               <tr>
                 <td style="background: linear-gradient(135deg, #f59e0b, #ea580c); padding: 32px; text-align: center;">
-                  <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0;">Miteinander</h1>
+                  <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0;">MyHelper</h1>
                   <p style="color: rgba(255,255,255,0.9); font-size: 14px; margin: 8px 0 0 0;">Pflegeplattform</p>
                 </td>
               </tr>
@@ -301,7 +301,7 @@ const sendTicketClosedEmail = async (to, firstName, ticketId) => {
                     Wir hoffen, dass Ihr Anliegen zu Ihrer Zufriedenheit gelöst wurde. Falls Sie weitere Hilfe benötigen, können Sie jederzeit ein neues Support-Ticket erstellen.
                   </p>
                   <p style="color: #9ca3af; font-size: 13px; line-height: 1.6; margin: 0;">
-                    Vielen Dank, dass Sie Miteinander nutzen.
+                    Vielen Dank, dass Sie MyHelper nutzen.
                   </p>
                 </td>
               </tr>
@@ -309,7 +309,7 @@ const sendTicketClosedEmail = async (to, firstName, ticketId) => {
               <tr>
                 <td style="padding: 24px 32px; border-top: 1px solid #f3f4f6; text-align: center;">
                   <p style="color: #9ca3af; font-size: 12px; margin: 0;">
-                    © ${new Date().getFullYear()} Miteinander. Alle Rechte vorbehalten.
+                    © ${new Date().getFullYear()} MyHelper. Alle Rechte vorbehalten.
                   </p>
                 </td>
               </tr>
@@ -322,9 +322,9 @@ const sendTicketClosedEmail = async (to, firstName, ticketId) => {
   `;
 
   const mailOptions = {
-    from: `Miteinander <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
+    from: `MyHelper <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
     to: recipient,
-    subject: `Miteinander – Ihr Support-Ticket #${ticketId} wurde geschlossen`,
+    subject: `MyHelper – Ihr Support-Ticket #${ticketId} wurde geschlossen`,
     html,
   };
 
@@ -373,7 +373,7 @@ const sendTicketAssignedEmail = async (to, staffFirstName, ticketId, userName) =
               <!-- Header -->
               <tr>
                 <td style="background: linear-gradient(135deg, #f59e0b, #ea580c); padding: 32px; text-align: center;">
-                  <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0;">Miteinander</h1>
+                  <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0;">MyHelper</h1>
                   <p style="color: rgba(255,255,255,0.9); font-size: 14px; margin: 8px 0 0 0;">Pflegeplattform</p>
                 </td>
               </tr>
@@ -414,7 +414,7 @@ const sendTicketAssignedEmail = async (to, staffFirstName, ticketId, userName) =
               <tr>
                 <td style="padding: 24px 32px; border-top: 1px solid #f3f4f6; text-align: center;">
                   <p style="color: #9ca3af; font-size: 12px; margin: 0;">
-                    © ${new Date().getFullYear()} Miteinander. Alle Rechte vorbehalten.
+                    © ${new Date().getFullYear()} MyHelper. Alle Rechte vorbehalten.
                   </p>
                 </td>
               </tr>
@@ -427,9 +427,9 @@ const sendTicketAssignedEmail = async (to, staffFirstName, ticketId, userName) =
   `;
 
   const mailOptions = {
-    from: `Miteinander <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
+    from: `MyHelper <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
     to: recipient,
-    subject: `Miteinander – Neues Support-Ticket #${ticketId} zugewiesen`,
+    subject: `MyHelper – Neues Support-Ticket #${ticketId} zugewiesen`,
     html,
   };
 
@@ -476,7 +476,7 @@ const sendPasswordResetEmail = async (to, firstName, code) => {
               <!-- Header -->
               <tr>
                 <td style="background: linear-gradient(135deg, #f59e0b, #ea580c); padding: 32px; text-align: center;">
-                  <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0;">Miteinander</h1>
+                  <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0;">MyHelper</h1>
                   <p style="color: rgba(255,255,255,0.9); font-size: 14px; margin: 8px 0 0 0;">Pflegeplattform</p>
                 </td>
               </tr>
@@ -510,7 +510,7 @@ const sendPasswordResetEmail = async (to, firstName, code) => {
               <tr>
                 <td style="padding: 24px 32px; border-top: 1px solid #f3f4f6; text-align: center;">
                   <p style="color: #9ca3af; font-size: 12px; margin: 0;">
-                    © ${new Date().getFullYear()} Miteinander. Alle Rechte vorbehalten.
+                    © ${new Date().getFullYear()} MyHelper. Alle Rechte vorbehalten.
                   </p>
                 </td>
               </tr>
@@ -523,9 +523,9 @@ const sendPasswordResetEmail = async (to, firstName, code) => {
   `;
 
   const mailOptions = {
-    from: `Miteinander <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
+    from: `MyHelper <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
     to: recipient,
-    subject: 'Miteinander – Passwort zurücksetzen',
+    subject: 'MyHelper – Passwort zurücksetzen',
     html,
   };
 
@@ -577,7 +577,7 @@ const sendTrialExpiringEmail = async (to, firstName, daysLeft) => {
               <!-- Header -->
               <tr>
                 <td style="background: linear-gradient(135deg, #f59e0b, #ea580c); padding: 32px; text-align: center;">
-                  <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0;">Miteinander</h1>
+                  <h1 style="color: #ffffff; font-size: 24px; font-weight: 700; margin: 0;">MyHelper</h1>
                   <p style="color: rgba(255,255,255,0.9); font-size: 14px; margin: 8px 0 0 0;">Pflegeplattform</p>
                 </td>
               </tr>
@@ -588,7 +588,7 @@ const sendTrialExpiringEmail = async (to, firstName, daysLeft) => {
                     Hallo ${firstName},
                   </h2>
                   <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 0 0 24px 0;">
-                    Ihre kostenlose Testphase bei Miteinander läuft <strong>${dayText}</strong> ab.
+                    Ihre kostenlose Testphase bei MyHelper läuft <strong>${dayText}</strong> ab.
                   </p>
                   <!-- Alert Box -->
                   <div style="background-color: ${urgencyBg}; border: 2px solid ${urgencyColor}; border-radius: 12px; padding: 24px; text-align: center; margin: 0 0 24px 0;">
@@ -596,7 +596,7 @@ const sendTrialExpiringEmail = async (to, firstName, daysLeft) => {
                       ⏰ Noch ${daysLeft} ${daysLeft === 1 ? 'Tag' : 'Tage'} übrig
                     </p>
                     <p style="color: #6b7280; font-size: 13px; margin: 0;">
-                      Wählen Sie einen Plan, um weiterhin alle Funktionen von Miteinander nutzen zu können.
+                      Wählen Sie einen Plan, um weiterhin alle Funktionen von MyHelper nutzen zu können.
                     </p>
                   </div>
                   <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 0 0 8px 0;">
@@ -615,7 +615,7 @@ const sendTrialExpiringEmail = async (to, firstName, daysLeft) => {
               <tr>
                 <td style="padding: 24px 32px; border-top: 1px solid #f3f4f6; text-align: center;">
                   <p style="color: #9ca3af; font-size: 12px; margin: 0;">
-                    © ${new Date().getFullYear()} Miteinander. Alle Rechte vorbehalten.
+                    © ${new Date().getFullYear()} MyHelper. Alle Rechte vorbehalten.
                   </p>
                 </td>
               </tr>
@@ -628,9 +628,9 @@ const sendTrialExpiringEmail = async (to, firstName, daysLeft) => {
   `;
 
   const mailOptions = {
-    from: `Miteinander <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
+    from: `MyHelper <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
     to: recipient,
-    subject: `Miteinander – Ihre Testphase endet ${dayText}!`,
+    subject: `MyHelper – Ihre Testphase endet ${dayText}!`,
     html,
   };
 

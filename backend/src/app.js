@@ -43,7 +43,7 @@ app.use('/api', routes);
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'Miteinander API Server',
+    message: 'MyHelper API Server',
     version: '1.0.0',
     documentation: '/api/health',
   });

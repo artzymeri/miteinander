@@ -131,7 +131,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
       // Show browser notification if permitted and page is not focused
       if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
         if (document.hidden) {
-          new Notification('Miteinander - New Message', {
+          new Notification('MyHelper - New Message', {
             body: data.message.content.length > 100
               ? data.message.content.slice(0, 100) + '...'
               : data.message.content,

@@ -25,7 +25,7 @@ export default function Impressum() {
             {t('imprint.accordingTo')}
           </h2>
           <p>
-            Miteinander GmbH
+            MyHelper GmbH
             <br />
             Musterstraße 123
             <br />
@@ -40,7 +40,7 @@ export default function Impressum() {
           <p>
             Telefon: +49 (0) 30 12345678
             <br />
-            E-Mail: info@miteinander.de
+            E-Mail: info@myhelper.de
           </p>
 
           <h2 className="text-2xl font-serif text-primary mt-8 mb-4">

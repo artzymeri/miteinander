@@ -9,7 +9,7 @@ const { setupSocket } = require('./src/socket');
 const { checkTrialExpirations } = require('./src/utils/trialChecker');
 
 const startServer = async () => {
-  console.log('\n🚀 Starting Miteinander Backend Server...\n');
+  console.log('\n🚀 Starting MyHelper Backend Server...\n');
   
   try {
     // Step 1: Initialize database (create if not exists)

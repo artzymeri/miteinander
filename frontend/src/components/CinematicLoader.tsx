@@ -123,7 +123,7 @@ export default function CinematicLoader({ onLoadingComplete }: CinematicLoaderPr
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 2.2 }}
             >
-              Miteinander
+              MyHelper
             </motion.h1>
 
             <motion.p

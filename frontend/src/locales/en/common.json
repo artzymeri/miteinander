@@ -410,7 +410,9 @@
       "trialEndsAt": "Trial Ends",
       "nextRenewal": "Next Renewal",
       "subscribedUntil": "Subscribed Until",
-      "plan": "Plan"
+      "plan": "Plan",
+      "reviews": "Reviews",
+      "noReviews": "No reviews yet"
     },
     "modal": {
       "viewUser": "User Details",
@@ -574,7 +576,11 @@
       "certifications": "Certifications",
       "yearsExperience": "Years Experience",
       "experience": "Experience & Status",
-      "memberSince": "Member since"
+      "memberSince": "Member since",
+      "reviewsTitle": "Reviews",
+      "review": "review",
+      "reviews": "reviews",
+      "noReviewsYet": "No reviews yet"
     },
     "settings": {
       "title": "Settings",
@@ -906,6 +912,25 @@
     "backToLogin": "Back to login",
     "noEmail": "No email address provided"
   },
+  "verify": {
+    "title": "Verify your email",
+    "subtitle": "We sent a 6-digit code to your email",
+    "verifyButton": "Verify",
+    "verifying": "Verifying...",
+    "enterAllDigits": "Please enter all 6 digits",
+    "invalidCode": "Invalid verification code. Please try again.",
+    "codeExpired": "Code has expired. Please request a new one.",
+    "verificationFailed": "Verification failed. Please try again.",
+    "verified": "Email Verified!",
+    "redirecting": "Redirecting to login...",
+    "noCode": "Didn't receive a code?",
+    "resendCode": "Resend code",
+    "resendIn": "Resend in",
+    "resendFailed": "Failed to resend code. Please try again.",
+    "noEmail": "No email address provided.",
+    "goToRegister": "Go to Register",
+    "backToRegister": "Back to Register"
+  },
   "settlement": {
     "tabTitle": "Settlement",
     "myClients": "My Clients",
@@ -922,7 +947,13 @@
     "backToClients": "Back to Clients",
     "requestTitle": "Settlement Request",
     "requestDesc": "The caregiver would like to care for you. Would you like to confirm the settlement?",
-    "requestSentInfo": "Settlement request sent. Waiting for confirmation.",
+    "requestSentInfo": "Settlement request sent. Waiting for caregiver confirmation.",
+    "pendingTitle": "Request Pending",
+    "pendingDesc": "Your settlement request is waiting for the caregiver to confirm.",
+    "requestSentTo": "Request sent to",
+    "cancelRequest": "Cancel Request",
+    "requestCancelled": "Settlement request has been cancelled.",
+    "noRequests": "No pending settlement requests",
     "confirm": "Confirm",
     "dismiss": "Decline",
     "confirmedMessage": "Settlement has been confirmed",
@@ -930,8 +961,8 @@
     "sendRequest": "Send Settlement Request",
     "sending": "Sending...",
     "settleTitle": "Settle with a Caregiver",
-    "settleDesc": "Enter your caregiver's email address to mark yourself as settled. Your profile will then only be visible to this caregiver.",
-    "settleInfo": "After settling, your profile will be hidden from search and can only be viewed by your assigned caregiver.",
+    "settleDesc": "Enter your caregiver's email address to send a settlement request. Once the caregiver confirms, your profile will only be visible to them.",
+    "settleInfo": "After the caregiver confirms the settlement, your profile will be hidden from search and can only be viewed by your assigned caregiver.",
     "caregiverEmail": "Caregiver Email",
     "caregiverEmailPlaceholder": "caregiver@email.com",
     "enterCaregiverEmail": "Please enter the caregiver's email address",

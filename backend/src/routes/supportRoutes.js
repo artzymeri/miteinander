@@ -32,6 +32,7 @@ router.get('/subscription/:userType/:userId', authenticate, adminOrSupport, admi
 // Support-accessible read-only routes (reuse admin controller)
 router.get('/care-givers', authenticate, adminOrSupport, adminController.getAllCareGivers);
 router.get('/care-givers/:id', authenticate, adminOrSupport, adminController.getCareGiverById);
+router.get('/care-givers/:id/reviews', authenticate, adminOrSupport, adminController.getCaregiverReviews);
 router.get('/care-recipients', authenticate, adminOrSupport, adminController.getAllCareRecipients);
 router.get('/care-recipients/:id', authenticate, adminOrSupport, adminController.getCareRecipientById);
 

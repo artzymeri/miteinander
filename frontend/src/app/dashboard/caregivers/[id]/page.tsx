@@ -23,6 +23,7 @@ import { useTranslation } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter, useParams } from 'next/navigation';
 import CareRecipientLayout from '@/components/dashboard/CareRecipientLayout';
+import { StarDisplay, StarRatingInput } from '@/components/shared/StarRating';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -112,7 +113,6 @@ export default function CaregiverProfilePage() {
   const [reviews, setReviews] = useState<ReviewData[]>([]);
   const [hasReviewed, setHasReviewed] = useState(false);
   const [reviewRating, setReviewRating] = useState(0);
-  const [reviewHover, setReviewHover] = useState(0);
   const [reviewComment, setReviewComment] = useState('');
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [reviewError, setReviewError] = useState<string | null>(null);
@@ -164,7 +164,7 @@ export default function CaregiverProfilePage() {
         });
         if (response.ok) {
           const data = await response.json();
-          const profile = data.data;
+          const profile = data.data.profile;
           if (profile.isSettled && profile.settledWithCaregiver?.id === Number(caregiverId)) {
             setIsSettledWithThisCaregiver(true);
             setSettledAt(profile.settledAt);
@@ -391,23 +391,12 @@ export default function CaregiverProfilePage() {
               {caregiver.rating !== null && Number(caregiver.rating) > 0 ? (
                 <div className="flex items-center gap-1.5 mt-3 justify-center sm:justify-start">
                   <span className="text-xl font-bold text-gray-900">{Number(caregiver.rating).toFixed(1)}</span>
-                  <div className="flex items-center gap-0.5">
-                    {[1, 2, 3, 4, 5].map(i => (
-                      <Star
-                        key={i}
-                        className={`w-4 h-4 ${i <= Math.round(Number(caregiver.rating)) ? 'text-amber-400 fill-current' : 'text-gray-300'}`}
-                      />
-                    ))}
-                  </div>
+                  <StarDisplay rating={Number(caregiver.rating)} size="sm" />
                   <span className="text-sm text-gray-400">({caregiver.reviewCount})</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-1.5 mt-3 justify-center sm:justify-start">
-                  <div className="flex items-center gap-0.5">
-                    {[1, 2, 3, 4, 5].map(i => (
-                      <Star key={i} className="w-4 h-4 text-gray-200" />
-                    ))}
-                  </div>
+                  <StarDisplay rating={0} size="sm" />
                   <span className="text-sm text-gray-400">
                     {t('recipient.caregiverProfile.noReviews') || 'No reviews yet'}
                   </span>
@@ -636,30 +625,8 @@ export default function CaregiverProfilePage() {
                 </h3>
 
                 {/* Star rating */}
-                <div className="flex items-center gap-1 mb-3">
-                  {[1, 2, 3, 4, 5].map(star => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => setReviewRating(star)}
-                      onMouseEnter={() => setReviewHover(star)}
-                      onMouseLeave={() => setReviewHover(0)}
-                      className="p-0.5 cursor-pointer transition-transform hover:scale-110"
-                    >
-                      <Star
-                        className={`w-7 h-7 transition-colors ${
-                          star <= (reviewHover || reviewRating)
-                            ? 'text-amber-400 fill-amber-400'
-                            : 'text-gray-300'
-                        }`}
-                      />
-                    </button>
-                  ))}
-                  {reviewRating > 0 && (
-                    <span className="ml-2 text-sm text-gray-500">
-                      {reviewRating}/5
-                    </span>
-                  )}
+                <div className="mb-3">
+                  <StarRatingInput value={reviewRating} onChange={setReviewRating} />
                 </div>
 
                 {/* Comment textarea */}
@@ -746,18 +713,7 @@ export default function CaregiverProfilePage() {
                       </div>
 
                       {/* Stars */}
-                      <div className="flex items-center gap-0.5 mt-1">
-                        {[1, 2, 3, 4, 5].map(i => (
-                          <Star
-                            key={i}
-                            className={`w-3.5 h-3.5 ${
-                              i <= review.rating
-                                ? 'text-amber-400 fill-amber-400'
-                                : 'text-gray-200'
-                            }`}
-                          />
-                        ))}
-                      </div>
+                      <StarDisplay rating={Number(review.rating)} size="xs" className="mt-1" />
 
                       {/* Comment */}
                       {review.comment && (

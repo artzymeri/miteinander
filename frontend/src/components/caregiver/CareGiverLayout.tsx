@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -20,11 +20,32 @@ import {
   X,
   User,
   Users,
+  Bell,
+  Handshake,
+  Check,
+  Loader2,
 } from 'lucide-react';
+
+interface SettlementRequest {
+  id: number;
+  status: string;
+  createdAt: string;
+  careRecipient: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    profileImageUrl: string | null;
+    city?: string;
+    country?: string;
+  };
+}
 
 interface CareGiverLayoutProps {
   children: ReactNode;
 }
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 const navItems = [
   { key: 'dashboard', href: '/caregiver', icon: LayoutDashboard },
@@ -42,6 +63,12 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [settlementRequests, setSettlementRequests] = useState<SettlementRequest[]>([]);
+  const [settlementCount, setSettlementCount] = useState(0);
+  const [showSettlementPopover, setShowSettlementPopover] = useState(false);
+  const [respondingTo, setRespondingTo] = useState<number | null>(null);
+  const settlementRef = useRef<HTMLDivElement>(null);
+  const mobileSettlementRef = useRef<HTMLDivElement>(null);
 
   // Compute subscription access synchronously
   const subscriptionStatus = user?.subscriptionStatus;
@@ -72,6 +99,142 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
       router.push('/plans');
     }
   }, [isLoading, isAuthenticated, user, router, hasSubscriptionAccess]);
+
+  // Fetch settlement requests
+  useEffect(() => {
+    const fetchSettlementRequests = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        const response = await fetch(`${API_URL}/caregiver/settlement-requests`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setSettlementRequests(data.data.requests);
+          setSettlementCount(data.data.requests.length);
+        }
+      } catch (error) {
+        console.error('Failed to fetch settlement requests:', error);
+      }
+    };
+    if (!isLoading && isAuthenticated && user?.role === 'care_giver') {
+      fetchSettlementRequests();
+      const interval = setInterval(fetchSettlementRequests, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [isLoading, isAuthenticated, user]);
+
+  // Close popover when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        settlementRef.current && !settlementRef.current.contains(event.target as Node) &&
+        (!mobileSettlementRef.current || !mobileSettlementRef.current.contains(event.target as Node))
+      ) {
+        setShowSettlementPopover(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSettlementResponse = async (requestId: number, action: 'confirm' | 'reject') => {
+    setRespondingTo(requestId);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/caregiver/settlement-requests/${requestId}/${action}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        // Remove from list
+        setSettlementRequests(prev => prev.filter(r => r.id !== requestId));
+        setSettlementCount(prev => prev - 1);
+      }
+    } catch (error) {
+      console.error(`Failed to ${action} settlement request:`, error);
+    } finally {
+      setRespondingTo(null);
+    }
+  };
+
+  const formatRequestTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffHr = Math.floor(diffMs / 3600000);
+    const diffDay = Math.floor(diffMs / 86400000);
+    if (diffMin < 1) return t('notifications.justNow');
+    if (diffMin < 60) return `${diffMin}m`;
+    if (diffHr < 24) return `${diffHr}h`;
+    return `${diffDay}d`;
+  };
+
+  const SettlementPopoverContent = () => (
+    <div className="w-80 max-h-96 overflow-y-auto">
+      <div className="px-4 py-3 border-b border-gray-100">
+        <h3 className="font-semibold text-gray-900">{t('settlement.requestTitle')}</h3>
+      </div>
+      {settlementRequests.length === 0 ? (
+        <div className="px-4 py-8 text-center text-gray-500 text-sm">
+          {t('settlement.noRequests')}
+        </div>
+      ) : (
+        <div className="divide-y divide-gray-100">
+          {settlementRequests.map((req) => (
+            <div key={req.id} className="px-4 py-3">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0 overflow-hidden">
+                  {req.careRecipient.profileImageUrl ? (
+                    <img src={req.careRecipient.profileImageUrl} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <>{req.careRecipient.firstName[0]}{req.careRecipient.lastName[0]}</>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900">
+                    {req.careRecipient.firstName} {req.careRecipient.lastName}
+                  </p>
+                  <p className="text-xs text-gray-500">{req.careRecipient.email}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {formatRequestTime(req.createdAt)}
+                  </p>
+                  <div className="flex gap-2 mt-2">
+                    <button
+                      onClick={() => handleSettlementResponse(req.id, 'confirm')}
+                      disabled={respondingTo === req.id}
+                      className="flex items-center gap-1 px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      {respondingTo === req.id ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Check className="w-3 h-3" />
+                      )}
+                      {t('settlement.confirm')}
+                    </button>
+                    <button
+                      onClick={() => handleSettlementResponse(req.id, 'reject')}
+                      disabled={respondingTo === req.id}
+                      className="flex items-center gap-1 px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      <X className="w-3 h-3" />
+                      {t('settlement.dismiss')}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 
   // Show loading spinner while auth is loading
   if (isLoading) {
@@ -166,6 +329,44 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
 
           {/* User section */}
           <div className="p-4 border-t border-gray-100">
+            {/* Settlement requests bell */}
+            <div ref={settlementRef} className="relative mb-2">
+              <button
+                onClick={() => setShowSettlementPopover(!showSettlementPopover)}
+                className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-gray-600 hover:bg-amber-50 hover:text-amber-600 transition-all"
+              >
+                <div className="relative">
+                  <Bell className="w-5 h-5" />
+                  {settlementCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                      {settlementCount > 9 ? '9+' : settlementCount}
+                    </span>
+                  )}
+                </div>
+                <span>{t('settlement.requestTitle')}</span>
+                {settlementCount > 0 && (
+                  <span className="ml-auto bg-red-500 text-white text-xs font-medium rounded-full w-5 h-5 flex items-center justify-center">
+                    {settlementCount > 9 ? '9+' : settlementCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Settlement popover */}
+              <AnimatePresence>
+                {showSettlementPopover && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute bottom-full left-0 mb-2 bg-white rounded-xl shadow-xl border border-gray-200 z-50"
+                  >
+                    <SettlementPopoverContent />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             <div className="flex items-center gap-3 px-4 py-3 mb-2">
               {user?.profileImageUrl ? (
                 <img
@@ -208,7 +409,34 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
               <Menu className="w-6 h-6 text-gray-600" />
             </button>
             <Logo accentStroke='lightgray' mainStroke='orangered' width={32} height={32} />
-            <div className="w-10" /> {/* Spacer for centering */}
+            <div ref={mobileSettlementRef} className="relative">
+              <button
+                onClick={() => setShowSettlementPopover(!showSettlementPopover)}
+                className="p-2 rounded-lg hover:bg-gray-100 transition-colors relative"
+              >
+                <Bell className="w-5 h-5 text-gray-600" />
+                {settlementCount > 0 && (
+                  <span className="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                    {settlementCount > 9 ? '9+' : settlementCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Mobile settlement popover */}
+              <AnimatePresence>
+                {showSettlementPopover && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute top-full right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-200 z-50"
+                  >
+                    <SettlementPopoverContent />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </header>
 

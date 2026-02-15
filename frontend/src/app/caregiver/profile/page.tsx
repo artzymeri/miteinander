@@ -15,9 +15,11 @@ import {
   Star,
   Clock,
   Edit,
+  MessageCircle,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { StarDisplay } from '@/components/shared/StarRating';
 
 interface CareNeed {
   id: number;
@@ -43,7 +45,22 @@ interface Profile {
   experienceYears?: number;
   occupation?: string;
   profileImageUrl?: string;
+  rating: number | null;
+  reviewCount: number;
   memberSince: string;
+}
+
+interface ReviewData {
+  id: number;
+  rating: number;
+  comment: string | null;
+  createdAt: string;
+  careRecipient: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    profileImageUrl: string | null;
+  };
 }
 
 export default function CareGiverProfilePage() {
@@ -51,6 +68,7 @@ export default function CareGiverProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [reviews, setReviews] = useState<ReviewData[]>([]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -78,6 +96,26 @@ export default function CareGiverProfilePage() {
     fetchProfile();
   }, []);
 
+  // Fetch reviews
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/caregiver/reviews`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setReviews(data.data.reviews);
+        }
+      } catch (err) {
+        console.error('Failed to fetch reviews:', err);
+      }
+    };
+
+    fetchReviews();
+  }, []);
+
   const getCareNeedLabel = (careNeed: CareNeed): string => {
     switch (language) {
       case 'de':
@@ -93,6 +131,13 @@ export default function CareGiverProfilePage() {
     return new Date(dateString).toLocaleDateString(
       language === 'de' ? 'de-DE' : language === 'fr' ? 'fr-FR' : 'en-US',
       { year: 'numeric', month: 'long', day: 'numeric' }
+    );
+  };
+
+  const formatReviewDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString(
+      language === 'de' ? 'de-DE' : language === 'fr' ? 'fr-FR' : 'en-US',
+      { year: 'numeric', month: 'short', day: 'numeric' }
     );
   };
 
@@ -195,6 +240,22 @@ export default function CareGiverProfilePage() {
                     {t('caregiver.profile.memberSince')} {formatDate(profile.memberSince)}
                   </span>
                 </div>
+
+                {/* Rating */}
+                {profile.rating !== null && Number(profile.rating) > 0 ? (
+                  <div className="flex items-center gap-1.5 mt-3">
+                    <span className="text-lg font-bold text-gray-900">{Number(profile.rating).toFixed(1)}</span>
+                    <StarDisplay rating={Number(profile.rating)} size="sm" />
+                    <span className="text-sm text-gray-400">({profile.reviewCount} {profile.reviewCount === 1 ? (t('caregiver.profile.review') || 'review') : (t('caregiver.profile.reviews') || 'reviews')})</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5 mt-3">
+                    <StarDisplay rating={0} size="sm" />
+                    <span className="text-sm text-gray-400">
+                      {t('caregiver.profile.noReviewsYet') || 'No reviews yet'}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -332,6 +393,78 @@ export default function CareGiverProfilePage() {
             </div>
           </motion.div>
         )}
+
+        {/* Reviews Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 lg:p-8"
+        >
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <MessageCircle className="w-5 h-5 text-amber-500" />
+            {t('caregiver.profile.reviewsTitle') || 'Reviews'}
+            {reviews.length > 0 && (
+              <span className="text-sm font-normal text-gray-400">({reviews.length})</span>
+            )}
+          </h3>
+
+          {reviews.length === 0 ? (
+            <div className="text-center py-8">
+              <Star className="w-10 h-10 text-gray-200 mx-auto mb-3" />
+              <p className="text-sm text-gray-400">
+                {t('caregiver.profile.noReviewsYet') || 'No reviews yet'}
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {reviews.map(review => (
+                <div
+                  key={review.id}
+                  className="p-4 border border-gray-100 rounded-xl"
+                >
+                  <div className="flex items-start gap-3">
+                    {/* Reviewer avatar */}
+                    <div className="flex-shrink-0">
+                      {review.careRecipient.profileImageUrl ? (
+                        <img
+                          src={review.careRecipient.profileImageUrl}
+                          alt={review.careRecipient.firstName}
+                          className="w-9 h-9 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-sm font-semibold">
+                          {review.careRecipient.firstName[0]}{review.careRecipient.lastName[0]}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm font-medium text-gray-900">
+                          {review.careRecipient.firstName} {review.careRecipient.lastName[0]}.
+                        </p>
+                        <span className="text-xs text-gray-400 flex-shrink-0">
+                          {formatReviewDate(review.createdAt)}
+                        </span>
+                      </div>
+
+                      {/* Stars */}
+                      <StarDisplay rating={Number(review.rating)} size="xs" className="mt-1" />
+
+                      {/* Comment */}
+                      {review.comment && (
+                        <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+                          {review.comment}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </motion.div>
       </div>
     </CareGiverLayout>
   );

@@ -21,6 +21,8 @@
     "20260203000019_add_reset_password_fields.js",
     "20260203000020_add_subscription_fields.js",
     "20260203000021_add_subscription_ends_at.js",
-    "20260203000022_add_soft_delete_to_users.js"
+    "20260203000022_add_soft_delete_to_users.js",
+    "20260203000023_change_review_rating_to_decimal.js",
+    "20260203000024_create_settlement_requests_table.js"
   ]
 }

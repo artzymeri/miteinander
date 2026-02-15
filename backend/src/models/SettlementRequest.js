@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const Review = sequelize.define('Review', {
+  const SettlementRequest = sequelize.define('SettlementRequest', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -15,39 +15,32 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       field: 'care_giver_id',
     },
-    rating: {
-      type: DataTypes.DECIMAL(2, 1),
+    status: {
+      type: DataTypes.ENUM('pending', 'confirmed', 'rejected'),
       allowNull: false,
-      validate: {
-        min: 0.5,
-        max: 5,
-        isHalfStep(value) {
-          if ((parseFloat(value) * 2) % 1 !== 0) {
-            throw new Error('Rating must be in 0.5 increments');
-          }
-        },
-      },
+      defaultValue: 'pending',
     },
-    comment: {
-      type: DataTypes.TEXT,
+    respondedAt: {
+      type: DataTypes.DATE,
       allowNull: true,
+      field: 'responded_at',
     },
   }, {
-    tableName: 'reviews',
+    tableName: 'settlement_requests',
     timestamps: true,
     underscored: true,
   });
 
-  Review.associate = (models) => {
-    Review.belongsTo(models.CareRecipient, {
+  SettlementRequest.associate = (models) => {
+    SettlementRequest.belongsTo(models.CareRecipient, {
       foreignKey: 'careRecipientId',
       as: 'careRecipient',
     });
-    Review.belongsTo(models.CareGiver, {
+    SettlementRequest.belongsTo(models.CareGiver, {
       foreignKey: 'careGiverId',
       as: 'careGiver',
     });
   };
 
-  return Review;
+  return SettlementRequest;
 };

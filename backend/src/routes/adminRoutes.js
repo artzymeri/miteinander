@@ -33,6 +33,9 @@ router.delete('/care-recipients/:id', adminController.deleteCareRecipient);
 // Subscription details for a user
 router.get('/subscription/:userType/:userId', adminController.getUserSubscriptionDetails);
 
+// Reviews for a caregiver
+router.get('/care-givers/:id/reviews', adminController.getCaregiverReviews);
+
 // Configuration - Care Needs
 router.get('/config/care-needs', adminController.getAllCareNeeds);
 router.post('/config/care-needs', adminController.createCareNeed);

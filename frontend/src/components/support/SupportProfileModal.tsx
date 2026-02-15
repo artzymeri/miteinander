@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
-import { X, User, Mail, Phone, MapPin, Calendar, CreditCard, Loader2 } from 'lucide-react';
+import { X, User, Mail, Phone, MapPin, Calendar, CreditCard, Loader2, Star, MessageCircle } from 'lucide-react';
+import { StarDisplay } from '@/components/shared/StarRating';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -18,6 +19,19 @@ interface SubscriptionDetails {
   currentPeriodEnd: string | null;
   plan: string | null;
   isCanceling: boolean;
+}
+
+interface ReviewData {
+  id: number;
+  rating: number;
+  comment: string | null;
+  createdAt: string;
+  careRecipient: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    profileImageUrl: string | null;
+  };
 }
 
 interface SupportProfileModalProps {
@@ -37,6 +51,8 @@ export default function SupportProfileModal({
   const { token } = useAuth();
   const [subDetails, setSubDetails] = useState<SubscriptionDetails | null>(null);
   const [subLoading, setSubLoading] = useState(false);
+  const [reviews, setReviews] = useState<ReviewData[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
 
   // Fetch subscription details from Stripe when modal opens
   useEffect(() => {
@@ -62,6 +78,31 @@ export default function SupportProfileModal({
       }
     };
     fetchSubDetails();
+  }, [isOpen, user, token, userType]);
+
+  // Fetch reviews for care givers
+  useEffect(() => {
+    if (!isOpen || !user || !token || userType !== 'careGiver') {
+      setReviews([]);
+      return;
+    }
+    const fetchReviews = async () => {
+      setReviewsLoading(true);
+      try {
+        const res = await fetch(`${API_URL}/support/care-givers/${user.id}/reviews`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const json = await res.json();
+          setReviews(json.data.reviews);
+        }
+      } catch (err) {
+        console.error('Failed to fetch reviews:', err);
+      } finally {
+        setReviewsLoading(false);
+      }
+    };
+    fetchReviews();
   }, [isOpen, user, token, userType]);
 
   const formatDate = (dateString: string | null | undefined) => {
@@ -235,6 +276,66 @@ export default function SupportProfileModal({
                 );
               })}
             </div>
+
+            {/* Reviews (care givers only) */}
+            {userType === 'careGiver' && (
+              <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                <div className="flex items-center gap-2 mb-3">
+                  <MessageCircle size={18} className="text-gray-500" />
+                  <h4 className="text-sm font-semibold text-gray-700">
+                    {t('admin.fields.reviews') || 'Reviews'}
+                    {reviews.length > 0 && (
+                      <span className="ml-1 font-normal text-gray-400">({reviews.length})</span>
+                    )}
+                  </h4>
+                </div>
+                {reviewsLoading ? (
+                  <div className="flex items-center gap-2 py-2">
+                    <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
+                    <span className="text-sm text-gray-400">{t('admin.modal.loading')}</span>
+                  </div>
+                ) : reviews.length === 0 ? (
+                  <div className="text-center py-4">
+                    <Star className="w-8 h-8 text-gray-200 mx-auto mb-2" />
+                    <p className="text-xs text-gray-400">{t('admin.fields.noReviews') || 'No reviews yet'}</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3 max-h-60 overflow-y-auto">
+                    {reviews.map(review => (
+                      <div key={review.id} className="p-3 bg-white rounded-lg border border-gray-100">
+                        <div className="flex items-start gap-2.5">
+                          {review.careRecipient.profileImageUrl ? (
+                            <img
+                              src={review.careRecipient.profileImageUrl}
+                              alt={review.careRecipient.firstName}
+                              className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+                            />
+                          ) : (
+                            <div className="w-7 h-7 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 text-xs font-semibold flex-shrink-0">
+                              {review.careRecipient.firstName[0]}{review.careRecipient.lastName[0]}
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2">
+                              <p className="text-xs font-medium text-gray-900">
+                                {review.careRecipient.firstName} {review.careRecipient.lastName[0]}.
+                              </p>
+                              <span className="text-xs text-gray-400 flex-shrink-0">
+                                {new Date(review.createdAt).toLocaleDateString('de-DE')}
+                              </span>
+                            </div>
+                            <StarDisplay rating={Number(review.rating)} size="xs" className="mt-0.5" />
+                            {review.comment && (
+                              <p className="text-xs text-gray-600 mt-1 leading-relaxed">{review.comment}</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Metadata */}
             <div className="text-xs text-gray-400 space-y-1 border-t border-gray-100 pt-4">

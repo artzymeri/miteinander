@@ -326,13 +326,14 @@ export default function RecipientMessagesPage() {
     return date.toLocaleDateString();
   };
 
-  const getOtherUser = (conv: Conversation): ConversationUser => {
+  const getOtherUser = (conv: Conversation): ConversationUser | null => {
     return conv.careGiver;
   };
 
   const filteredConversations = conversations.filter(conv => {
-    if (!searchQuery) return true;
     const other = getOtherUser(conv);
+    if (!other) return false;
+    if (!searchQuery) return true;
     const name = `${other.firstName} ${other.lastName}`.toLowerCase();
     return name.includes(searchQuery.toLowerCase());
   });
@@ -383,6 +384,7 @@ export default function RecipientMessagesPage() {
             ) : (
               filteredConversations.map(conv => {
                 const other = getOtherUser(conv);
+                if (!other) return null;
                 const isActive = activeConversation?.id === conv.id;
                 return (
                   <div key={conv.id} className="relative">
@@ -472,19 +474,19 @@ export default function RecipientMessagesPage() {
                   <ArrowLeft className="w-5 h-5 text-gray-600" />
                 </button>
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-semibold overflow-hidden">
-                  {getOtherUser(activeConversation).profileImageUrl ? (
-                    <img src={getOtherUser(activeConversation).profileImageUrl!} alt="" className="w-full h-full object-cover" />
+                  {getOtherUser(activeConversation)?.profileImageUrl ? (
+                    <img src={getOtherUser(activeConversation)!.profileImageUrl!} alt="" className="w-full h-full object-cover" />
                   ) : (
-                    <>{getOtherUser(activeConversation).firstName[0]}{getOtherUser(activeConversation).lastName[0]}</>
+                    <>{getOtherUser(activeConversation)?.firstName?.[0]}{getOtherUser(activeConversation)?.lastName?.[0]}</>
                   )}
                 </div>
                 <div>
                   <h2 className="font-semibold text-gray-900 text-sm">
                     <button
-                      onClick={() => router.push(`/dashboard/caregivers/${getOtherUser(activeConversation).id}`)}
+                      onClick={() => router.push(`/dashboard/caregivers/${getOtherUser(activeConversation)?.id}`)}
                       className="hover:text-amber-600 transition-colors cursor-pointer"
                     >
-                      {getOtherUser(activeConversation).firstName} {getOtherUser(activeConversation).lastName}
+                      {getOtherUser(activeConversation)?.firstName} {getOtherUser(activeConversation)?.lastName}
                     </button>
                   </h2>
                   {isTyping && (

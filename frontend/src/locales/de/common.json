@@ -410,7 +410,9 @@
       "trialEndsAt": "Testphase endet",
       "nextRenewal": "Nächste Verlängerung",
       "subscribedUntil": "Abonniert bis",
-      "plan": "Plan"
+      "plan": "Plan",
+      "reviews": "Bewertungen",
+      "noReviews": "Noch keine Bewertungen"
     },
     "modal": {
       "viewUser": "Benutzerdetails",
@@ -574,7 +576,11 @@
       "certifications": "Zertifizierungen",
       "yearsExperience": "Jahre Erfahrung",
       "experience": "Erfahrung & Status",
-      "memberSince": "Mitglied seit"
+      "memberSince": "Mitglied seit",
+      "reviewsTitle": "Bewertungen",
+      "review": "Bewertung",
+      "reviews": "Bewertungen",
+      "noReviewsYet": "Noch keine Bewertungen"
     },
     "settings": {
       "title": "Einstellungen",
@@ -906,6 +912,25 @@
     "backToLogin": "Zurück zum Login",
     "noEmail": "Keine E-Mail-Adresse angegeben"
   },
+  "verify": {
+    "title": "E-Mail bestätigen",
+    "subtitle": "Wir haben einen 6-stelligen Code an Ihre E-Mail gesendet",
+    "verifyButton": "Bestätigen",
+    "verifying": "Wird überprüft...",
+    "enterAllDigits": "Bitte geben Sie alle 6 Ziffern ein",
+    "invalidCode": "Ungültiger Bestätigungscode. Bitte versuchen Sie es erneut.",
+    "codeExpired": "Der Code ist abgelaufen. Bitte fordern Sie einen neuen an.",
+    "verificationFailed": "Überprüfung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "verified": "E-Mail bestätigt!",
+    "redirecting": "Weiterleitung zum Login...",
+    "noCode": "Keinen Code erhalten?",
+    "resendCode": "Code erneut senden",
+    "resendIn": "Erneut senden in",
+    "resendFailed": "Code konnte nicht erneut gesendet werden. Bitte versuchen Sie es erneut.",
+    "noEmail": "Keine E-Mail-Adresse angegeben.",
+    "goToRegister": "Zur Registrierung",
+    "backToRegister": "Zurück zur Registrierung"
+  },
   "settlement": {
     "tabTitle": "Vermittlung",
     "myClients": "Meine Klienten",
@@ -922,7 +947,13 @@
     "backToClients": "Zurück zu Klienten",
     "requestTitle": "Vermittlungsanfrage",
     "requestDesc": "Die Pflegekraft möchte Sie als Klienten betreuen. Möchten Sie die Vermittlung bestätigen?",
-    "requestSentInfo": "Vermittlungsanfrage gesendet. Warten auf Bestätigung.",
+    "requestSentInfo": "Vermittlungsanfrage gesendet. Warten auf Bestätigung der Pflegekraft.",
+    "pendingTitle": "Anfrage ausstehend",
+    "pendingDesc": "Ihre Vermittlungsanfrage wartet auf die Bestätigung der Pflegekraft.",
+    "requestSentTo": "Anfrage gesendet an",
+    "cancelRequest": "Anfrage zurückziehen",
+    "requestCancelled": "Vermittlungsanfrage wurde zurückgezogen.",
+    "noRequests": "Keine ausstehenden Vermittlungsanfragen",
     "confirm": "Bestätigen",
     "dismiss": "Ablehnen",
     "confirmedMessage": "Vermittlung wurde bestätigt",
@@ -930,8 +961,8 @@
     "sendRequest": "Vermittlung anfragen",
     "sending": "Wird gesendet...",
     "settleTitle": "Sich vermitteln lassen",
-    "settleDesc": "Geben Sie die E-Mail-Adresse Ihrer Pflegekraft ein, um sich als vermittelt zu markieren. Ihr Profil wird dann nur noch für diese Pflegekraft sichtbar sein.",
-    "settleInfo": "Nachdem Sie sich vermitteln lassen, wird Ihr Profil aus der Suche ausgeblendet und kann nur noch von Ihrer zugewiesenen Pflegekraft eingesehen werden.",
+    "settleDesc": "Geben Sie die E-Mail-Adresse Ihrer Pflegekraft ein, um eine Vermittlungsanfrage zu senden. Sobald die Pflegekraft bestätigt, wird Ihr Profil nur noch für sie sichtbar sein.",
+    "settleInfo": "Nachdem die Pflegekraft die Vermittlung bestätigt hat, wird Ihr Profil aus der Suche ausgeblendet und kann nur noch von Ihrer zugewiesenen Pflegekraft eingesehen werden.",
     "caregiverEmail": "E-Mail der Pflegekraft",
     "caregiverEmailPlaceholder": "pflegekraft@email.de",
     "enterCaregiverEmail": "Bitte geben Sie die E-Mail-Adresse der Pflegekraft ein",

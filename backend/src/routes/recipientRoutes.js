@@ -78,13 +78,22 @@ router.put(
   recipientController.updateEmail
 );
 
-// Settle with a caregiver
+// Settle with a caregiver (sends a pending request)
 // POST /api/recipient/settle
 router.post(
   '/settle',
   authenticate,
   careRecipientOnly,
   recipientController.settleWithCaregiver
+);
+
+// Cancel a pending settlement request
+// POST /api/recipient/cancel-settlement
+router.post(
+  '/cancel-settlement',
+  authenticate,
+  careRecipientOnly,
+  recipientController.cancelSettlementRequest
 );
 
 // Unsettle from caregiver

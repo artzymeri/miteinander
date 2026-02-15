@@ -2,7 +2,8 @@ const models = require('../models');
 const { Op } = require('sequelize');
 const { successResponse, errorResponse } = require('../utils/helpers');
 
-const { CareRecipient, CareNeed } = models;
+const { CareRecipient, CareNeed, CareGiver, Review, SettlementRequest } = models;
+const { createRatingNotification } = require('./notificationController');
 
 /**
  * Helper to resolve care need IDs to their full data
@@ -327,6 +328,8 @@ const getMyProfile = async (req, res, next) => {
         'experienceYears',
         'occupation',
         'profileImageUrl',
+        'rating',
+        'reviewCount',
         'createdAt',
       ],
     });
@@ -363,6 +366,8 @@ const getMyProfile = async (req, res, next) => {
         experienceYears: caregiver.experienceYears,
         occupation: caregiver.occupation,
         profileImageUrl: caregiver.profileImageUrl,
+        rating: caregiver.rating,
+        reviewCount: caregiver.reviewCount,
         memberSince: caregiver.createdAt,
       },
     }, 'Profile retrieved successfully');
@@ -621,6 +626,155 @@ const getSettledClientProfile = async (req, res, next) => {
   }
 };
 
+/**
+ * Get reviews for the currently logged-in caregiver
+ * GET /api/caregiver/reviews
+ */
+const getMyReviews = async (req, res, next) => {
+  try {
+    const caregiverId = req.user.id;
+
+    const reviews = await Review.findAll({
+      where: { careGiverId: caregiverId },
+      include: [
+        {
+          model: CareRecipient,
+          as: 'careRecipient',
+          attributes: ['id', 'firstName', 'lastName', 'profileImageUrl'],
+        },
+      ],
+      order: [['createdAt', 'DESC']],
+    });
+
+    return successResponse(res, { reviews });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Get pending settlement requests for the current caregiver
+ * GET /api/caregiver/settlement-requests
+ */
+const getSettlementRequests = async (req, res, next) => {
+  try {
+    const caregiverId = req.user.id;
+
+    const requests = await SettlementRequest.findAll({
+      where: { careGiverId: caregiverId, status: 'pending' },
+      include: [{
+        model: CareRecipient,
+        as: 'careRecipient',
+        attributes: ['id', 'firstName', 'lastName', 'email', 'profileImageUrl', 'city', 'country'],
+      }],
+      order: [['createdAt', 'DESC']],
+    });
+
+    return successResponse(res, { requests });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Get count of pending settlement requests
+ * GET /api/caregiver/settlement-requests/count
+ */
+const getSettlementRequestCount = async (req, res, next) => {
+  try {
+    const caregiverId = req.user.id;
+
+    const count = await SettlementRequest.count({
+      where: { careGiverId: caregiverId, status: 'pending' },
+    });
+
+    return successResponse(res, { count });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Confirm a settlement request
+ * POST /api/caregiver/settlement-requests/:id/confirm
+ */
+const confirmSettlementRequest = async (req, res, next) => {
+  try {
+    const caregiverId = req.user.id;
+    const requestId = req.params.id;
+
+    const request = await SettlementRequest.findOne({
+      where: { id: requestId, careGiverId: caregiverId, status: 'pending' },
+    });
+
+    if (!request) {
+      return errorResponse(res, 'Settlement request not found', 404, 'REQUEST_NOT_FOUND');
+    }
+
+    const recipient = await CareRecipient.findByPk(request.careRecipientId);
+    if (!recipient) {
+      return errorResponse(res, 'Care recipient not found', 404, 'RECIPIENT_NOT_FOUND');
+    }
+
+    if (recipient.isSettled) {
+      // Recipient already settled with someone else
+      await request.update({ status: 'rejected', respondedAt: new Date() });
+      return errorResponse(res, 'This care recipient is already settled with another caregiver', 400, 'ALREADY_SETTLED');
+    }
+
+    // Actualize the settlement
+    await recipient.update({
+      isSettled: true,
+      settledWithCaregiverId: caregiverId,
+      settledAt: new Date(),
+    });
+
+    await request.update({ status: 'confirmed', respondedAt: new Date() });
+
+    // Schedule a rating notification after 1 day
+    const caregiver = await CareGiver.findByPk(caregiverId, {
+      attributes: ['firstName', 'lastName'],
+    });
+    const caregiverName = caregiver ? `${caregiver.firstName} ${caregiver.lastName}` : 'your caregiver';
+    setTimeout(() => {
+      createRatingNotification(request.careRecipientId, caregiverId, caregiverName);
+    }, 24 * 60 * 60 * 1000); // 24 hours
+
+    return successResponse(res, {
+      requestId: request.id,
+      recipientId: recipient.id,
+      recipientName: `${recipient.firstName} ${recipient.lastName}`,
+    }, 'Settlement confirmed successfully');
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Reject a settlement request
+ * POST /api/caregiver/settlement-requests/:id/reject
+ */
+const rejectSettlementRequest = async (req, res, next) => {
+  try {
+    const caregiverId = req.user.id;
+    const requestId = req.params.id;
+
+    const request = await SettlementRequest.findOne({
+      where: { id: requestId, careGiverId: caregiverId, status: 'pending' },
+    });
+
+    if (!request) {
+      return errorResponse(res, 'Settlement request not found', 404, 'REQUEST_NOT_FOUND');
+    }
+
+    await request.update({ status: 'rejected', respondedAt: new Date() });
+
+    return successResponse(res, null, 'Settlement request rejected');
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   findClients,
   getClientProfile,
@@ -631,4 +785,9 @@ module.exports = {
   updatePassword,
   getMySettledClients,
   getSettledClientProfile,
+  getMyReviews,
+  getSettlementRequests,
+  getSettlementRequestCount,
+  confirmSettlementRequest,
+  rejectSettlementRequest,
 };

@@ -377,6 +377,7 @@ export default function CareRecipientDashboard() {
             {recentConversations.length > 0 ? (
               recentConversations.map((conv) => {
                 const otherUser = conv.careGiver;
+                if (!otherUser) return null;
                 const displayName = `${otherUser.firstName} ${otherUser.lastName?.[0] || ''}.`;
                 const initials = `${otherUser.firstName?.[0] || ''}${otherUser.lastName?.[0] || ''}`;
                 return (

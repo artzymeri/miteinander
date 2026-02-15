@@ -22,8 +22,9 @@ const submitReview = async (req, res, next) => {
       return errorResponse(res, 'caregiverId and rating are required', 400);
     }
 
-    if (rating < 1 || rating > 5 || !Number.isInteger(rating)) {
-      return errorResponse(res, 'Rating must be an integer between 1 and 5', 400);
+    const ratingNum = parseFloat(rating);
+    if (isNaN(ratingNum) || ratingNum < 0.5 || ratingNum > 5 || (ratingNum * 2) % 1 !== 0) {
+      return errorResponse(res, 'Rating must be between 0.5 and 5 in 0.5 increments', 400);
     }
 
     // Verify recipient is settled with this caregiver
@@ -53,7 +54,7 @@ const submitReview = async (req, res, next) => {
     const review = await Review.create({
       careRecipientId: recipientId,
       careGiverId: caregiverId,
-      rating,
+      rating: ratingNum,
       comment: comment?.trim() || null,
     });
 
@@ -63,7 +64,7 @@ const submitReview = async (req, res, next) => {
       attributes: ['rating'],
     });
 
-    const totalRating = allReviews.reduce((sum, r) => sum + r.rating, 0);
+    const totalRating = allReviews.reduce((sum, r) => sum + parseFloat(r.rating), 0);
     const avgRating = totalRating / allReviews.length;
 
     await CareGiver.update(

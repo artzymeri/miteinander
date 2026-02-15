@@ -94,4 +94,51 @@ router.put(
   caregiverController.updateEmail
 );
 
+// Get own reviews
+// GET /api/caregiver/reviews
+router.get(
+  '/reviews',
+  authenticate,
+  careGiverOnly,
+  caregiverController.getMyReviews
+);
+
+// ── Settlement Requests ──
+
+// Get pending settlement requests
+// GET /api/caregiver/settlement-requests
+router.get(
+  '/settlement-requests',
+  authenticate,
+  careGiverOnly,
+  caregiverController.getSettlementRequests
+);
+
+// Get count of pending settlement requests
+// GET /api/caregiver/settlement-requests/count
+router.get(
+  '/settlement-requests/count',
+  authenticate,
+  careGiverOnly,
+  caregiverController.getSettlementRequestCount
+);
+
+// Confirm a settlement request
+// POST /api/caregiver/settlement-requests/:id/confirm
+router.post(
+  '/settlement-requests/:id/confirm',
+  authenticate,
+  careGiverOnly,
+  caregiverController.confirmSettlementRequest
+);
+
+// Reject a settlement request
+// POST /api/caregiver/settlement-requests/:id/reject
+router.post(
+  '/settlement-requests/:id/reject',
+  authenticate,
+  careGiverOnly,
+  caregiverController.rejectSettlementRequest
+);
+
 module.exports = router;

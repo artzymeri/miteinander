@@ -2,8 +2,7 @@ const models = require('../models');
 const { Op } = require('sequelize');
 const { successResponse, errorResponse } = require('../utils/helpers');
 
-const { CareGiver, CareNeed, CareRecipient } = models;
-const { createRatingNotification } = require('./notificationController');
+const { CareGiver, CareNeed, CareRecipient, SettlementRequest } = models;
 
 /**
  * Helper to resolve care need/skill IDs to their full data
@@ -378,6 +377,33 @@ const getMyProfile = async (req, res, next) => {
         };
       }
     }
+
+    // Check for pending settlement request
+    let pendingSettlementRequest = null;
+    if (!recipient.isSettled) {
+      const pending = await SettlementRequest.findOne({
+        where: { careRecipientId: recipientId, status: 'pending' },
+        include: [{
+          model: CareGiver,
+          as: 'careGiver',
+          attributes: ['id', 'firstName', 'lastName', 'email', 'profileImageUrl'],
+        }],
+      });
+      if (pending) {
+        pendingSettlementRequest = {
+          id: pending.id,
+          status: pending.status,
+          createdAt: pending.createdAt,
+          caregiver: pending.careGiver ? {
+            id: pending.careGiver.id,
+            firstName: pending.careGiver.firstName,
+            lastName: pending.careGiver.lastName,
+            email: pending.careGiver.email,
+            profileImageUrl: pending.careGiver.profileImageUrl,
+          } : null,
+        };
+      }
+    }
     
     return successResponse(res, {
       profile: {
@@ -397,6 +423,7 @@ const getMyProfile = async (req, res, next) => {
         isSettled: recipient.isSettled,
         settledWithCaregiver,
         settledAt: recipient.settledAt,
+        pendingSettlementRequest,
         memberSince: recipient.createdAt,
       },
     }, 'Profile retrieved successfully');
@@ -534,8 +561,8 @@ const updatePassword = async (req, res, next) => {
 };
 
 /**
- * Settle with a caregiver (care recipient marks themselves as settled)
- * Can be triggered from settings page (with caregiver email) or from chat confirmation
+ * Settle with a caregiver (care recipient sends a settlement request)
+ * Creates a pending request that the caregiver must confirm.
  * 
  * POST /api/recipient/settle
  * Body: { caregiverEmail: string } OR { caregiverId: number }
@@ -557,6 +584,14 @@ const settleWithCaregiver = async (req, res, next) => {
     if (recipient.isSettled) {
       return errorResponse(res, 'You are already settled with a caregiver', 400, 'ALREADY_SETTLED');
     }
+
+    // Check if there's already a pending request from this recipient
+    const existingPending = await SettlementRequest.findOne({
+      where: { careRecipientId: recipientId, status: 'pending' },
+    });
+    if (existingPending) {
+      return errorResponse(res, 'You already have a pending settlement request', 400, 'REQUEST_PENDING');
+    }
     
     // Find the caregiver
     let caregiver;
@@ -569,23 +604,45 @@ const settleWithCaregiver = async (req, res, next) => {
     if (!caregiver) {
       return errorResponse(res, 'Caregiver not found', 404, 'CAREGIVER_NOT_FOUND');
     }
-    
-    await recipient.update({
-      isSettled: true,
-      settledWithCaregiverId: caregiver.id,
-      settledAt: new Date(),
+
+    // Create a pending settlement request
+    const request = await SettlementRequest.create({
+      careRecipientId: recipientId,
+      careGiverId: caregiver.id,
+      status: 'pending',
     });
     
-    // Schedule a rating notification after 1 day
-    const caregiverName = `${caregiver.firstName} ${caregiver.lastName}`;
-    setTimeout(() => {
-      createRatingNotification(recipientId, caregiver.id, caregiverName);
-    }, 24 * 60 * 60 * 1000); // 24 hours
-    
     return successResponse(res, {
-      settledWithCaregiverId: caregiver.id,
-      settledWithCaregiverName: `${caregiver.firstName} ${caregiver.lastName}`,
-    }, 'You are now settled with this caregiver');
+      requestId: request.id,
+      caregiverId: caregiver.id,
+      caregiverName: `${caregiver.firstName} ${caregiver.lastName}`,
+      status: 'pending',
+    }, 'Settlement request sent. Waiting for caregiver confirmation.');
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Cancel a pending settlement request (care recipient withdraws)
+ * 
+ * POST /api/recipient/cancel-settlement
+ */
+const cancelSettlementRequest = async (req, res, next) => {
+  try {
+    const recipientId = req.user.id;
+
+    const pendingRequest = await SettlementRequest.findOne({
+      where: { careRecipientId: recipientId, status: 'pending' },
+    });
+
+    if (!pendingRequest) {
+      return errorResponse(res, 'No pending settlement request found', 404, 'NO_PENDING_REQUEST');
+    }
+
+    await pendingRequest.destroy();
+
+    return successResponse(res, null, 'Settlement request cancelled');
   } catch (error) {
     next(error);
   }
@@ -631,4 +688,5 @@ module.exports = {
   updatePassword,
   settleWithCaregiver,
   unsettleFromCaregiver,
+  cancelSettlementRequest,
 };

@@ -410,7 +410,9 @@
       "trialEndsAt": "Fin de l'essai",
       "nextRenewal": "Prochain renouvellement",
       "subscribedUntil": "Abonné jusqu'au",
-      "plan": "Forfait"
+      "plan": "Forfait",
+      "reviews": "Avis",
+      "noReviews": "Pas encore d'avis"
     },
     "modal": {
       "viewUser": "Détails de l'utilisateur",
@@ -574,7 +576,11 @@
       "certifications": "Certifications",
       "yearsExperience": "Années d'expérience",
       "experience": "Expérience & Statut",
-      "memberSince": "Membre depuis"
+      "memberSince": "Membre depuis",
+      "reviewsTitle": "Avis",
+      "review": "avis",
+      "reviews": "avis",
+      "noReviewsYet": "Pas encore d'avis"
     },
     "settings": {
       "title": "Paramètres",
@@ -906,6 +912,25 @@
     "backToLogin": "Retour à la connexion",
     "noEmail": "Aucune adresse e-mail fournie"
   },
+  "verify": {
+    "title": "Vérifiez votre e-mail",
+    "subtitle": "Nous avons envoyé un code à 6 chiffres à votre adresse e-mail",
+    "verifyButton": "Vérifier",
+    "verifying": "Vérification...",
+    "enterAllDigits": "Veuillez entrer les 6 chiffres",
+    "invalidCode": "Code de vérification invalide. Veuillez réessayer.",
+    "codeExpired": "Le code a expiré. Veuillez en demander un nouveau.",
+    "verificationFailed": "La vérification a échoué. Veuillez réessayer.",
+    "verified": "E-mail vérifié !",
+    "redirecting": "Redirection vers la connexion...",
+    "noCode": "Vous n'avez pas reçu de code ?",
+    "resendCode": "Renvoyer le code",
+    "resendIn": "Renvoyer dans",
+    "resendFailed": "Échec du renvoi du code. Veuillez réessayer.",
+    "noEmail": "Aucune adresse e-mail fournie.",
+    "goToRegister": "Aller à l'inscription",
+    "backToRegister": "Retour à l'inscription"
+  },
   "settlement": {
     "tabTitle": "Placement",
     "myClients": "Mes Clients",
@@ -922,7 +947,13 @@
     "backToClients": "Retour aux clients",
     "requestTitle": "Demande de placement",
     "requestDesc": "Le soignant souhaite vous prendre en charge. Souhaitez-vous confirmer le placement ?",
-    "requestSentInfo": "Demande de placement envoyée. En attente de confirmation.",
+    "requestSentInfo": "Demande de placement envoyée. En attente de confirmation du soignant.",
+    "pendingTitle": "Demande en attente",
+    "pendingDesc": "Votre demande de placement attend la confirmation du soignant.",
+    "requestSentTo": "Demande envoyée à",
+    "cancelRequest": "Annuler la demande",
+    "requestCancelled": "La demande de placement a été annulée.",
+    "noRequests": "Aucune demande de placement en attente",
     "confirm": "Confirmer",
     "dismiss": "Refuser",
     "confirmedMessage": "Le placement a été confirmé",
@@ -930,8 +961,8 @@
     "sendRequest": "Envoyer une demande de placement",
     "sending": "Envoi...",
     "settleTitle": "Se faire placer auprès d'un soignant",
-    "settleDesc": "Entrez l'adresse e-mail de votre soignant pour vous marquer comme placé. Votre profil ne sera alors visible que par ce soignant.",
-    "settleInfo": "Après le placement, votre profil sera masqué des recherches et ne pourra être consulté que par votre soignant attitré.",
+    "settleDesc": "Entrez l'adresse e-mail de votre soignant pour envoyer une demande de placement. Une fois que le soignant confirme, votre profil ne sera visible que par lui.",
+    "settleInfo": "Après la confirmation du soignant, votre profil sera masqué des recherches et ne pourra être consulté que par votre soignant attitré.",
     "caregiverEmail": "E-mail du soignant",
     "caregiverEmailPlaceholder": "soignant@email.com",
     "enterCaregiverEmail": "Veuillez entrer l'adresse e-mail du soignant",

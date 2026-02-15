@@ -57,6 +57,18 @@ interface Profile {
     email: string;
     profileImageUrl?: string | null;
   } | null;
+  pendingSettlementRequest?: {
+    id: number;
+    status: string;
+    createdAt: string;
+    caregiver: {
+      id: number;
+      firstName: string;
+      lastName: string;
+      email: string;
+      profileImageUrl?: string | null;
+    } | null;
+  } | null;
 }
 
 type SettingsTab = 'profile' | 'careNeeds' | 'password' | 'email' | 'settlement' | 'subscription' | 'language';
@@ -99,6 +111,7 @@ export default function CareRecipientSettingsPage() {
   const [settlementEmail, setSettlementEmail] = useState('');
   const [isSettling, setIsSettling] = useState(false);
   const [isUnsettling, setIsUnsettling] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -349,11 +362,44 @@ export default function CareRecipientSettingsPage() {
         setProfile(profileData.data.profile);
       }
       setSettlementEmail('');
-      showMessage('success', t('settlement.settleSuccess'));
+      showMessage('success', t('settlement.requestSentInfo'));
     } catch (err) {
       showMessage('error', err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setIsSettling(false);
+    }
+  };
+
+  const handleCancelSettlement = async () => {
+    setIsCancelling(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recipient/cancel-settlement`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error?.message || 'Failed to cancel request');
+      }
+
+      // Refresh profile
+      const profileRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/recipient/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (profileRes.ok) {
+        const profileData = await profileRes.json();
+        setProfile(profileData.data.profile);
+      }
+      showMessage('success', t('settlement.requestCancelled'));
+    } catch (err) {
+      showMessage('error', err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setIsCancelling(false);
     }
   };
 
@@ -851,6 +897,56 @@ export default function CareRecipientSettingsPage() {
                     {t('settlement.unsettle')}
                   </button>
                 </div>
+              ) : profile?.pendingSettlementRequest ? (
+                /* Pending request - show waiting status and cancel option */
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+                      <Loader2 className="w-5 h-5 text-amber-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">{t('settlement.pendingTitle')}</h3>
+                      <p className="text-sm text-gray-500">{t('settlement.pendingDesc')}</p>
+                    </div>
+                  </div>
+
+                  {profile.pendingSettlementRequest.caregiver && (
+                    <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl mb-6">
+                      <p className="text-xs text-amber-600 mb-1">{t('settlement.requestSentTo')}</p>
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-semibold text-sm overflow-hidden">
+                          {profile.pendingSettlementRequest.caregiver.profileImageUrl ? (
+                            <img src={profile.pendingSettlementRequest.caregiver.profileImageUrl} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <>{profile.pendingSettlementRequest.caregiver.firstName[0]}{profile.pendingSettlementRequest.caregiver.lastName[0]}</>
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            {profile.pendingSettlementRequest.caregiver.firstName} {profile.pendingSettlementRequest.caregiver.lastName}
+                          </p>
+                          <p className="text-xs text-gray-500">{profile.pendingSettlementRequest.caregiver.email}</p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-amber-500 mt-2">
+                        {t('settlement.requestSentInfo')}
+                      </p>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleCancelSettlement}
+                    disabled={isCancelling}
+                    className="flex items-center gap-2 px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-xl font-medium transition-colors disabled:opacity-50"
+                  >
+                    {isCancelling ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <X className="w-5 h-5" />
+                    )}
+                    {t('settlement.cancelRequest')}
+                  </button>
+                </div>
               ) : (
                 /* Not settled - show settle form */
                 <div>
@@ -884,7 +980,7 @@ export default function CareRecipientSettingsPage() {
                     ) : (
                       <Handshake className="w-5 h-5" />
                     )}
-                    {t('settlement.settle')}
+                    {t('settlement.sendRequest')}
                   </button>
                 </div>
               )}

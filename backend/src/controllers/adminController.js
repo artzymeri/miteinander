@@ -3,7 +3,7 @@ const { successResponse, errorResponse, getPagination, getPagingData } = require
 const { Op } = require('sequelize');
 const config = require('../config/config');
 
-const { Admin, Support, CareGiver, CareRecipient, CareNeed, sequelize } = models;
+const { Admin, Support, CareGiver, CareRecipient, CareNeed, Review, sequelize } = models;
 
 // Lazy-init Stripe only when needed
 let _stripe = null;
@@ -666,6 +666,36 @@ const getUserSubscriptionDetails = async (req, res) => {
   }
 };
 
+/**
+ * Get reviews for a specific caregiver (admin/support)
+ * GET /api/admin/care-givers/:id/reviews
+ */
+const getCaregiverReviews = async (req, res) => {
+  try {
+    const caregiverId = parseInt(req.params.id);
+    if (isNaN(caregiverId)) {
+      return errorResponse(res, 'Invalid caregiver ID', 400);
+    }
+
+    const reviews = await Review.findAll({
+      where: { careGiverId: caregiverId },
+      include: [
+        {
+          model: CareRecipient,
+          as: 'careRecipient',
+          attributes: ['id', 'firstName', 'lastName', 'profileImageUrl'],
+        },
+      ],
+      order: [['createdAt', 'DESC']],
+    });
+
+    return successResponse(res, { reviews });
+  } catch (error) {
+    console.error('getCaregiverReviews error:', error);
+    return errorResponse(res, 'Failed to fetch reviews', 500);
+  }
+};
+
 module.exports = {
   getDashboardAnalytics,
   createSupport,
@@ -686,4 +716,5 @@ module.exports = {
   updateCareNeed,
   deleteCareNeed,
   getUserSubscriptionDetails,
+  getCaregiverReviews,
 };

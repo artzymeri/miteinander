@@ -21,6 +21,9 @@ import {
   CheckCircle,
   Bell,
   Star,
+  Handshake,
+  CheckCircle2,
+  XCircle,
 } from 'lucide-react';
 import Logo from '../Logo';
 
@@ -189,6 +192,11 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
       setShowNotifPopover(false);
       setIsSidebarOpen(false);
     }
+    if (notif.type === 'settlement_confirmed' || notif.type === 'settlement_rejected') {
+      router.push('/dashboard/settings');
+      setShowNotifPopover(false);
+      setIsSidebarOpen(false);
+    }
   };
 
   const formatNotifTime = (dateString: string) => {
@@ -348,10 +356,18 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
                               <div className={`mt-0.5 p-1.5 rounded-lg flex-shrink-0 ${
                                 notif.type === 'rate_caregiver'
                                   ? 'bg-amber-100 text-amber-600'
+                                  : notif.type === 'settlement_confirmed'
+                                  ? 'bg-green-100 text-green-600'
+                                  : notif.type === 'settlement_rejected'
+                                  ? 'bg-red-100 text-red-600'
                                   : 'bg-gray-100 text-gray-500'
                               }`}>
                                 {notif.type === 'rate_caregiver' ? (
                                   <Star className="w-4 h-4" />
+                                ) : notif.type === 'settlement_confirmed' ? (
+                                  <CheckCircle2 className="w-4 h-4" />
+                                ) : notif.type === 'settlement_rejected' ? (
+                                  <XCircle className="w-4 h-4" />
                                 ) : (
                                   <Bell className="w-4 h-4" />
                                 )}
@@ -506,10 +522,18 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
                               <div className={`mt-0.5 p-1.5 rounded-lg flex-shrink-0 ${
                                 notif.type === 'rate_caregiver'
                                   ? 'bg-amber-100 text-amber-600'
+                                  : notif.type === 'settlement_confirmed'
+                                  ? 'bg-green-100 text-green-600'
+                                  : notif.type === 'settlement_rejected'
+                                  ? 'bg-red-100 text-red-600'
                                   : 'bg-gray-100 text-gray-500'
                               }`}>
                                 {notif.type === 'rate_caregiver' ? (
                                   <Star className="w-4 h-4" />
+                                ) : notif.type === 'settlement_confirmed' ? (
+                                  <CheckCircle2 className="w-4 h-4" />
+                                ) : notif.type === 'settlement_rejected' ? (
+                                  <XCircle className="w-4 h-4" />
                                 ) : (
                                   <Bell className="w-4 h-4" />
                                 )}

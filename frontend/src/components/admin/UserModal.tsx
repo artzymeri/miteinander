@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
-import { X, Save, User, Mail, Phone, MapPin, Calendar, CreditCard, Loader2, Star, MessageCircle } from 'lucide-react';
+import { X, Save, User, Mail, Phone, MapPin, Calendar, CreditCard, Loader2, Star, MessageCircle, Handshake, Clock } from 'lucide-react';
 import { StarDisplay } from '@/components/shared/StarRating';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -34,6 +34,36 @@ interface ReviewData {
   };
 }
 
+interface SettlementPerson {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  profileImageUrl?: string | null;
+}
+
+interface RecipientSettlementData {
+  isSettled: boolean;
+  settledAt: string | null;
+  settledWith: SettlementPerson | null;
+  pendingRequest: {
+    id: number;
+    createdAt: string;
+    careGiver: SettlementPerson | null;
+  } | null;
+}
+
+interface CaregiverSettlementData {
+  settledClientsCount: number;
+  settledClients: (SettlementPerson & { settledAt: string })[];
+  pendingRequestsCount: number;
+  pendingRequests: {
+    id: number;
+    createdAt: string;
+    careRecipient: SettlementPerson | null;
+  }[];
+}
+
 interface UserModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -58,6 +88,8 @@ export default function UserModal({
   const [subLoading, setSubLoading] = useState(false);
   const [reviews, setReviews] = useState<ReviewData[]>([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [settlementData, setSettlementData] = useState<RecipientSettlementData | CaregiverSettlementData | null>(null);
+  const [settlementLoading, setSettlementLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -114,6 +146,32 @@ export default function UserModal({
       }
     };
     fetchReviews();
+  }, [isOpen, user, token, userType]);
+
+  // Fetch settlement details for care givers/recipients
+  useEffect(() => {
+    if (!isOpen || !user || !token || userType === 'support') {
+      setSettlementData(null);
+      return;
+    }
+    const fetchSettlement = async () => {
+      setSettlementLoading(true);
+      try {
+        const ut = userType === 'careGiver' ? 'care-giver' : 'care-recipient';
+        const res = await fetch(`${API_URL}/admin/settlement/${ut}/${user.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const json = await res.json();
+          setSettlementData(json.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch settlement details:', err);
+      } finally {
+        setSettlementLoading(false);
+      }
+    };
+    fetchSettlement();
   }, [isOpen, user, token, userType]);
 
   const handleChange = (key: string, value: unknown) => {
@@ -361,6 +419,121 @@ export default function UserModal({
                     ))}
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Settlement Details (care givers and care recipients) */}
+            {userType !== 'support' && (
+              <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                <div className="flex items-center gap-2 mb-3">
+                  <Handshake size={18} className="text-gray-500" />
+                  <h4 className="text-sm font-semibold text-gray-700">{t('admin.fields.settlementInfo')}</h4>
+                </div>
+                {settlementLoading ? (
+                  <div className="flex items-center gap-2 py-2">
+                    <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
+                    <span className="text-sm text-gray-400">{t('admin.modal.loading')}</span>
+                  </div>
+                ) : !settlementData ? (
+                  <p className="text-xs text-gray-400">{t('admin.fields.noSettlement')}</p>
+                ) : userType === 'careRecipient' ? (() => {
+                  const data = settlementData as RecipientSettlementData;
+                  return (
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">{t('admin.fields.settlementStatus')}</p>
+                        <span className={`px-2 py-1 text-xs rounded-full ${data.isSettled ? 'bg-green-100 text-green-700' : data.pendingRequest ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600'}`}>
+                          {data.isSettled ? t('settlement.settled') : data.pendingRequest ? t('settlement.pendingTitle') : t('admin.fields.notSettled')}
+                        </span>
+                      </div>
+                      {data.isSettled && data.settledWith && (
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">{t('settlement.settledWith')}</p>
+                          <div className="flex items-center gap-2">
+                            {data.settledWith.profileImageUrl ? (
+                              <img src={data.settledWith.profileImageUrl} alt="" className="w-6 h-6 rounded-full object-cover" />
+                            ) : (
+                              <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-700 text-xs font-semibold">
+                                {data.settledWith.firstName[0]}{data.settledWith.lastName[0]}
+                              </div>
+                            )}
+                            <span className="text-sm text-gray-900">{data.settledWith.firstName} {data.settledWith.lastName}</span>
+                            <span className="text-xs text-gray-400">({data.settledWith.email})</span>
+                          </div>
+                          {data.settledAt && (
+                            <p className="text-xs text-gray-400 mt-1">
+                              <Clock size={12} className="inline mr-1" />{t('settlement.settledSince')}: {formatDate(data.settledAt)}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                      {data.pendingRequest && data.pendingRequest.careGiver && (
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">{t('settlement.requestSentTo')}</p>
+                          <p className="text-sm text-gray-900">
+                            {data.pendingRequest.careGiver.firstName} {data.pendingRequest.careGiver.lastName}
+                            <span className="text-xs text-gray-400 ml-1">({data.pendingRequest.careGiver.email})</span>
+                          </p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            <Clock size={12} className="inline mr-1" />{formatDate(data.pendingRequest.createdAt)}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })() : (() => {
+                  const data = settlementData as CaregiverSettlementData;
+                  return (
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">{t('admin.fields.settledClients')}</p>
+                          <p className="text-sm font-medium text-gray-900">{data.settledClientsCount}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-1">{t('admin.fields.pendingRequests')}</p>
+                          <p className="text-sm font-medium text-gray-900">{data.pendingRequestsCount}</p>
+                        </div>
+                      </div>
+                      {data.settledClients.length > 0 && (
+                        <div>
+                          <p className="text-xs text-gray-500 mb-2">{t('settlement.myClients')}</p>
+                          <div className="space-y-2 max-h-40 overflow-y-auto">
+                            {data.settledClients.map(client => (
+                              <div key={client.id} className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
+                                {client.profileImageUrl ? (
+                                  <img src={client.profileImageUrl} alt="" className="w-6 h-6 rounded-full object-cover" />
+                                ) : (
+                                  <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 text-xs font-semibold">
+                                    {client.firstName[0]}{client.lastName[0]}
+                                  </div>
+                                )}
+                                <span className="text-xs text-gray-900">{client.firstName} {client.lastName}</span>
+                                <span className="text-xs text-gray-400 ml-auto">{formatDate(client.settledAt)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {data.pendingRequests.length > 0 && (
+                        <div>
+                          <p className="text-xs text-gray-500 mb-2">{t('admin.fields.pendingRequests')}</p>
+                          <div className="space-y-2 max-h-40 overflow-y-auto">
+                            {data.pendingRequests.map(req => req.careRecipient && (
+                              <div key={req.id} className="flex items-center gap-2 p-2 bg-white rounded-lg border border-yellow-100">
+                                <div className="w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-700 text-xs font-semibold">
+                                  {req.careRecipient.firstName[0]}{req.careRecipient.lastName[0]}
+                                </div>
+                                <span className="text-xs text-gray-900">{req.careRecipient.firstName} {req.careRecipient.lastName}</span>
+                                <span className="text-xs text-yellow-600 ml-auto">{formatDate(req.createdAt)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             )}
 

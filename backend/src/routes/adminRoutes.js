@@ -36,6 +36,9 @@ router.get('/subscription/:userType/:userId', adminController.getUserSubscriptio
 // Reviews for a caregiver
 router.get('/care-givers/:id/reviews', adminController.getCaregiverReviews);
 
+// Settlement details for a user
+router.get('/settlement/:userType/:userId', adminController.getUserSettlementDetails);
+
 // Configuration - Care Needs
 router.get('/config/care-needs', adminController.getAllCareNeeds);
 router.post('/config/care-needs', adminController.createCareNeed);

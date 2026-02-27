@@ -29,6 +29,9 @@ router.get('/staff', authenticate, adminOrSupport, supportController.getActiveSt
 // Subscription details for a user
 router.get('/subscription/:userType/:userId', authenticate, adminOrSupport, adminController.getUserSubscriptionDetails);
 
+// Settlement details for a user
+router.get('/settlement/:userType/:userId', authenticate, adminOrSupport, adminController.getUserSettlementDetails);
+
 // Support-accessible read-only routes (reuse admin controller)
 router.get('/care-givers', authenticate, adminOrSupport, adminController.getAllCareGivers);
 router.get('/care-givers/:id', authenticate, adminOrSupport, adminController.getCareGiverById);

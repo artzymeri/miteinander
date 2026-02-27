@@ -2,7 +2,7 @@ const models = require('../models');
 const { Op } = require('sequelize');
 const { successResponse, errorResponse } = require('../utils/helpers');
 
-const { CareRecipient, CareNeed, CareGiver, Review, SettlementRequest } = models;
+const { CareRecipient, CareNeed, CareGiver, Review, SettlementRequest, Notification } = models;
 const { createRatingNotification } = require('./notificationController');
 
 /**
@@ -740,6 +740,19 @@ const confirmSettlementRequest = async (req, res, next) => {
       createRatingNotification(request.careRecipientId, caregiverId, caregiverName);
     }, 24 * 60 * 60 * 1000); // 24 hours
 
+    // Create settlement confirmed notification for the care recipient
+    try {
+      await Notification.create({
+        recipientId: request.careRecipientId,
+        type: 'settlement_confirmed',
+        title: 'Settlement Confirmed',
+        message: `${caregiverName} has confirmed your settlement request.`,
+        data: { caregiverId },
+      });
+    } catch (notifErr) {
+      console.error('Failed to create settlement confirmed notification:', notifErr);
+    }
+
     return successResponse(res, {
       requestId: request.id,
       recipientId: recipient.id,
@@ -768,6 +781,23 @@ const rejectSettlementRequest = async (req, res, next) => {
     }
 
     await request.update({ status: 'rejected', respondedAt: new Date() });
+
+    // Create settlement declined notification for the care recipient
+    try {
+      const caregiver = await CareGiver.findByPk(caregiverId, {
+        attributes: ['firstName', 'lastName'],
+      });
+      const caregiverName = caregiver ? `${caregiver.firstName} ${caregiver.lastName}` : 'the caregiver';
+      await Notification.create({
+        recipientId: request.careRecipientId,
+        type: 'settlement_rejected',
+        title: 'Settlement Declined',
+        message: `${caregiverName} has declined your settlement request.`,
+        data: { caregiverId },
+      });
+    } catch (notifErr) {
+      console.error('Failed to create settlement rejected notification:', notifErr);
+    }
 
     return successResponse(res, null, 'Settlement request rejected');
   } catch (error) {

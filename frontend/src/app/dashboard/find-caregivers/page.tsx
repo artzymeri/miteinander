@@ -28,6 +28,13 @@ const COUNTRIES = [
   { code: 'DE', flag: '🇩🇪' },
   { code: 'AT', flag: '🇦🇹' },
   { code: 'CH', flag: '🇨🇭' },
+  { code: 'LI', flag: '🇱🇮' },
+  { code: 'SE', flag: '🇸🇪' },
+  { code: 'NL', flag: '🇳🇱' },
+  { code: 'GB', flag: '🇬🇧' },
+  { code: 'LU', flag: '🇱🇺' },
+  { code: 'BE', flag: '🇧🇪' },
+  { code: 'FR', flag: '🇫🇷' },
 ];
 
 // Cities by country
@@ -35,6 +42,13 @@ const CITIES_BY_COUNTRY: Record<string, string[]> = {
   'DE': ['Berlin', 'Munich', 'Hamburg', 'Frankfurt', 'Cologne', 'Stuttgart', 'Düsseldorf', 'Leipzig', 'Dortmund', 'Essen'],
   'AT': ['Vienna', 'Graz', 'Linz', 'Salzburg', 'Innsbruck'],
   'CH': ['Zurich', 'Geneva', 'Basel', 'Bern', 'Lausanne'],
+  'LI': ['Vaduz', 'Schaan', 'Balzers', 'Triesen', 'Eschen', 'Mauren', 'Triesenberg', 'Ruggell', 'Gamprin', 'Schellenberg', 'Planken'],
+  'SE': ['Stockholm', 'Gothenburg', 'Malmö', 'Uppsala', 'Linköping', 'Örebro', 'Västerås', 'Helsingborg', 'Norrköping', 'Jönköping'],
+  'NL': ['Amsterdam', 'Rotterdam', 'The Hague', 'Utrecht', 'Eindhoven'],
+  'GB': ['London', 'Birmingham', 'Manchester', 'Glasgow', 'Liverpool'],
+  'LU': ['Luxembourg City', 'Esch-sur-Alzette', 'Differdange', 'Dudelange', 'Ettelbruck'],
+  'BE': ['Brussels', 'Antwerp', 'Ghent', 'Charleroi', 'Liège'],
+  'FR': ['Paris', 'Marseille', 'Lyon', 'Toulouse', 'Nice'],
 };
 
 interface SkillData {

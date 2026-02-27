@@ -226,6 +226,8 @@
       "DE": "Allemagne",
       "AT": "Autriche",
       "CH": "Suisse",
+      "LI": "Liechtenstein",
+      "SE": "Suède",
       "NL": "Pays-Bas",
       "GB": "Royaume-Uni",
       "LU": "Luxembourg",
@@ -412,7 +414,13 @@
       "subscribedUntil": "Abonné jusqu'au",
       "plan": "Forfait",
       "reviews": "Avis",
-      "noReviews": "Pas encore d'avis"
+      "noReviews": "Pas encore d'avis",
+      "settlementInfo": "Informations de placement",
+      "settlementStatus": "Statut de placement",
+      "noSettlement": "Aucune donnée de placement disponible",
+      "notSettled": "Non placé",
+      "settledClients": "Clients placés",
+      "pendingRequests": "Demandes en attente"
     },
     "modal": {
       "viewUser": "Détails de l'utilisateur",
@@ -982,7 +990,27 @@
     "noNotifications": "Pas encore de notifications",
     "justNow": "À l'instant",
     "rateCaregiver": "Évaluez votre soignant",
-    "rateMessage": "Vous pouvez maintenant évaluer votre soignant. Partagez votre expérience !"
+    "rateMessage": "Vous pouvez maintenant évaluer votre soignant. Partagez votre expérience !",
+    "settlementConfirmed": "Placement confirmé",
+    "settlementConfirmedMessage": "Votre demande de placement a été confirmée.",
+    "settlementRejected": "Placement refusé",
+    "settlementRejectedMessage": "Votre demande de placement a été refusée."
+  },
+  "cookie": {
+    "title": "Paramètres des cookies",
+    "description": "Nous utilisons des cookies et des technologies similaires pour assurer le bon fonctionnement de notre site web et améliorer votre expérience. Vous pouvez décider quelles catégories vous souhaitez autoriser.",
+    "legalBasis": "Base juridique : Art. 6(1)(a) RGPD, § 25 TTDSG. Pour plus d'informations, consultez notre",
+    "privacyLink": "Politique de confidentialité",
+    "details": "Détails des cookies",
+    "necessary": "Cookies essentiels",
+    "necessaryDesc": "Nécessaires au fonctionnement du site. Ne peuvent pas être désactivés.",
+    "analytics": "Cookies analytiques",
+    "analyticsDesc": "Nous aident à comprendre comment les visiteurs interagissent avec notre site.",
+    "marketing": "Cookies marketing",
+    "marketingDesc": "Utilisés pour vous montrer des publicités pertinentes et mesurer leur efficacité.",
+    "acceptAll": "Tout accepter",
+    "acceptSelected": "Accepter la sélection",
+    "rejectAll": "Essentiels uniquement"
   },
   "plans": {
     "choosePlan": "Choisissez votre plan",

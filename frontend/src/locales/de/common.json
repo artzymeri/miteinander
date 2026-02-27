@@ -226,6 +226,8 @@
       "DE": "Deutschland",
       "AT": "Österreich",
       "CH": "Schweiz",
+      "LI": "Liechtenstein",
+      "SE": "Schweden",
       "NL": "Niederlande",
       "GB": "Vereinigtes Königreich",
       "LU": "Luxemburg",
@@ -412,7 +414,13 @@
       "subscribedUntil": "Abonniert bis",
       "plan": "Plan",
       "reviews": "Bewertungen",
-      "noReviews": "Noch keine Bewertungen"
+      "noReviews": "Noch keine Bewertungen",
+      "settlementInfo": "Vermittlungsinformationen",
+      "settlementStatus": "Vermittlungsstatus",
+      "noSettlement": "Keine Vermittlungsdaten verfügbar",
+      "notSettled": "Nicht vermittelt",
+      "settledClients": "Vermittelte Klienten",
+      "pendingRequests": "Ausstehende Anfragen"
     },
     "modal": {
       "viewUser": "Benutzerdetails",
@@ -982,7 +990,27 @@
     "noNotifications": "Noch keine Benachrichtigungen",
     "justNow": "Gerade eben",
     "rateCaregiver": "Bewerten Sie Ihre Pflegekraft",
-    "rateMessage": "Sie können jetzt Ihre Pflegekraft bewerten. Teilen Sie Ihre Erfahrung!"
+    "rateMessage": "Sie können jetzt Ihre Pflegekraft bewerten. Teilen Sie Ihre Erfahrung!",
+    "settlementConfirmed": "Vermittlung bestätigt",
+    "settlementConfirmedMessage": "Ihre Vermittlungsanfrage wurde bestätigt.",
+    "settlementRejected": "Vermittlung abgelehnt",
+    "settlementRejectedMessage": "Ihre Vermittlungsanfrage wurde abgelehnt."
+  },
+  "cookie": {
+    "title": "Cookie-Einstellungen",
+    "description": "Wir verwenden Cookies und ähnliche Technologien, um die grundlegende Funktionalität unserer Website sicherzustellen und Ihr Erlebnis zu verbessern. Sie können entscheiden, welche Kategorien Sie zulassen möchten.",
+    "legalBasis": "Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO, § 25 TTDSG. Weitere Informationen finden Sie in unserer",
+    "privacyLink": "Datenschutzerklärung",
+    "details": "Cookie-Details",
+    "necessary": "Notwendige Cookies",
+    "necessaryDesc": "Erforderlich für die Funktion der Website. Kann nicht deaktiviert werden.",
+    "analytics": "Analyse-Cookies",
+    "analyticsDesc": "Helfen uns zu verstehen, wie Besucher mit unserer Website interagieren.",
+    "marketing": "Marketing-Cookies",
+    "marketingDesc": "Werden verwendet, um Ihnen relevante Werbung anzuzeigen und deren Wirksamkeit zu messen.",
+    "acceptAll": "Alle akzeptieren",
+    "acceptSelected": "Auswahl akzeptieren",
+    "rejectAll": "Nur notwendige"
   },
   "plans": {
     "choosePlan": "Wählen Sie Ihren Plan",

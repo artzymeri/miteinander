@@ -6,6 +6,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { SocketProvider } from "@/context/SocketContext";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { Toaster } from "sonner";
+import CookieConsent from "@/components/CookieConsent";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -66,6 +67,7 @@ export default function RootLayout({
               <LanguageProvider>
                 {children}
                 <Toaster position="top-right" richColors closeButton />
+                <CookieConsent />
               </LanguageProvider>
             </SocketProvider>
           </AuthProvider>

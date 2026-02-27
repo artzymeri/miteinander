@@ -226,6 +226,8 @@
       "DE": "Germany",
       "AT": "Austria",
       "CH": "Switzerland",
+      "LI": "Liechtenstein",
+      "SE": "Sweden",
       "NL": "Netherlands",
       "GB": "United Kingdom",
       "LU": "Luxembourg",
@@ -412,7 +414,13 @@
       "subscribedUntil": "Subscribed Until",
       "plan": "Plan",
       "reviews": "Reviews",
-      "noReviews": "No reviews yet"
+      "noReviews": "No reviews yet",
+      "settlementInfo": "Settlement Information",
+      "settlementStatus": "Settlement Status",
+      "noSettlement": "No settlement data available",
+      "notSettled": "Not Settled",
+      "settledClients": "Settled Clients",
+      "pendingRequests": "Pending Requests"
     },
     "modal": {
       "viewUser": "User Details",
@@ -982,7 +990,27 @@
     "noNotifications": "No notifications yet",
     "justNow": "Just now",
     "rateCaregiver": "Rate your caregiver",
-    "rateMessage": "You can now rate your caregiver. Share your experience!"
+    "rateMessage": "You can now rate your caregiver. Share your experience!",
+    "settlementConfirmed": "Settlement Confirmed",
+    "settlementConfirmedMessage": "Your settlement request has been confirmed.",
+    "settlementRejected": "Settlement Declined",
+    "settlementRejectedMessage": "Your settlement request has been declined."
+  },
+  "cookie": {
+    "title": "Cookie Settings",
+    "description": "We use cookies and similar technologies to ensure the basic functionality of our website and to improve your experience. You can decide which categories you want to allow.",
+    "legalBasis": "Legal basis: Art. 6(1)(a) GDPR, § 25 TTDSG. For more information, see our",
+    "privacyLink": "Privacy Policy",
+    "details": "Cookie details",
+    "necessary": "Essential Cookies",
+    "necessaryDesc": "Required for the website to function. Cannot be disabled.",
+    "analytics": "Analytics Cookies",
+    "analyticsDesc": "Help us understand how visitors interact with our website.",
+    "marketing": "Marketing Cookies",
+    "marketingDesc": "Used to show you relevant advertisements and measure their effectiveness.",
+    "acceptAll": "Accept All",
+    "acceptSelected": "Accept Selected",
+    "rejectAll": "Essential Only"
   },
   "plans": {
     "choosePlan": "Choose your plan",

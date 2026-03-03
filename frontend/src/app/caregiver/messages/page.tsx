@@ -522,7 +522,10 @@ export default function CaregiverMessagesPage() {
                   <div className="flex items-center gap-2">
                     <h2 className="font-semibold text-gray-900 text-sm">
                       <button
-                        onClick={() => handleProfileClick(getOtherUser(activeConversation)?.id)}
+                        onClick={() => {
+                          const userId = getOtherUser(activeConversation)?.id;
+                          if (userId) handleProfileClick(userId);
+                        }}
                         className="hover:text-amber-600 transition-colors cursor-pointer"
                       >
                         {getOtherUser(activeConversation)?.firstName} {getOtherUser(activeConversation)?.lastName}

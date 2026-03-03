@@ -437,7 +437,11 @@
     "supports": {
       "title": "Support Staff",
       "subtitle": "Manage support employees",
-      "searchPlaceholder": "Search by name or email..."
+      "searchPlaceholder": "Search by name or email...",
+      "created": "Support staff member created successfully",
+      "updated": "Support staff member updated successfully",
+      "deleted": "Support staff member deleted successfully",
+      "error": "An error occurred. Please try again."
     },
     "addSupport": {
       "button": "Add Staff",

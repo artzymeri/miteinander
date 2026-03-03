@@ -1,19 +1,27 @@
 const { Sequelize } = require('sequelize');
 const config = require('./config');
+const fs = require('fs');
+const path = require('path');
 
 // Use SSL for any remote database (not localhost)
 const isRemoteDB = config.db.host && config.db.host !== 'localhost' && config.db.host !== '127.0.0.1';
 
-const sslDialectOptions = isRemoteDB
-  ? {
-      ssl: {
-        rejectUnauthorized: false,
-      },
-      authPlugins: {
-        caching_sha2_password: () => () => Buffer.from(config.db.password + '\0'),
-      },
-    }
-  : {};
+let sslDialectOptions = {};
+if (isRemoteDB) {
+  const caPath = path.join(__dirname, 'ca-certificate.crt');
+  const caExists = fs.existsSync(caPath);
+
+  sslDialectOptions = {
+    ssl: {
+      require: true,
+      rejectUnauthorized: caExists,
+      ...(caExists && { ca: fs.readFileSync(caPath) }),
+    },
+    authPlugins: {
+      caching_sha2_password: () => () => Buffer.from(config.db.password + '\0'),
+    },
+  };
+}
 
 const sequelize = new Sequelize(
   config.db.name,

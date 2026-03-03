@@ -13,12 +13,8 @@ if (isRemoteDB) {
 
   sslDialectOptions = {
     ssl: {
-      require: true,
       rejectUnauthorized: caExists,
       ...(caExists && { ca: fs.readFileSync(caPath) }),
-    },
-    authPlugins: {
-      caching_sha2_password: () => () => Buffer.from(config.db.password + '\0'),
     },
   };
 }

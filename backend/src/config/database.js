@@ -16,6 +16,9 @@ const sequelize = new Sequelize(
             ssl: {
               rejectUnauthorized: true,
             },
+            authPlugins: {
+              caching_sha2_password: () => () => Buffer.from(config.db.password + '\0'),
+            },
           }
         : {},
     pool: {

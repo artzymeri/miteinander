@@ -14,7 +14,7 @@ const sequelize = new Sequelize(
       config.server.env === 'production'
         ? {
             ssl: {
-              rejectUnauthorized: true,
+              rejectUnauthorized: false,
             },
             authPlugins: {
               caching_sha2_password: () => () => Buffer.from(config.db.password + '\0'),
@@ -57,6 +57,17 @@ const initializeDatabase = async () => {
       port: config.db.port,
       dialect: config.db.dialect,
       logging: false,
+      dialectOptions:
+        config.server.env === 'production'
+          ? {
+              ssl: {
+                rejectUnauthorized: false,
+              },
+              authPlugins: {
+                caching_sha2_password: () => () => Buffer.from(config.db.password + '\0'),
+              },
+            }
+          : {},
     }
   );
 

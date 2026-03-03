@@ -437,7 +437,11 @@
     "supports": {
       "title": "Support-Mitarbeiter",
       "subtitle": "Support-Mitarbeiter verwalten",
-      "searchPlaceholder": "Nach Name oder E-Mail suchen..."
+      "searchPlaceholder": "Nach Name oder E-Mail suchen...",
+      "created": "Support-Mitarbeiter erfolgreich erstellt",
+      "updated": "Support-Mitarbeiter erfolgreich aktualisiert",
+      "deleted": "Support-Mitarbeiter erfolgreich gelöscht",
+      "error": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
     },
     "addSupport": {
       "button": "Mitarbeiter hinzufügen",
@@ -460,12 +464,18 @@
     "careGivers": {
       "title": "Pflegekräfte",
       "subtitle": "Pflegekräfte-Konten verwalten",
-      "searchPlaceholder": "Nach Name, E-Mail oder Stadt suchen..."
+      "searchPlaceholder": "Nach Name, E-Mail oder Stadt suchen...",
+      "updated": "Pflegekraft erfolgreich aktualisiert",
+      "deleted": "Pflegekraft erfolgreich gelöscht",
+      "error": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
     },
     "careRecipients": {
       "title": "Pflegebedürftige",
       "subtitle": "Pflegebedürftige-Konten verwalten",
-      "searchPlaceholder": "Nach Name, E-Mail oder Stadt suchen..."
+      "searchPlaceholder": "Nach Name, E-Mail oder Stadt suchen...",
+      "updated": "Pflegebedürftiger erfolgreich aktualisiert",
+      "deleted": "Pflegebedürftiger erfolgreich gelöscht",
+      "error": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
     },
     "config": {
       "title": "Konfigurationen",
@@ -486,7 +496,11 @@
         "labelFr": "Bezeichnung (Französisch)",
         "descriptionEn": "Beschreibung (Englisch)",
         "descriptionDe": "Beschreibung (Deutsch)",
-        "descriptionFr": "Beschreibung (Französisch)"
+        "descriptionFr": "Beschreibung (Französisch)",
+        "created": "Pflegebedürfnis erfolgreich erstellt",
+        "updated": "Pflegebedürfnis erfolgreich aktualisiert",
+        "deleted": "Pflegebedürfnis erfolgreich gelöscht",
+        "error": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
       }
     },
     "actions": {

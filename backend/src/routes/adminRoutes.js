@@ -44,5 +44,6 @@ router.get('/config/care-needs', adminController.getAllCareNeeds);
 router.post('/config/care-needs', adminController.createCareNeed);
 router.put('/config/care-needs/:id', adminController.updateCareNeed);
 router.delete('/config/care-needs/:id', adminController.deleteCareNeed);
+router.patch('/config/care-needs/:id/toggle', adminController.toggleCareNeed);
 
 module.exports = router;

@@ -99,12 +99,15 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   // Hook to normalize labels to Pascal Case before saving
-  CareNeed.beforeCreate((careNeed) => {
-    careNeed.labelEn = CareNeed.toPascalCase(careNeed.labelEn);
-    careNeed.labelDe = CareNeed.toPascalCase(careNeed.labelDe);
-    careNeed.labelFr = CareNeed.toPascalCase(careNeed.labelFr);
-    if (!careNeed.key) {
-      careNeed.key = CareNeed.toCamelCaseKey(careNeed.labelEn);
+  // Use beforeValidate so the auto-generated key is set before notNull validation
+  CareNeed.beforeValidate((careNeed) => {
+    if (careNeed.isNewRecord) {
+      careNeed.labelEn = CareNeed.toPascalCase(careNeed.labelEn);
+      careNeed.labelDe = CareNeed.toPascalCase(careNeed.labelDe);
+      careNeed.labelFr = CareNeed.toPascalCase(careNeed.labelFr);
+      if (!careNeed.key) {
+        careNeed.key = CareNeed.toCamelCaseKey(careNeed.labelEn);
+      }
     }
   });
 

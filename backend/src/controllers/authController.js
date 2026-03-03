@@ -57,18 +57,36 @@ const register = async (req, res, next) => {
       }
     }
     
-    // Validate role-specific required fields
+    // Validate role-specific required fields and resolve care need keys → IDs
     if (role === USER_ROLES.CARE_GIVER) {
       const skills = additionalData.skills;
       if (!skills || !Array.isArray(skills) || skills.length === 0) {
         return errorResponse(res, 'At least one skill is required', 400, 'MIN_SKILLS');
       }
+      // Resolve string keys to integer IDs
+      const careNeedRecords = await CareNeed.findAll({
+        where: { key: skills, isActive: true },
+        attributes: ['id', 'key'],
+      });
+      if (careNeedRecords.length === 0) {
+        return errorResponse(res, 'No valid skills found', 400, 'INVALID_SKILLS');
+      }
+      additionalData.skills = careNeedRecords.map(r => r.id);
     }
     if (role === USER_ROLES.CARE_RECIPIENT) {
       const careNeeds = additionalData.careNeeds;
       if (!careNeeds || !Array.isArray(careNeeds) || careNeeds.length === 0) {
         return errorResponse(res, 'At least one care need is required', 400, 'MIN_CARE_NEEDS');
       }
+      // Resolve string keys to integer IDs
+      const careNeedRecords = await CareNeed.findAll({
+        where: { key: careNeeds, isActive: true },
+        attributes: ['id', 'key'],
+      });
+      if (careNeedRecords.length === 0) {
+        return errorResponse(res, 'No valid care needs found', 400, 'INVALID_CARE_NEEDS');
+      }
+      additionalData.careNeeds = careNeedRecords.map(r => r.id);
     }
 
     // Create user

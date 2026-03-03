@@ -63,6 +63,7 @@ interface Caregiver {
   id: number;
   firstName: string;
   lastName: string;
+  address: string | null;
   city: string;
   postalCode: string;
   country: string;
@@ -556,7 +557,7 @@ export default function FindCaregiversPage() {
                       )}
                       <p className="text-sm text-gray-400 truncate mt-0.5 flex items-center gap-1">
                         <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-                        {caregiver.city}{caregiver.postalCode ? `, ${caregiver.postalCode}` : ''}
+                        {[caregiver.address, caregiver.city, caregiver.postalCode].filter(Boolean).join(', ')}
                       </p>
                     </div>
                   </div>

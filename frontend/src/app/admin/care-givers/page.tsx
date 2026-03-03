@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { useTranslation } from '@/context/LanguageContext';
 import { useCareGivers, useUpdateCareGiver, useDeleteCareGiver } from '@/hooks/useAdminApi';
 import { DataTable, UserModal, DeleteConfirmModal } from '@/components/admin';
@@ -57,18 +58,28 @@ export default function CareGiversPage() {
   const handleSave = async (formData: Record<string, unknown>) => {
     if (!selectedCareGiver) return;
     
-    await updateMutation.mutateAsync({
-      id: selectedCareGiver.id,
-      data: formData as Partial<CareGiver>,
-    });
-    setIsModalOpen(false);
+    try {
+      await updateMutation.mutateAsync({
+        id: selectedCareGiver.id,
+        data: formData as Partial<CareGiver>,
+      });
+      toast.success(t('admin.careGivers.updated'));
+      setIsModalOpen(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t('admin.careGivers.error'));
+    }
   };
 
   const handleConfirmDelete = async () => {
     if (!selectedCareGiver) return;
     
-    await deleteMutation.mutateAsync(selectedCareGiver.id);
-    setIsDeleteModalOpen(false);
+    try {
+      await deleteMutation.mutateAsync(selectedCareGiver.id);
+      toast.success(t('admin.careGivers.deleted'));
+      setIsDeleteModalOpen(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t('admin.careGivers.error'));
+    }
   };
 
   const columns = [

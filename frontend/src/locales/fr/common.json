@@ -437,7 +437,11 @@
     "supports": {
       "title": "Personnel de support",
       "subtitle": "Gérer les employés de support",
-      "searchPlaceholder": "Rechercher par nom ou e-mail..."
+      "searchPlaceholder": "Rechercher par nom ou e-mail...",
+      "created": "Employé de support créé avec succès",
+      "updated": "Employé de support mis à jour avec succès",
+      "deleted": "Employé de support supprimé avec succès",
+      "error": "Une erreur est survenue. Veuillez réessayer."
     },
     "addSupport": {
       "button": "Ajouter un employé",
@@ -460,12 +464,18 @@
     "careGivers": {
       "title": "Soignants",
       "subtitle": "Gérer les comptes soignants",
-      "searchPlaceholder": "Rechercher par nom, e-mail ou ville..."
+      "searchPlaceholder": "Rechercher par nom, e-mail ou ville...",
+      "updated": "Soignant mis à jour avec succès",
+      "deleted": "Soignant supprimé avec succès",
+      "error": "Une erreur est survenue. Veuillez réessayer."
     },
     "careRecipients": {
       "title": "Bénéficiaires de soins",
       "subtitle": "Gérer les comptes bénéficiaires",
-      "searchPlaceholder": "Rechercher par nom, e-mail ou ville..."
+      "searchPlaceholder": "Rechercher par nom, e-mail ou ville...",
+      "updated": "Bénéficiaire mis à jour avec succès",
+      "deleted": "Bénéficiaire supprimé avec succès",
+      "error": "Une erreur est survenue. Veuillez réessayer."
     },
     "config": {
       "title": "Configurations",
@@ -486,7 +496,11 @@
         "labelFr": "Libellé (Français)",
         "descriptionEn": "Description (Anglais)",
         "descriptionDe": "Description (Allemand)",
-        "descriptionFr": "Description (Français)"
+        "descriptionFr": "Description (Français)",
+        "created": "Besoin de soins créé avec succès",
+        "updated": "Besoin de soins mis à jour avec succès",
+        "deleted": "Besoin de soins supprimé avec succès",
+        "error": "Une erreur est survenue. Veuillez réessayer."
       }
     },
     "actions": {

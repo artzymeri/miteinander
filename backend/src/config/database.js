@@ -10,6 +10,14 @@ const sequelize = new Sequelize(
     port: config.db.port,
     dialect: config.db.dialect,
     logging: config.server.env === 'development' ? console.log : false,
+    dialectOptions:
+      config.server.env === 'production'
+        ? {
+            ssl: {
+              rejectUnauthorized: true,
+            },
+          }
+        : {},
     pool: {
       max: 10,
       min: 0,

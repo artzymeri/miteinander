@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { useTranslation } from '@/context/LanguageContext';
 import { useSupports, useCreateSupport, useUpdateSupport, useDeleteSupport } from '@/hooks/useAdminApi';
 import { DataTable, UserModal, DeleteConfirmModal, AddSupportModal } from '@/components/admin';
@@ -59,23 +60,38 @@ export default function SupportsPage() {
   const handleSave = async (formData: Record<string, unknown>) => {
     if (!selectedSupport) return;
     
-    await updateMutation.mutateAsync({
-      id: selectedSupport.id,
-      data: formData as Partial<Support>,
-    });
-    setIsModalOpen(false);
+    try {
+      await updateMutation.mutateAsync({
+        id: selectedSupport.id,
+        data: formData as Partial<Support>,
+      });
+      toast.success(t('admin.supports.updated'));
+      setIsModalOpen(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t('admin.supports.error'));
+    }
   };
 
   const handleCreate = async (formData: SupportFormData) => {
-    await createMutation.mutateAsync(formData);
-    setIsAddModalOpen(false);
+    try {
+      await createMutation.mutateAsync(formData);
+      toast.success(t('admin.supports.created'));
+      setIsAddModalOpen(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t('admin.supports.error'));
+    }
   };
 
   const handleConfirmDelete = async () => {
     if (!selectedSupport) return;
     
-    await deleteMutation.mutateAsync(selectedSupport.id);
-    setIsDeleteModalOpen(false);
+    try {
+      await deleteMutation.mutateAsync(selectedSupport.id);
+      toast.success(t('admin.supports.deleted'));
+      setIsDeleteModalOpen(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t('admin.supports.error'));
+    }
   };
 
   const columns = [

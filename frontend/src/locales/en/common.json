@@ -460,12 +460,18 @@
     "careGivers": {
       "title": "Care Givers",
       "subtitle": "Manage care giver accounts",
-      "searchPlaceholder": "Search by name, email or city..."
+      "searchPlaceholder": "Search by name, email or city...",
+      "updated": "Care giver updated successfully",
+      "deleted": "Care giver deleted successfully",
+      "error": "An error occurred. Please try again."
     },
     "careRecipients": {
       "title": "Care Recipients",
       "subtitle": "Manage care recipient accounts",
-      "searchPlaceholder": "Search by name, email or city..."
+      "searchPlaceholder": "Search by name, email or city...",
+      "updated": "Care recipient updated successfully",
+      "deleted": "Care recipient deleted successfully",
+      "error": "An error occurred. Please try again."
     },
     "config": {
       "title": "Configurations",
@@ -486,7 +492,11 @@
         "labelFr": "Label (French)",
         "descriptionEn": "Description (English)",
         "descriptionDe": "Description (German)",
-        "descriptionFr": "Description (French)"
+        "descriptionFr": "Description (French)",
+        "created": "Care need created successfully",
+        "updated": "Care need updated successfully",
+        "deleted": "Care need deleted successfully",
+        "error": "An error occurred. Please try again."
       }
     },
     "actions": {

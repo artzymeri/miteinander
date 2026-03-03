@@ -42,14 +42,32 @@ const findClients = async (req, res, next) => {
       isSettled: false, // Exclude settled care recipients
     };
     
-    // Search by postal code or address
+    // Search by postal code, address, or city
+    // Split search into words so "Berlin 10115" matches city=Berlin + postalCode=10115
     const search = req.query.search?.trim();
     if (search) {
-      whereClause[Op.or] = [
-        { postalCode: { [Op.like]: `%${search}%` } },
-        { address: { [Op.like]: `%${search}%` } },
-        { city: { [Op.like]: `%${search}%` } },
-      ];
+      const searchTerms = search.split(/\s+/).filter(Boolean);
+      
+      if (searchTerms.length === 1) {
+        // Single word: match against any field (original behavior)
+        whereClause[Op.or] = [
+          { postalCode: { [Op.like]: `%${searchTerms[0]}%` } },
+          { address: { [Op.like]: `%${searchTerms[0]}%` } },
+          { city: { [Op.like]: `%${searchTerms[0]}%` } },
+        ];
+      } else {
+        // Multiple words: ALL words must match across any of the searchable fields
+        // e.g. "Berlin 10115" → word "Berlin" matches city AND word "10115" matches postalCode
+        const searchFields = ['postalCode', 'address', 'city'];
+        whereClause[Op.and] = whereClause[Op.and] || [];
+        searchTerms.forEach(term => {
+          whereClause[Op.and].push({
+            [Op.or]: searchFields.map(field => ({
+              [field]: { [Op.like]: `%${term}%` },
+            })),
+          });
+        });
+      }
     }
     
     // Filter by country
@@ -109,6 +127,7 @@ const findClients = async (req, res, next) => {
         'id',
         'firstName',
         'lastName',
+        'address',
         'city',
         'postalCode',
         'country',
@@ -116,8 +135,6 @@ const findClients = async (req, res, next) => {
         'bio',
         'profileImageUrl',
         'createdAt',
-        // Explicitly exclude sensitive fields
-        // 'email', 'password', 'phone', 'address', etc. are NOT included
       ],
     });
     
@@ -130,6 +147,7 @@ const findClients = async (req, res, next) => {
         id: client.id,
         firstName: client.firstName,
         lastName: client.lastName?.charAt(0) + '.', // Only show initial for privacy
+        address: client.address,
         city: client.city,
         postalCode: client.postalCode,
         country: client.country,
@@ -193,6 +211,7 @@ const getClientProfile = async (req, res, next) => {
         'id',
         'firstName',
         'lastName',
+        'address',
         'city',
         'postalCode',
         'country',
@@ -202,7 +221,6 @@ const getClientProfile = async (req, res, next) => {
         'createdAt',
         'isSettled',
         'settledWithCaregiverId',
-        // But still exclude: email, password, phone, exact address, emergency contact
       ],
     });
     
@@ -220,6 +238,7 @@ const getClientProfile = async (req, res, next) => {
         id: client.id,
         firstName: client.firstName,
         lastName: client.lastName?.charAt(0) + '.', // Privacy: only initial
+        address: client.address,
         city: client.city,
         postalCode: client.postalCode,
         country: client.country,
@@ -539,7 +558,7 @@ const getMySettledClients = async (req, res, next) => {
       },
       attributes: [
         'id', 'firstName', 'lastName', 'email', 'phone',
-        'city', 'postalCode', 'country', 'careNeeds',
+        'address', 'city', 'postalCode', 'country', 'careNeeds',
         'bio', 'profileImageUrl', 'settledAt', 'createdAt',
       ],
       order: [['settledAt', 'DESC']],
@@ -552,6 +571,7 @@ const getMySettledClients = async (req, res, next) => {
         lastName: client.lastName,
         email: client.email,
         phone: client.phone,
+        address: client.address,
         city: client.city,
         postalCode: client.postalCode,
         country: client.country,

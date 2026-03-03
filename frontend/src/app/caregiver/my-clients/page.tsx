@@ -31,6 +31,7 @@ interface SettledClient {
   id: number;
   firstName: string;
   lastName: string;
+  address: string | null;
   city: string;
   postalCode: string;
   country: string;
@@ -146,7 +147,7 @@ export default function MyClientsPage() {
                       </h3>
                       <div className="flex items-center gap-1.5 text-gray-500 text-sm mt-0.5">
                         <MapPin className="w-3.5 h-3.5" />
-                        <span>{client.postalCode} {client.city}</span>
+                        <span>{[client.address, client.postalCode, client.city].filter(Boolean).join(', ')}</span>
                       </div>
                       <div className="flex items-center gap-1.5 text-gray-400 text-xs mt-1">
                         <Calendar className="w-3.5 h-3.5" />

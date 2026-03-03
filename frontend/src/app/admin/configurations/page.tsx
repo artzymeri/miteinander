@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import { useTranslation } from '@/context/LanguageContext';
 import {
   useCareNeeds,
@@ -227,19 +228,30 @@ export default function ConfigurationsPage() {
       return;
     }
     
-    if (editingId) {
-      await updateMutation.mutateAsync({ id: editingId, data: formData });
-    } else {
-      await createMutation.mutateAsync(formData);
+    try {
+      if (editingId) {
+        await updateMutation.mutateAsync({ id: editingId, data: formData });
+        toast.success(t('admin.config.careNeeds.updated'));
+      } else {
+        await createMutation.mutateAsync(formData);
+        toast.success(t('admin.config.careNeeds.created'));
+      }
+      handleCloseForm();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t('admin.config.careNeeds.error'));
     }
-    handleCloseForm();
   };
 
   const handleToggleActive = async (careNeed: CareNeed) => {
-    await updateMutation.mutateAsync({
-      id: careNeed.id,
-      data: { isActive: !careNeed.isActive } as Partial<CareNeedFormData>,
-    });
+    try {
+      await updateMutation.mutateAsync({
+        id: careNeed.id,
+        data: { isActive: !careNeed.isActive } as Partial<CareNeedFormData>,
+      });
+      toast.success(t('admin.config.careNeeds.updated'));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t('admin.config.careNeeds.error'));
+    }
   };
 
   const handleDelete = (careNeed: CareNeed) => {
@@ -248,8 +260,13 @@ export default function ConfigurationsPage() {
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
-    await deleteMutation.mutateAsync(deleteTarget.id);
-    setDeleteTarget(null);
+    try {
+      await deleteMutation.mutateAsync(deleteTarget.id);
+      toast.success(t('admin.config.careNeeds.deleted'));
+      setDeleteTarget(null);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t('admin.config.careNeeds.error'));
+    }
   };
 
   const isSaving = createMutation.isPending || updateMutation.isPending;

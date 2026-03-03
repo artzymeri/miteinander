@@ -30,6 +30,7 @@ interface ClientProfile {
   id: number;
   firstName: string;
   lastName: string;
+  address: string | null;
   city: string;
   postalCode: string;
   country: string;
@@ -193,7 +194,7 @@ export default function ClientProfilePage() {
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mt-3 justify-center sm:justify-start">
                 <div className="flex items-center gap-1.5 text-gray-500">
                   <MapPin className="w-4 h-4" />
-                  <span className="text-sm">{client.city}, {client.postalCode}</span>
+                  <span className="text-sm">{[client.address, client.city, client.postalCode].filter(Boolean).join(', ')}</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-gray-500">
                   <Calendar className="w-4 h-4" />

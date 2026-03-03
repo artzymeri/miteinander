@@ -583,6 +583,30 @@ const deleteCareNeed = async (req, res) => {
 };
 
 /**
+ * Toggle care need active status
+ */
+const toggleCareNeed = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const careNeed = await CareNeed.findByPk(id);
+    if (!careNeed) {
+      return errorResponse(res, 'Care need not found', 404, 'NOT_FOUND');
+    }
+
+    await careNeed.update({
+      isActive: !careNeed.isActive,
+      updatedBy: req.user?.id,
+    });
+
+    return successResponse(res, careNeed, 'Care need toggled successfully');
+  } catch (error) {
+    console.error('Toggle care need error:', error);
+    return errorResponse(res, 'Failed to toggle care need', 500, 'TOGGLE_ERROR');
+  }
+};
+
+/**
  * Get subscription details for a user (care giver or care recipient)
  * GET /api/admin/subscription/:userType/:userId
  * GET /api/support/subscription/:userType/:userId
@@ -822,6 +846,7 @@ module.exports = {
   createCareNeed,
   updateCareNeed,
   deleteCareNeed,
+  toggleCareNeed,
   getUserSubscriptionDetails,
   getCaregiverReviews,
   getUserSettlementDetails,

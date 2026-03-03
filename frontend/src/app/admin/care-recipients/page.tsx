@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { useTranslation } from '@/context/LanguageContext';
 import { useCareRecipients, useUpdateCareRecipient, useDeleteCareRecipient } from '@/hooks/useAdminApi';
 import { DataTable, UserModal, DeleteConfirmModal } from '@/components/admin';
@@ -57,18 +58,28 @@ export default function CareRecipientsPage() {
   const handleSave = async (formData: Record<string, unknown>) => {
     if (!selectedCareRecipient) return;
     
-    await updateMutation.mutateAsync({
-      id: selectedCareRecipient.id,
-      data: formData as Partial<CareRecipient>,
-    });
-    setIsModalOpen(false);
+    try {
+      await updateMutation.mutateAsync({
+        id: selectedCareRecipient.id,
+        data: formData as Partial<CareRecipient>,
+      });
+      toast.success(t('admin.careRecipients.updated'));
+      setIsModalOpen(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t('admin.careRecipients.error'));
+    }
   };
 
   const handleConfirmDelete = async () => {
     if (!selectedCareRecipient) return;
     
-    await deleteMutation.mutateAsync(selectedCareRecipient.id);
-    setIsDeleteModalOpen(false);
+    try {
+      await deleteMutation.mutateAsync(selectedCareRecipient.id);
+      toast.success(t('admin.careRecipients.deleted'));
+      setIsDeleteModalOpen(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t('admin.careRecipients.error'));
+    }
   };
 
   const columns = [

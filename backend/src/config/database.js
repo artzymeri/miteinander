@@ -1,6 +1,20 @@
 const { Sequelize } = require('sequelize');
 const config = require('./config');
 
+// Use SSL for any remote database (not localhost)
+const isRemoteDB = config.db.host && config.db.host !== 'localhost' && config.db.host !== '127.0.0.1';
+
+const sslDialectOptions = isRemoteDB
+  ? {
+      ssl: {
+        rejectUnauthorized: false,
+      },
+      authPlugins: {
+        caching_sha2_password: () => () => Buffer.from(config.db.password + '\0'),
+      },
+    }
+  : {};
+
 const sequelize = new Sequelize(
   config.db.name,
   config.db.user,
@@ -10,17 +24,7 @@ const sequelize = new Sequelize(
     port: config.db.port,
     dialect: config.db.dialect,
     logging: config.server.env === 'development' ? console.log : false,
-    dialectOptions:
-      config.server.env === 'production'
-        ? {
-            ssl: {
-              rejectUnauthorized: false,
-            },
-            authPlugins: {
-              caching_sha2_password: () => () => Buffer.from(config.db.password + '\0'),
-            },
-          }
-        : {},
+    dialectOptions: sslDialectOptions,
     pool: {
       max: 10,
       min: 0,
@@ -57,17 +61,7 @@ const initializeDatabase = async () => {
       port: config.db.port,
       dialect: config.db.dialect,
       logging: false,
-      dialectOptions:
-        config.server.env === 'production'
-          ? {
-              ssl: {
-                rejectUnauthorized: false,
-              },
-              authPlugins: {
-                caching_sha2_password: () => () => Buffer.from(config.db.password + '\0'),
-              },
-            }
-          : {},
+      dialectOptions: sslDialectOptions,
     }
   );
 

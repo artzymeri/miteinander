@@ -12,10 +12,12 @@ const app = express();
 app.use(helmet());
 
 // CORS configuration
+const allowedOrigins = config.server.env === 'production'
+  ? [process.env.FRONTEND_URL, process.env.FRONTEND_URL?.replace('https://', 'https://www.')]
+  : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:1003', 'http://127.0.0.1:1003'];
+
 app.use(cors({
-  origin: config.server.env === 'production' 
-    ? process.env.FRONTEND_URL 
-    : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:1003', 'http://127.0.0.1:1003'],
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],

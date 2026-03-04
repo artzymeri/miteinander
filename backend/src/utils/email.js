@@ -1,31 +1,34 @@
 const nodemailer = require('nodemailer');
 
 /**
- * Email utility using Resend SMTP.
+ * Email utility using STRATO SMTP.
  * 
- * Resend offers 3,000 emails/month free — cheapest option.
+ * Uses the STRATO mailbox to send all transactional emails.
  * 
  * SETUP INSTRUCTIONS:
- * 1. Go to https://resend.com and create a free account
- * 2. Go to "API Keys" → Create API Key
- * 3. Go to "Domains" → Add your domain (or use the free onboarding@resend.dev for testing)
+ * 1. Log in to STRATO → Email management
+ * 2. Create a mailbox (e.g. noreply@myhelper.me) or use webmaster@myhelper.me
+ * 3. Set the mailbox password
  * 4. Add these to your backend .env file:
- *    RESEND_API_KEY=re_xxxxxxxxxxxx
- *    EMAIL_FROM=noreply@yourdomain.com
- *    (For testing without a domain: EMAIL_FROM=onboarding@resend.dev)
- * 
- * That's it! No other configuration needed.
+ *    SMTP_HOST=smtp.strato.de
+ *    SMTP_PORT=465
+ *    SMTP_USER=noreply@myhelper.me
+ *    SMTP_PASS=your-mailbox-password
+ *    EMAIL_FROM=noreply@myhelper.me
  */
 
-// Create reusable transporter using Resend SMTP
+// Create reusable transporter using STRATO SMTP
 const createTransporter = () => {
   return nodemailer.createTransport({
-    host: 'smtp.resend.com',
-    port: 465,
-    secure: true,
+    host: process.env.SMTP_HOST || 'smtp.strato.de',
+    port: parseInt(process.env.SMTP_PORT, 10) || 465,
+    secure: true, // true for port 465 (SSL)
     auth: {
-      user: 'resend',
-      pass: process.env.RESEND_API_KEY,
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+    tls: {
+      rejectUnauthorized: true,
     },
   });
 };
@@ -118,7 +121,7 @@ const sendVerificationEmail = async (to, firstName, code) => {
   `;
 
   const mailOptions = {
-    from: `MyHelper <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
+    from: `MyHelper <${process.env.EMAIL_FROM}>`,
     to: recipient,
     subject: 'MyHelper – Ihr Bestätigungscode',
     html,
@@ -225,7 +228,7 @@ const sendWelcomeEmail = async (to, firstName) => {
   `;
 
   const mailOptions = {
-    from: `MyHelper <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
+    from: `MyHelper <${process.env.EMAIL_FROM}>`,
     to: recipient,
     subject: 'Willkommen bei MyHelper! 🎉',
     html,
@@ -322,7 +325,7 @@ const sendTicketClosedEmail = async (to, firstName, ticketId) => {
   `;
 
   const mailOptions = {
-    from: `MyHelper <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
+    from: `MyHelper <${process.env.EMAIL_FROM}>`,
     to: recipient,
     subject: `MyHelper – Ihr Support-Ticket #${ticketId} wurde geschlossen`,
     html,
@@ -427,7 +430,7 @@ const sendTicketAssignedEmail = async (to, staffFirstName, ticketId, userName) =
   `;
 
   const mailOptions = {
-    from: `MyHelper <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
+    from: `MyHelper <${process.env.EMAIL_FROM}>`,
     to: recipient,
     subject: `MyHelper – Neues Support-Ticket #${ticketId} zugewiesen`,
     html,
@@ -523,7 +526,7 @@ const sendPasswordResetEmail = async (to, firstName, code) => {
   `;
 
   const mailOptions = {
-    from: `MyHelper <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
+    from: `MyHelper <${process.env.EMAIL_FROM}>`,
     to: recipient,
     subject: 'MyHelper – Passwort zurücksetzen',
     html,
@@ -628,7 +631,7 @@ const sendTrialExpiringEmail = async (to, firstName, daysLeft) => {
   `;
 
   const mailOptions = {
-    from: `MyHelper <${process.env.EMAIL_FROM || 'onboarding@resend.dev'}>`,
+    from: `MyHelper <${process.env.EMAIL_FROM}>`,
     to: recipient,
     subject: `MyHelper – Ihre Testphase endet ${dayText}!`,
     html,

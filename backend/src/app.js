@@ -24,7 +24,7 @@ app.use(cors({
 }));
 
 // Stripe webhook endpoint — MUST be before express.json() to receive raw body
-app.post('/api/subscription/webhook', express.raw({ type: 'application/json' }), handleWebhook);
+app.post('/api/webhooks/stripe', express.raw({ type: 'application/json' }), handleWebhook);
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));

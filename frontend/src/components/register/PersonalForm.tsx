@@ -142,7 +142,8 @@ const PersonalForm: FC<PersonalFormProps> = ({ firstName, lastName, phone, phone
               type="date"
               value={dateOfBirth}
               onChange={(e) => onChange({ dateOfBirth: e.target.value })}
-              className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all text-gray-900 cursor-pointer"
+              className="w-full max-w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all text-gray-900 cursor-pointer appearance-none box-border"
+              style={{ WebkitAppearance: 'none' }}
             />
           </div>
         </div>

@@ -26,7 +26,13 @@ interface SupportMsg {
   createdAt: string;
 }
 
-export default function SupportChatWidget() {
+interface SupportChatWidgetProps {
+  hideFloatingButton?: boolean;
+  externalOpen?: boolean;
+  onExternalClose?: () => void;
+}
+
+export default function SupportChatWidget({ hideFloatingButton = false, externalOpen, onExternalClose }: SupportChatWidgetProps) {
   const { token, user } = useAuth();
   const { t } = useTranslation();
   const { socket } = useSocket();
@@ -44,6 +50,17 @@ export default function SupportChatWidget() {
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
+
+  // Handle external open trigger from sidebar
+  useEffect(() => {
+    if (externalOpen && !isOpen) {
+      openChat();
+    }
+    if (!externalOpen && isOpen && onExternalClose) {
+      // keep in sync — but don't force close, let the user close via X
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [externalOpen]);
 
   // Get or create ticket when opening
   const openChat = useCallback(async () => {
@@ -95,7 +112,8 @@ export default function SupportChatWidget() {
       socket?.emit('leave_support_ticket', { ticketId });
     }
     setIsOpen(false);
-  }, [ticketId, socket]);
+    onExternalClose?.();
+  }, [ticketId, socket, onExternalClose]);
 
   // Listen for support messages
   useEffect(() => {
@@ -169,22 +187,24 @@ export default function SupportChatWidget() {
   return (
     <>
       {/* Floating button */}
-      <AnimatePresence>
-        {!isOpen && (
-          <motion.button
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0 }}
-            onClick={openChat}
-            className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-amber-500 hover:bg-amber-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center cursor-pointer"
-          >
-            <Headphones className="w-6 h-6" />
-            {hasUnread && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white" />
-            )}
-          </motion.button>
-        )}
-      </AnimatePresence>
+      {!hideFloatingButton && (
+        <AnimatePresence>
+          {!isOpen && (
+            <motion.button
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0 }}
+              onClick={openChat}
+              className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-amber-500 hover:bg-amber-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center cursor-pointer"
+            >
+              <Headphones className="w-6 h-6" />
+              {hasUnread && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white" />
+              )}
+            </motion.button>
+          )}
+        </AnimatePresence>
+      )}
 
       {/* Chat popover */}
       <AnimatePresence>

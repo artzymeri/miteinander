@@ -24,6 +24,7 @@ import {
   Handshake,
   CheckCircle2,
   XCircle,
+  Headphones,
 } from 'lucide-react';
 import Logo from '../Logo';
 
@@ -58,6 +59,7 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
   const router = useRouter();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [supportChatOpen, setSupportChatOpen] = useState(false);
   const [isSettled, setIsSettled] = useState(false);
   const [settledCaregiver, setSettledCaregiver] = useState<{ id: number; firstName: string; lastName: string; profileImageUrl: string | null } | null>(null);
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
@@ -396,6 +398,20 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
               </AnimatePresence>
           </div>
 
+          {/* Support button */}
+          <div className="px-4 pb-2">
+            <button
+              onClick={() => {
+                setSupportChatOpen(true);
+                setIsSidebarOpen(false);
+              }}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all w-full text-gray-600 hover:bg-amber-50 hover:text-amber-600 cursor-pointer"
+            >
+              <Headphones className="w-5 h-5" />
+              <span>{t('supportChat.title') || 'Support'}</span>
+            </button>
+          </div>
+
           {/* User section */}
           <div className="p-4 border-t border-gray-100">
             <div className="flex items-center gap-3 px-4 py-3 mb-2">
@@ -586,7 +602,7 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
       </AnimatePresence>
 
       {/* Support Chat Widget */}
-      <SupportChatWidget />
+      <SupportChatWidget hideFloatingButton externalOpen={supportChatOpen} onExternalClose={() => setSupportChatOpen(false)} />
     </div>
   );
 }

@@ -281,7 +281,7 @@ export default function RegisterPage() {
           </div>
           
           {/* Registration card */}
-          <div className="bg-white rounded-3xl shadow-xl p-6 sm:p-8 md:p-10">
+          <div className="bg-white rounded-3xl shadow-xl p-6 sm:p-8 md:p-10 overflow-visible">
             {/* Step 0: Role Selection */}
             {currentStep === 0 && (
               <div className="space-y-6">

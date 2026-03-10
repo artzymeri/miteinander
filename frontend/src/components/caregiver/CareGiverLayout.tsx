@@ -24,6 +24,7 @@ import {
   Handshake,
   Check,
   Loader2,
+  Headphones,
 } from 'lucide-react';
 
 interface SettlementRequest {
@@ -58,6 +59,7 @@ const navItems = [
 
 export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
   const { user, logout, isLoading, isAuthenticated } = useAuth();
+  const [supportChatOpen, setSupportChatOpen] = useState(false);
   const { t } = useTranslation();
   const { unreadCount } = useSocket();
   const router = useRouter();
@@ -327,6 +329,20 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
             })}
           </nav>
 
+          {/* Support button */}
+          <div className="px-4 pb-2">
+            <button
+              onClick={() => {
+                setSupportChatOpen(true);
+                setIsSidebarOpen(false);
+              }}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all w-full text-gray-600 hover:bg-amber-50 hover:text-amber-600 cursor-pointer"
+            >
+              <Headphones className="w-5 h-5" />
+              <span>{t('supportChat.title') || 'Support'}</span>
+            </button>
+          </div>
+
           {/* User section */}
           <div className="p-4 border-t border-gray-100">
             {/* Settlement requests bell */}
@@ -462,7 +478,7 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
       </AnimatePresence>
 
       {/* Support Chat Widget */}
-      <SupportChatWidget />
+      <SupportChatWidget hideFloatingButton externalOpen={supportChatOpen} onExternalClose={() => setSupportChatOpen(false)} />
     </div>
   );
 }

@@ -118,7 +118,7 @@ export default function Hero() {
       <FloatingParticles />
 
       {/* Decorative geometric shapes */}
-      <div className="absolute inset-0 z-[4] overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 z-[4] overflow-hidden pointer-events-none" style={{ clipPath: 'inset(0)' }}>
         <motion.div
           className="absolute -top-20 -right-20 w-96 h-96 rounded-full border border-white/10"
           animate={{ rotate: 360 }}
@@ -154,13 +154,13 @@ export default function Hero() {
           </motion.div>
 
           {/* Staggered headline with gradient text effect */}
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif mb-6 leading-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-serif mb-6 leading-tight">
             {words.map((word, index) => (
               <motion.span
                 key={index}
-                className={`inline-block mr-4 ${
+                className={`inline-block mr-2 sm:mr-4 ${
                   index === 0 
-                    ? "bg-gradient-to-r from-white via-white to-accent-light bg-clip-text text-transparent" 
+                    ? "text-accent-light" 
                     : "text-white"
                 }`}
                 initial={{ opacity: 0, y: 80, rotateX: -90 }}
@@ -206,7 +206,7 @@ export default function Hero() {
               className="group relative bg-accent text-white px-10 py-5 rounded-full text-xl font-medium overflow-hidden cursor-pointer shadow-2xl shadow-accent/30"
               whileHover={{ scale: 1.05, boxShadow: "0 25px 50px -12px rgba(224, 122, 95, 0.5)" }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => document.getElementById('footer')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => document.getElementById('get-started')?.scrollIntoView({ behavior: 'smooth' })}
             >
               <span className="relative z-10 flex items-center justify-center gap-3">
                 {t("hero.cta")}

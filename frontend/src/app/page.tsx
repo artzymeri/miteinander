@@ -17,7 +17,7 @@ export default function Home() {
     <>
       <CinematicLoader onLoadingComplete={() => setIsLoading(false)} />
       
-      <main className={`${isLoading ? "overflow-hidden h-screen" : ""}`}>
+      <main className={`overflow-x-hidden ${isLoading ? "overflow-hidden h-screen" : ""}`}>
         <Navbar />
         <Hero />
         <ConceptSection />

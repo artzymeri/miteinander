@@ -9,6 +9,7 @@ import { useTranslation } from '@/context/LanguageContext';
 import { useSocket } from '@/context/SocketContext';
 import Logo from '@/components/Logo';
 import SupportChatWidget from '@/components/support/SupportChatWidget';
+import FeedbackModal from '@/components/shared/FeedbackModal';
 import {
   LayoutDashboard,
   Search,
@@ -25,6 +26,7 @@ import {
   Check,
   Loader2,
   Headphones,
+  MessageCircle,
 } from 'lucide-react';
 
 interface SettlementRequest {
@@ -60,6 +62,7 @@ const navItems = [
 export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
   const { user, logout, isLoading, isAuthenticated } = useAuth();
   const [supportChatOpen, setSupportChatOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const { t } = useTranslation();
   const { unreadCount } = useSocket();
   const router = useRouter();
@@ -330,7 +333,7 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
           </nav>
 
           {/* Support button */}
-          <div className="px-4 pb-2">
+          <div className="px-4 pb-1">
             <button
               onClick={() => {
                 setSupportChatOpen(true);
@@ -340,6 +343,20 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
             >
               <Headphones className="w-5 h-5" />
               <span>{t('supportChat.title') || 'Support'}</span>
+            </button>
+          </div>
+
+          {/* Feedback button */}
+          <div className="px-4 pb-2">
+            <button
+              onClick={() => {
+                setFeedbackOpen(true);
+                setIsSidebarOpen(false);
+              }}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all w-full text-gray-600 hover:bg-amber-50 hover:text-amber-600 cursor-pointer"
+            >
+              <MessageCircle className="w-5 h-5" />
+              <span>{t('feedback.title')}</span>
             </button>
           </div>
 
@@ -479,6 +496,7 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
 
       {/* Support Chat Widget */}
       <SupportChatWidget hideFloatingButton externalOpen={supportChatOpen} onExternalClose={() => setSupportChatOpen(false)} />
+      <FeedbackModal isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </div>
   );
 }

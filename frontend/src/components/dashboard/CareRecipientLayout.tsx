@@ -8,6 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/context/LanguageContext';
 import { useSocket } from '@/context/SocketContext';
 import SupportChatWidget from '@/components/support/SupportChatWidget';
+import FeedbackModal from '@/components/shared/FeedbackModal';
 import {
   LayoutDashboard,
   Search,
@@ -25,6 +26,7 @@ import {
   CheckCircle2,
   XCircle,
   Headphones,
+  MessageCircle,
 } from 'lucide-react';
 import Logo from '../Logo';
 
@@ -60,6 +62,7 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [supportChatOpen, setSupportChatOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [isSettled, setIsSettled] = useState(false);
   const [settledCaregiver, setSettledCaregiver] = useState<{ id: number; firstName: string; lastName: string; profileImageUrl: string | null } | null>(null);
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
@@ -399,7 +402,7 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
           </div>
 
           {/* Support button */}
-          <div className="px-4 pb-2">
+          <div className="px-4 pb-1">
             <button
               onClick={() => {
                 setSupportChatOpen(true);
@@ -409,6 +412,20 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
             >
               <Headphones className="w-5 h-5" />
               <span>{t('supportChat.title') || 'Support'}</span>
+            </button>
+          </div>
+
+          {/* Feedback button */}
+          <div className="px-4 pb-2">
+            <button
+              onClick={() => {
+                setFeedbackOpen(true);
+                setIsSidebarOpen(false);
+              }}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all w-full text-gray-600 hover:bg-amber-50 hover:text-amber-600 cursor-pointer"
+            >
+              <MessageCircle className="w-5 h-5" />
+              <span>{t('feedback.title')}</span>
             </button>
           </div>
 
@@ -603,6 +620,7 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
 
       {/* Support Chat Widget */}
       <SupportChatWidget hideFloatingButton externalOpen={supportChatOpen} onExternalClose={() => setSupportChatOpen(false)} />
+      <FeedbackModal isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </div>
   );
 }

@@ -1027,7 +1027,7 @@
     "rejectAll": "Essential Only"
   },
   "plans": {
-    "choosePlan": "Choose your plan",
+    "choosePlan": "Choose your subscription",
     "subscriptionRequired": "Subscription required",
     "title": "Unlock the full MyHelper experience",
     "subtitle": "Choose a plan to continue using all features.",
@@ -1056,5 +1056,15 @@
     "pendingDesc": "Your payment is being processed. You can start using the platform.",
     "goToDashboard": "Go to dashboard",
     "manageSubscription": "Manage subscription"
+  },
+  "feedback": {
+    "title": "Give Feedback",
+    "subtitle": "Help us improve MyHelper",
+    "placeholder": "Share your thoughts, suggestions, or issues...",
+    "send": "Send Feedback",
+    "sending": "Sending...",
+    "success": "Thank you for your feedback!",
+    "error": "Failed to send feedback. Please try again.",
+    "emptyError": "Please enter a message."
   }
 }

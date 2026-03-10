@@ -1027,7 +1027,7 @@
     "rejectAll": "Essentiels uniquement"
   },
   "plans": {
-    "choosePlan": "Choisissez votre plan",
+    "choosePlan": "Choisissez votre abonnement",
     "subscriptionRequired": "Abonnement requis",
     "title": "Découvrez MyHelper sans limites",
     "subtitle": "Choisissez un plan pour continuer à utiliser toutes les fonctionnalités.",
@@ -1056,5 +1056,15 @@
     "pendingDesc": "Votre paiement est en cours de traitement. Vous pouvez commencer à utiliser la plateforme.",
     "goToDashboard": "Aller au tableau de bord",
     "manageSubscription": "Gérer l'abonnement"
+  },
+  "feedback": {
+    "title": "Donner un avis",
+    "subtitle": "Aidez-nous à améliorer MyHelper",
+    "placeholder": "Partagez vos réflexions, suggestions ou problèmes...",
+    "send": "Envoyer",
+    "sending": "Envoi en cours...",
+    "success": "Merci pour votre avis !",
+    "error": "Échec de l'envoi. Veuillez réessayer.",
+    "emptyError": "Veuillez entrer un message."
   }
 }

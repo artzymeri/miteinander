@@ -1027,7 +1027,7 @@
     "rejectAll": "Nur notwendige"
   },
   "plans": {
-    "choosePlan": "Wählen Sie Ihren Plan",
+    "choosePlan": "Wählen Sie Ihr Abo",
     "subscriptionRequired": "Abonnement erforderlich",
     "title": "Erleben Sie MyHelper in vollem Umfang",
     "subtitle": "Wählen Sie einen Plan, um alle Funktionen weiter nutzen zu können.",
@@ -1056,5 +1056,15 @@
     "pendingDesc": "Ihre Zahlung wird verarbeitet. Sie können die Plattform jetzt nutzen.",
     "goToDashboard": "Zum Dashboard",
     "manageSubscription": "Abonnement verwalten"
+  },
+  "feedback": {
+    "title": "Feedback geben",
+    "subtitle": "Helfen Sie uns, MyHelper zu verbessern",
+    "placeholder": "Teilen Sie uns Ihre Gedanken, Vorschläge oder Probleme mit...",
+    "send": "Feedback senden",
+    "sending": "Wird gesendet...",
+    "success": "Vielen Dank für Ihr Feedback!",
+    "error": "Feedback konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+    "emptyError": "Bitte geben Sie eine Nachricht ein."
   }
 }

@@ -31,7 +31,7 @@ export default function LanguageSwitcher({ direction = 'down', fullWidth = false
     <div className={`relative ${fullWidth ? 'w-full' : ''}`}>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className={`${fullWidth ? 'w-full justify-between' : ''} flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-gray-100 transition-colors ${fullWidth ? 'border border-gray-200' : ''}`}
+        className={`${fullWidth ? 'w-full justify-between' : ''} flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-gray-100 transition-colors ${fullWidth ? 'border border-gray-200' : 'bg-white/90 shadow-sm border border-gray-100'}`}
         whileHover={{ scale: fullWidth ? 1.01 : 1.05 }}
         whileTap={{ scale: fullWidth ? 0.99 : 0.95 }}
       >

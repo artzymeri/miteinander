@@ -20,8 +20,8 @@ export default function Home() {
       <main className={`overflow-x-hidden ${isLoading ? "overflow-hidden h-screen" : ""}`}>
         <Navbar />
         <Hero />
-        <ConceptSection />
         <DifferenceSection />
+        <ConceptSection />
         <AppSection />
         <GetStartedSection />
         <Footer />

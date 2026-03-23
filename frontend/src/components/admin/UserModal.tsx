@@ -6,6 +6,13 @@ import { useTranslation } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { X, Save, User, Mail, Phone, MapPin, Calendar, CreditCard, Loader2, Star, MessageCircle, Handshake, Clock } from 'lucide-react';
 import { StarDisplay } from '@/components/shared/StarRating';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import { de, enUS, fr } from 'date-fns/locale';
+import 'react-datepicker/dist/react-datepicker.css';
+
+registerLocale('de', de);
+registerLocale('en', enUS);
+registerLocale('fr', fr);
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -81,7 +88,7 @@ export default function UserModal({
   mode,
   userType,
 }: UserModalProps) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { token } = useAuth();
   const [formData, setFormData] = useState<UserData>({});
   const [subDetails, setSubDetails] = useState<SubscriptionDetails | null>(null);
@@ -296,6 +303,35 @@ export default function UserModal({
                             ? new Date(String(formData[field.key])).toLocaleDateString('de-DE')
                             : String(formData[field.key] || '-')}
                         </span>
+                      </div>
+                    ) : field.type === 'date' ? (
+                      <div className="relative">
+                        <Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 z-10 pointer-events-none" size={18} />
+                        <DatePicker
+                          selected={formData[field.key] ? new Date(String(formData[field.key])) : null}
+                          onChange={(date: Date | null) => {
+                            if (date) {
+                              const year = date.getFullYear();
+                              const month = String(date.getMonth() + 1).padStart(2, '0');
+                              const day = String(date.getDate()).padStart(2, '0');
+                              handleChange(field.key, `${year}-${month}-${day}`);
+                            } else {
+                              handleChange(field.key, '');
+                            }
+                          }}
+                          dateFormat="dd.MM.yyyy"
+                          locale={locale}
+                          showMonthDropdown
+                          showYearDropdown
+                          dropdownMode="select"
+                          maxDate={new Date()}
+                          minDate={new Date('1920-01-01')}
+                          placeholderText={field.label}
+                          autoComplete="off"
+                          className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all cursor-pointer"
+                          wrapperClassName="w-full"
+                          popperClassName="datepicker-popper"
+                        />
                       </div>
                     ) : (
                       <div className="relative">

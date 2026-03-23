@@ -1,8 +1,15 @@
 'use client';
 
-import { FC, useState } from 'react';
+import { FC, useState, forwardRef } from 'react';
 import { User, Phone, Calendar, ChevronDown } from 'lucide-react';
 import { useTranslation } from '@/context/LanguageContext';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import { de, enUS, fr } from 'date-fns/locale';
+import 'react-datepicker/dist/react-datepicker.css';
+
+registerLocale('de', de);
+registerLocale('en', enUS);
+registerLocale('fr', fr);
 
 interface PersonalFormProps {
   firstName: string;
@@ -25,7 +32,7 @@ const COUNTRY_CODES = [
 ];
 
 const PersonalForm: FC<PersonalFormProps> = ({ firstName, lastName, phone, phoneCountryCode, dateOfBirth, onChange }) => {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [isCodeDropdownOpen, setIsCodeDropdownOpen] = useState(false);
   
   const selectedCountry = COUNTRY_CODES.find(c => c.code === phoneCountryCode) || COUNTRY_CODES[0];
@@ -136,14 +143,32 @@ const PersonalForm: FC<PersonalFormProps> = ({ firstName, lastName, phone, phone
             {t('register.dateOfBirth')}
           </label>
           <div className="relative">
-            <Calendar className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
+            <Calendar className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-10 pointer-events-none" />
+            <DatePicker
               id="dateOfBirth"
-              type="date"
-              value={dateOfBirth}
-              onChange={(e) => onChange({ dateOfBirth: e.target.value })}
-              className="w-full max-w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all text-gray-900 cursor-pointer appearance-none box-border"
-              style={{ WebkitAppearance: 'none' }}
+              selected={dateOfBirth ? new Date(dateOfBirth) : null}
+              onChange={(date: Date | null) => {
+                if (date) {
+                  const year = date.getFullYear();
+                  const month = String(date.getMonth() + 1).padStart(2, '0');
+                  const day = String(date.getDate()).padStart(2, '0');
+                  onChange({ dateOfBirth: `${year}-${month}-${day}` });
+                } else {
+                  onChange({ dateOfBirth: '' });
+                }
+              }}
+              dateFormat="dd.MM.yyyy"
+              locale={locale}
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              maxDate={new Date()}
+              minDate={new Date('1920-01-01')}
+              placeholderText={t('register.dateOfBirth')}
+              autoComplete="off"
+              className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all text-gray-900 placeholder:text-gray-400 cursor-pointer"
+              wrapperClassName="w-full"
+              popperClassName="datepicker-popper"
             />
           </div>
         </div>

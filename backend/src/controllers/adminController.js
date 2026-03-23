@@ -275,7 +275,6 @@ const getAllCareGivers = async (req, res) => {
         { firstName: { [Op.like]: `%${search}%` } },
         { lastName: { [Op.like]: `%${search}%` } },
         { email: { [Op.like]: `%${search}%` } },
-        { city: { [Op.like]: `%${search}%` } },
       ];
     }
     if (isActive !== undefined) {
@@ -385,7 +384,6 @@ const getAllCareRecipients = async (req, res) => {
         { firstName: { [Op.like]: `%${search}%` } },
         { lastName: { [Op.like]: `%${search}%` } },
         { email: { [Op.like]: `%${search}%` } },
-        { city: { [Op.like]: `%${search}%` } },
       ];
     }
     if (isActive !== undefined) {

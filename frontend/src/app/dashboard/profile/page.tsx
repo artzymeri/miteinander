@@ -33,7 +33,6 @@ interface Profile {
   phone?: string;
   dateOfBirth?: string;
   address?: string;
-  city?: string;
   postalCode?: string;
   country?: string;
   bio?: string;
@@ -233,14 +232,13 @@ export default function CareRecipientProfilePage() {
                 {t('recipient.profile.location')}
               </h3>
 
-              {(profile.city || profile.postalCode || profile.country) && (
+              {(profile.postalCode || profile.country) && (
                 <div className="flex items-center gap-3 text-gray-700">
                   <div className="p-2 bg-gray-100 rounded-lg">
                     <MapPin className="w-4 h-4 text-gray-500" />
                   </div>
                   <span>
-                    {profile.postalCode && `${profile.postalCode}, `}
-                    {profile.city}
+                    {profile.postalCode}
                     {profile.country && `, ${profile.country}`}
                   </span>
                 </div>

@@ -35,13 +35,13 @@ export default function AGB() {
             {t('terms.contractPartnerText')}
             <br />
             <br />
-            MyHelper GmbH
+            Rhoda Mutheu Fideler
             <br />
-            Musterstraße 123
+            MeritaCare
             <br />
-            10115 Berlin
+            Im Hof 16
             <br />
-            Deutschland
+            88069 Tettnang
           </p>
 
           <h2 className="text-2xl font-serif text-primary mt-8 mb-4">

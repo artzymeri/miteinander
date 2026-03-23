@@ -48,18 +48,18 @@ export default function Datenschutz() {
             {t('privacy.responsiblePartyText')}
           </p>
           <p>
-            MyHelper GmbH
+            Rhoda Mutheu Fideler
             <br />
-            Musterstraße 123
+            MeritaCare
             <br />
-            10115 Berlin
+            Im Hof 16
             <br />
-            Deutschland
+            88069 Tettnang
           </p>
           <p>
-            Telefon: +49 (0) 30 12345678
+            {t('imprint.phone')}: +49 152/09465369
             <br />
-            E-Mail: datenschutz@myhelper.de
+            {t('imprint.email')}: info@merita.care
           </p>
 
           <h2 className="text-2xl font-serif text-primary mt-8 mb-4">

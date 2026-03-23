@@ -34,7 +34,6 @@ interface ProfileData {
   id: number;
   firstName: string;
   lastName: string;
-  city: string | null;
   postalCode: string | null;
   bio: string | null;
   skills: SkillData[];
@@ -131,7 +130,7 @@ export default function CareGiverDashboard() {
     const total = 7;
     
     if (profile.firstName && profile.lastName) completed++;
-    if (profile.city) completed++;
+    if (profile.postalCode) completed++;
     if (profile.bio) completed++;
     if (profile.skills && profile.skills.length > 0) completed++;
     if (profile.certifications && profile.certifications.length > 0) completed++;
@@ -221,10 +220,10 @@ export default function CareGiverDashboard() {
                 {t('caregiver.welcomeMessage') || 'Here\'s an overview of your caregiver profile'}
               </p>
               <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-amber-100">
-                {profile?.city && (
+                {profile?.postalCode && (
                   <div className="flex items-center gap-1">
                     <MapPin className="w-4 h-4" />
-                    <span>{profile.city}{profile.postalCode ? `, ${profile.postalCode}` : ''}</span>
+                    <span>{profile.postalCode}</span>
                   </div>
                 )}
                 {profile?.occupation && (

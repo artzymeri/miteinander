@@ -138,7 +138,6 @@ export default function SupportCareGiversPage() {
                 <tr className="border-b border-gray-200 bg-gray-50">
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.fields.name')}</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.fields.email')}</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.fields.city')}</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.fields.subscribed')}</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.fields.createdAt')}</th>
                 </tr>
@@ -146,13 +145,13 @@ export default function SupportCareGiversPage() {
               <tbody className="divide-y divide-gray-100">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={5} className="px-4 py-12 text-center">
+                    <td colSpan={4} className="px-4 py-12 text-center">
                       <Loader2 className="w-6 h-6 animate-spin text-amber-500 mx-auto" />
                     </td>
                   </tr>
                 ) : !data?.items.length ? (
                   <tr>
-                    <td colSpan={5} className="px-4 py-12 text-center text-gray-400 text-sm">
+                    <td colSpan={4} className="px-4 py-12 text-center text-gray-400 text-sm">
                       {t('admin.table.noData')}
                     </td>
                   </tr>
@@ -176,7 +175,6 @@ export default function SupportCareGiversPage() {
                         </div>
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600">{item.email}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{item.city || '-'}</td>
                       <td className="px-4 py-3">
                         <span className={`px-2 py-1 text-xs rounded-full ${getSubscriptionColor(item.subscriptionStatus || 'none')}`}>
                           {t(`admin.status.subscription_${item.subscriptionStatus || 'none'}`)}

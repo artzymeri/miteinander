@@ -599,11 +599,11 @@ const sendTrialExpiringEmail = async (to, firstName, daysLeft) => {
                       ⏰ Noch ${daysLeft} ${daysLeft === 1 ? 'Tag' : 'Tage'} übrig
                     </p>
                     <p style="color: #6b7280; font-size: 13px; margin: 0;">
-                      Wählen Sie einen Plan, um weiterhin alle Funktionen von MyHelper nutzen zu können.
+                      Wählen Sie ein Abo, um weiterhin alle Funktionen von MyHelper nutzen zu können.
                     </p>
                   </div>
                   <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin: 0 0 8px 0;">
-                    Um Ihren Zugang nicht zu verlieren, melden Sie sich bitte an und wählen Sie einen unserer Abonnement-Pläne:
+                    Um Ihren Zugang nicht zu verlieren, melden Sie sich bitte an und wählen Sie eines unserer Abonnements:
                   </p>
                   <ul style="color: #6b7280; font-size: 14px; line-height: 1.8; margin: 0 0 24px 0; padding-left: 20px;">
                     <li><strong>Monatlich:</strong> 8,99 €/Monat</li>

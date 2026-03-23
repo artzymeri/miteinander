@@ -42,8 +42,7 @@ const findClients = async (req, res, next) => {
       isSettled: false, // Exclude settled care recipients
     };
     
-    // Search by postal code, address, or city
-    // Split search into words so "Berlin 10115" matches city=Berlin + postalCode=10115
+    // Search by postal code or address
     const search = req.query.search?.trim();
     if (search) {
       const searchTerms = search.split(/\s+/).filter(Boolean);
@@ -53,12 +52,10 @@ const findClients = async (req, res, next) => {
         whereClause[Op.or] = [
           { postalCode: { [Op.like]: `%${searchTerms[0]}%` } },
           { address: { [Op.like]: `%${searchTerms[0]}%` } },
-          { city: { [Op.like]: `%${searchTerms[0]}%` } },
         ];
       } else {
         // Multiple words: ALL words must match across any of the searchable fields
-        // e.g. "Berlin 10115" → word "Berlin" matches city AND word "10115" matches postalCode
-        const searchFields = ['postalCode', 'address', 'city'];
+        const searchFields = ['postalCode', 'address'];
         whereClause[Op.and] = whereClause[Op.and] || [];
         searchTerms.forEach(term => {
           whereClause[Op.and].push({
@@ -73,11 +70,6 @@ const findClients = async (req, res, next) => {
     // Filter by country
     if (req.query.country) {
       whereClause.country = req.query.country;
-    }
-    
-    // Filter by city
-    if (req.query.city) {
-      whereClause.city = { [Op.like]: `%${req.query.city}%` };
     }
     
     // Filter by care needs (expertise required)
@@ -128,7 +120,6 @@ const findClients = async (req, res, next) => {
         'firstName',
         'lastName',
         'address',
-        'city',
         'postalCode',
         'country',
         'careNeeds',
@@ -148,7 +139,6 @@ const findClients = async (req, res, next) => {
         firstName: client.firstName,
         lastName: client.lastName?.charAt(0) + '.', // Only show initial for privacy
         address: client.address,
-        city: client.city,
         postalCode: client.postalCode,
         country: client.country,
         careNeeds: resolveCareNeeds(client.careNeeds, careNeedsMap),
@@ -212,7 +202,6 @@ const getClientProfile = async (req, res, next) => {
         'firstName',
         'lastName',
         'address',
-        'city',
         'postalCode',
         'country',
         'careNeeds',
@@ -239,7 +228,6 @@ const getClientProfile = async (req, res, next) => {
         firstName: client.firstName,
         lastName: client.lastName?.charAt(0) + '.', // Privacy: only initial
         address: client.address,
-        city: client.city,
         postalCode: client.postalCode,
         country: client.country,
         careNeeds: resolveCareNeeds(client.careNeeds, careNeedsMap),
@@ -255,7 +243,7 @@ const getClientProfile = async (req, res, next) => {
 };
 
 /**
- * Get available filter options (countries, cities, care needs)
+ * Get available filter options (countries, care needs)
  */
 const getFilterOptions = async (req, res, next) => {
   try {
@@ -263,18 +251,6 @@ const getFilterOptions = async (req, res, next) => {
     const countries = await CareRecipient.findAll({
       attributes: [[models.sequelize.fn('DISTINCT', models.sequelize.col('country')), 'country']],
       where: { isActive: true, country: { [Op.ne]: null } },
-      raw: true,
-    });
-    
-    // Get distinct cities (optionally filtered by country)
-    const cityWhere = { isActive: true, city: { [Op.ne]: null } };
-    if (req.query.country) {
-      cityWhere.country = req.query.country;
-    }
-    
-    const cities = await CareRecipient.findAll({
-      attributes: [[models.sequelize.fn('DISTINCT', models.sequelize.col('city')), 'city']],
-      where: cityWhere,
       raw: true,
     });
     
@@ -286,7 +262,6 @@ const getFilterOptions = async (req, res, next) => {
     
     return successResponse(res, {
       countries: countries.map(c => c.country).filter(Boolean).sort(),
-      cities: cities.map(c => c.city).filter(Boolean).sort(),
       careNeeds: careNeeds.map(cn => ({
         id: cn.id,
         key: cn.key,
@@ -339,7 +314,6 @@ const getMyProfile = async (req, res, next) => {
         'phone',
         'dateOfBirth',
         'address',
-        'city',
         'postalCode',
         'bio',
         'skills',
@@ -377,7 +351,6 @@ const getMyProfile = async (req, res, next) => {
         phone: caregiver.phone,
         dateOfBirth: caregiver.dateOfBirth,
         address: caregiver.address,
-        city: caregiver.city,
         postalCode: caregiver.postalCode,
         bio: caregiver.bio,
         skills: resolveCareNeeds(caregiver.skills, careNeedsMap),
@@ -410,7 +383,7 @@ const updateMyProfile = async (req, res, next) => {
     
     const allowedFields = [
       'firstName', 'lastName', 'phone', 'dateOfBirth',
-      'address', 'city', 'postalCode', 'bio', 'skills',
+      'address', 'postalCode', 'bio', 'skills',
       'experienceYears', 'occupation', 'profileImageUrl', 'certifications'
     ];
     
@@ -558,7 +531,7 @@ const getMySettledClients = async (req, res, next) => {
       },
       attributes: [
         'id', 'firstName', 'lastName', 'email', 'phone',
-        'address', 'city', 'postalCode', 'country', 'careNeeds',
+        'address', 'postalCode', 'country', 'careNeeds',
         'bio', 'profileImageUrl', 'settledAt', 'createdAt',
       ],
       order: [['settledAt', 'DESC']],
@@ -572,7 +545,6 @@ const getMySettledClients = async (req, res, next) => {
         email: client.email,
         phone: client.phone,
         address: client.address,
-        city: client.city,
         postalCode: client.postalCode,
         country: client.country,
         careNeeds: resolveCareNeeds(client.careNeeds, careNeedsMap),
@@ -624,7 +596,7 @@ const getSettledClientProfile = async (req, res, next) => {
       },
       attributes: [
         'id', 'firstName', 'lastName', 'email', 'phone',
-        'dateOfBirth', 'address', 'city', 'postalCode', 'country',
+        'dateOfBirth', 'address', 'postalCode', 'country',
         'careNeeds', 'bio', 'emergencyContactName', 'emergencyContactPhone',
         'profileImageUrl', 'settledAt', 'createdAt',
       ],
@@ -685,7 +657,7 @@ const getSettlementRequests = async (req, res, next) => {
       include: [{
         model: CareRecipient,
         as: 'careRecipient',
-        attributes: ['id', 'firstName', 'lastName', 'email', 'profileImageUrl', 'city', 'country'],
+        attributes: ['id', 'firstName', 'lastName', 'email', 'profileImageUrl', 'country'],
       }],
       order: [['createdAt', 'DESC']],
     });

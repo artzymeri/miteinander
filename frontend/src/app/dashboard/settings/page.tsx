@@ -41,7 +41,6 @@ interface Profile {
   phone?: string;
   dateOfBirth?: string;
   address?: string;
-  city?: string;
   postalCode?: string;
   country?: string;
   bio?: string;

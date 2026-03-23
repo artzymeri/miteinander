@@ -102,7 +102,6 @@ export default function CareGiversPage() {
       ),
     },
     { key: 'email', label: t('admin.fields.email') },
-    { key: 'city', label: t('admin.fields.city') },
     {
       key: 'subscriptionStatus',
       label: t('admin.fields.subscribed'),

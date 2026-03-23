@@ -200,7 +200,6 @@ export default function SupportProfileModal({
     { key: 'email', label: t('admin.fields.email'), icon: Mail },
     { key: 'phone', label: t('admin.fields.phone'), icon: Phone },
     { key: 'address', label: t('admin.fields.address'), icon: MapPin },
-    { key: 'city', label: t('admin.fields.city'), icon: MapPin },
     { key: 'postalCode', label: t('admin.fields.postalCode'), icon: MapPin },
     { key: 'dateOfBirth', label: t('admin.fields.dateOfBirth'), icon: Calendar },
   ];

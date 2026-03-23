@@ -40,8 +40,8 @@ const findCaregivers = async (req, res, next) => {
       isActive: true, // Only show active users
     };
     
-    // Search by name, city or postal code
-    // Split search into words so "Berlin 10115" matches city=Berlin + postalCode=10115
+    // Search by name or postal code
+    // Split search into words so multiple terms can match across fields
     const search = req.query.search?.trim();
     if (search) {
       const searchTerms = search.split(/\s+/).filter(Boolean);
@@ -52,13 +52,11 @@ const findCaregivers = async (req, res, next) => {
           { firstName: { [Op.like]: `%${searchTerms[0]}%` } },
           { lastName: { [Op.like]: `%${searchTerms[0]}%` } },
           { postalCode: { [Op.like]: `%${searchTerms[0]}%` } },
-          { city: { [Op.like]: `%${searchTerms[0]}%` } },
           { occupation: { [Op.like]: `%${searchTerms[0]}%` } },
         ];
       } else {
         // Multiple words: ALL words must match across any of the searchable fields
-        // e.g. "Berlin 10115" → word "Berlin" matches city AND word "10115" matches postalCode
-        const searchFields = ['firstName', 'lastName', 'postalCode', 'city', 'occupation'];
+        const searchFields = ['firstName', 'lastName', 'postalCode', 'occupation'];
         whereClause[Op.and] = whereClause[Op.and] || [];
         searchTerms.forEach(term => {
           whereClause[Op.and].push({
@@ -73,11 +71,6 @@ const findCaregivers = async (req, res, next) => {
     // Filter by country
     if (req.query.country) {
       whereClause.country = req.query.country;
-    }
-    
-    // Filter by city
-    if (req.query.city) {
-      whereClause.city = { [Op.like]: `%${req.query.city}%` };
     }
     
     // Filter by skills (care needs)
@@ -128,7 +121,6 @@ const findCaregivers = async (req, res, next) => {
         'firstName',
         'lastName',
         'address',
-        'city',
         'postalCode',
         'country',
         'skills',
@@ -153,7 +145,6 @@ const findCaregivers = async (req, res, next) => {
         firstName: caregiver.firstName,
         lastName: caregiver.lastName?.charAt(0) + '.', // Only show initial for privacy
         address: caregiver.address,
-        city: caregiver.city,
         postalCode: caregiver.postalCode,
         country: caregiver.country,
         skills: resolveSkills(caregiver.skills, careNeedsMap),
@@ -222,7 +213,6 @@ const getCaregiverProfile = async (req, res, next) => {
         'firstName',
         'lastName',
         'address',
-        'city',
         'postalCode',
         'country',
         'skills',
@@ -257,7 +247,6 @@ const getCaregiverProfile = async (req, res, next) => {
         firstName: caregiver.firstName,
         lastName: caregiver.lastName?.charAt(0) + '.', // Privacy: only initial
         address: caregiver.address,
-        city: caregiver.city,
         postalCode: caregiver.postalCode,
         country: caregiver.country,
         skills: resolveSkills(caregiver.skills, careNeedsMap),
@@ -279,7 +268,7 @@ const getCaregiverProfile = async (req, res, next) => {
 };
 
 /**
- * Get available filter options (countries, cities, skills)
+ * Get available filter options (countries, skills)
  */
 const getFilterOptions = async (req, res, next) => {
   try {
@@ -287,18 +276,6 @@ const getFilterOptions = async (req, res, next) => {
     const countries = await CareGiver.findAll({
       attributes: [[models.sequelize.fn('DISTINCT', models.sequelize.col('country')), 'country']],
       where: { isActive: true, country: { [Op.ne]: null } },
-      raw: true,
-    });
-    
-    // Get distinct cities (optionally filtered by country)
-    const cityWhere = { isActive: true, city: { [Op.ne]: null } };
-    if (req.query.country) {
-      cityWhere.country = req.query.country;
-    }
-    
-    const cities = await CareGiver.findAll({
-      attributes: [[models.sequelize.fn('DISTINCT', models.sequelize.col('city')), 'city']],
-      where: cityWhere,
       raw: true,
     });
     
@@ -310,7 +287,6 @@ const getFilterOptions = async (req, res, next) => {
     
     return successResponse(res, {
       countries: countries.map(c => c.country).filter(Boolean).sort(),
-      cities: cities.map(c => c.city).filter(Boolean).sort(),
       skills: skills.map(cn => ({
         id: cn.id,
         key: cn.key,
@@ -362,7 +338,6 @@ const getMyProfile = async (req, res, next) => {
         'phone',
         'dateOfBirth',
         'address',
-        'city',
         'postalCode',
         'country',
         'bio',
@@ -432,7 +407,6 @@ const getMyProfile = async (req, res, next) => {
         phone: recipient.phone,
         dateOfBirth: recipient.dateOfBirth,
         address: recipient.address,
-        city: recipient.city,
         postalCode: recipient.postalCode,
         country: recipient.country,
         bio: recipient.bio,
@@ -464,7 +438,7 @@ const updateMyProfile = async (req, res, next) => {
     
     const allowedFields = [
       'firstName', 'lastName', 'phone', 'dateOfBirth',
-      'address', 'city', 'postalCode', 'country', 'bio', 
+      'address', 'postalCode', 'country', 'bio', 
       'careNeeds', 'profileImageUrl'
     ];
     

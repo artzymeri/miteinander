@@ -43,7 +43,6 @@ interface Profile {
   phone?: string;
   dateOfBirth?: string;
   address?: string;
-  city?: string;
   postalCode?: string;
   bio?: string;
   skills: CareNeed[];

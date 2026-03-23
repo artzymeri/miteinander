@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Users, MessageSquare, Shield, Heart, Clock, Star } from "lucide-react";
+import { Users, MessageSquare, Shield } from "lucide-react";
 import { useTranslation } from "@/context/LanguageContext";
 
 export default function DifferenceSection() {
@@ -31,20 +31,6 @@ export default function DifferenceSection() {
       icon: Shield,
       size: "medium",
       image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2070",
-    },
-    {
-      id: 4,
-      title: t("difference.card4Title"),
-      description: t("difference.card4Desc"),
-      icon: Heart,
-      size: "small",
-    },
-    {
-      id: 5,
-      title: t("difference.card3Title"),
-      description: t("difference.card3Desc"),
-      icon: Clock,
-      size: "small",
     },
   ];
   return (
@@ -143,29 +129,7 @@ export default function DifferenceSection() {
             );
           })}
 
-          {/* Small Cards */}
-          {bentoItems.slice(3).map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <motion.div
-                key={item.id}
-                className="col-span-1 glass rounded-3xl p-6 cursor-pointer shimmer-effect"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.4 + index * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-              >
-                <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-4">
-                  <Icon className="w-6 h-6 text-accent" />
-                </div>
-                <h3 className="text-lg font-serif text-primary mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-muted text-sm">{item.description}</p>
-              </motion.div>
-            );
-          })}
+
         </div>
       </div>
     </section>

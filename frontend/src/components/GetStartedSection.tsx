@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { UserPlus, LogIn } from 'lucide-react';
 import { useTranslation } from '@/context/LanguageContext';
 
 export default function GetStartedSection() {
@@ -40,12 +41,8 @@ export default function GetStartedSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="bg-white rounded-3xl shadow-xl p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100"
           >
-            <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mb-6">
-              <svg className="w-8 h-8 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                  d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" 
-                />
-              </svg>
+            <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mb-6">
+              <UserPlus className="w-8 h-8 text-accent" />
             </div>
             
             <h3 className="text-2xl font-bold text-primary mb-3">
@@ -78,12 +75,8 @@ export default function GetStartedSection() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="bg-white rounded-3xl shadow-xl p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100"
           >
-            <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-6">
-              <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                  d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" 
-                />
-              </svg>
+            <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mb-6">
+              <LogIn className="w-8 h-8 text-accent" />
             </div>
             
             <h3 className="text-2xl font-bold text-primary mb-3">
@@ -111,13 +104,31 @@ export default function GetStartedSection() {
           </motion.div>
         </div>
 
+        {/* Disclaimer */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.35 }}
+          className="mt-10 max-w-2xl mx-auto"
+        >
+          <div className="flex items-start gap-2.5 bg-amber-50/80 border border-amber-200/60 rounded-2xl px-5 py-4">
+            <svg className="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-xs text-amber-800/80 leading-relaxed">
+              {t("getStarted.disclaimer")}
+            </p>
+          </div>
+        </motion.div>
+
         {/* Additional Info */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-12 text-center"
+          className="mt-6 text-center"
         >
           <p className="text-sm text-primary/60">
             {t("getStarted.questions")}{' '}

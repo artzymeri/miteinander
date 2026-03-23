@@ -37,7 +37,6 @@ interface Profile {
   phone?: string;
   dateOfBirth?: string;
   address?: string;
-  city?: string;
   postalCode?: string;
   bio?: string;
   skills: CareNeed[];
@@ -301,15 +300,12 @@ export default function CareGiverProfilePage() {
                 {t('caregiver.profile.location')}
               </h3>
 
-              {(profile.city || profile.postalCode) && (
+              {profile.postalCode && (
                 <div className="flex items-center gap-3 text-gray-700">
                   <div className="p-2 bg-gray-100 rounded-lg">
                     <MapPin className="w-4 h-4 text-gray-500" />
                   </div>
-                  <span>
-                    {profile.postalCode && `${profile.postalCode}, `}
-                    {profile.city}
-                  </span>
+                  <span>{profile.postalCode}</span>
                 </div>
               )}
 

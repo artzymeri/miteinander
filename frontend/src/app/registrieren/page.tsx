@@ -31,7 +31,6 @@ interface FormData {
   // Address
   address: string;
   country: string;
-  city: string;
   postalCode: string;
   // Care Recipient specific
   careNeeds: string[];
@@ -66,7 +65,6 @@ export default function RegisterPage() {
     dateOfBirth: '',
     address: '',
     country: '',
-    city: '',
     postalCode: '',
     careNeeds: [],
     emergencyContactName: '',
@@ -163,7 +161,6 @@ export default function RegisterPage() {
         phone: formData.phoneCountryCode + formData.phone,
         dateOfBirth: formData.dateOfBirth || null,
         address: formData.address,
-        city: formData.city,
         postalCode: formData.postalCode,
         country: formData.country || 'DE',
       };
@@ -241,7 +238,6 @@ export default function RegisterPage() {
       case 3:
         return (
           formData.address.length > 0 &&
-          formData.city.length > 0 &&
           formData.postalCode.length > 0
         );
       case 4:
@@ -328,7 +324,6 @@ export default function RegisterPage() {
               <AddressForm
                 address={formData.address}
                 country={formData.country}
-                city={formData.city}
                 postalCode={formData.postalCode}
                 onChange={updateFormData}
               />
@@ -456,6 +451,16 @@ export default function RegisterPage() {
             <a href="/datenschutz" className="text-amber-600 hover:underline">{t('footer.privacy')}</a>
             {' '}zu.
           </p>
+
+          {/* Disclaimer */}
+          <div className="mt-4 flex items-start gap-2 bg-amber-50/80 border border-amber-200/60 rounded-xl px-4 py-3 mx-4">
+            <svg className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-[11px] text-amber-800/80 leading-relaxed">
+              {t('getStarted.disclaimer')}
+            </p>
+          </div>
         </div>
       </div>
     </main>

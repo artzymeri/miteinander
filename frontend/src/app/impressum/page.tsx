@@ -25,38 +25,22 @@ export default function Impressum() {
             {t('imprint.accordingTo')}
           </h2>
           <p>
-            MyHelper GmbH
+            Rhoda Mutheu Fideler
             <br />
-            Musterstraße 123
+            MeritaCare
             <br />
-            10115 Berlin
+            Im Hof 16
             <br />
-            Deutschland
+            88069 Tettnang
           </p>
 
           <h2 className="text-2xl font-serif text-primary mt-8 mb-4">
             {t('imprint.contact')}
           </h2>
           <p>
-            Telefon: +49 (0) 30 12345678
+            {t('imprint.phone')}: +49 152/09465369
             <br />
-            E-Mail: info@myhelper.de
-          </p>
-
-          <h2 className="text-2xl font-serif text-primary mt-8 mb-4">
-            {t('imprint.representedBy')}
-          </h2>
-          <p>{t('imprint.managingDirector')}: Max Mustermann</p>
-
-          <h2 className="text-2xl font-serif text-primary mt-8 mb-4">
-            {t('imprint.registration')}
-          </h2>
-          <p>
-            {t('imprint.registrationInfo')}
-            <br />
-            {t('imprint.registryCourt')}: Amtsgericht Berlin-Charlottenburg
-            <br />
-            {t('imprint.registryNumber')}: HRB 123456
+            {t('imprint.email')}: info@merita.care
           </p>
 
           <h2 className="text-2xl font-serif text-primary mt-8 mb-4">
@@ -65,7 +49,53 @@ export default function Impressum() {
           <p>
             {t('imprint.vatIdInfo')}:
             <br />
-            DE 123456789
+            DE313056089
+          </p>
+
+          <h2 className="text-2xl font-serif text-primary mt-8 mb-4">
+            {t('imprint.editoriallyResponsible')}
+          </h2>
+          <p>Rhoda Mutheu Fideler</p>
+
+          <h2 className="text-2xl font-serif text-primary mt-8 mb-4">
+            {t('imprint.designAndDevelopment')}
+          </h2>
+          <p>
+            Made with ❤️ from TM-Solution GmbH
+            <br />
+            <a
+              href="https://www.tm-solution.de"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent hover:text-accent-light transition-colors"
+            >
+              www.tm-solution.de
+            </a>
+          </p>
+
+          <h2 className="text-2xl font-serif text-primary mt-8 mb-4">
+            {t('imprint.euDisputeResolution')}
+          </h2>
+          <p>
+            {t('imprint.euDisputeResolutionText')}{' '}
+            <a
+              href="https://ec.europa.eu/consumers/odr/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent hover:text-accent-light transition-colors"
+            >
+              https://ec.europa.eu/consumers/odr/
+            </a>
+            .
+            <br />
+            {t('imprint.emailInImprint')}
+          </p>
+
+          <h2 className="text-2xl font-serif text-primary mt-8 mb-4">
+            {t('imprint.consumerDispute')}
+          </h2>
+          <p>
+            {t('imprint.consumerDisputeText')}
           </p>
         </div>
       </div>

@@ -38,7 +38,6 @@ interface ClientProfile {
   phone: string;
   dateOfBirth: string | null;
   address: string;
-  city: string;
   postalCode: string;
   country: string;
   bio: string | null;
@@ -194,7 +193,7 @@ export default function SettledClientProfilePage() {
               <Home className="w-5 h-5 text-gray-400" />
               <div>
                 <p className="text-xs text-gray-500">{t('register.address')}</p>
-                <p className="text-sm text-gray-900">{profile.address}, {profile.postalCode} {profile.city}</p>
+                <p className="text-sm text-gray-900">{profile.address}, {profile.postalCode}</p>
               </div>
             </div>
             {profile.dateOfBirth && (

@@ -15,21 +15,21 @@ export default function ConceptSection() {
       title: t("concept.step1Title"),
       description: t("concept.step1Desc"),
       icon: Search,
-      image: "https://images.unsplash.com/photo-1454418747937-bd95bb945625?q=80&w=2070",
+      image: "https://images.unsplash.com/photo-1516733968668-dbdce39c0571?q=80&w=2070&auto=format&fit=crop",
     },
     {
       number: "02",
       title: t("concept.step2Title"),
       description: t("concept.step2Desc"),
       icon: MessageCircle,
-      image: "https://images.unsplash.com/photo-1559523182-a284c3fb7cff?q=80&w=2074",
+      image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2070&auto=format&fit=crop",
     },
     {
       number: "03",
       title: t("concept.step3Title"),
       description: t("concept.step3Desc"),
       icon: CalendarCheck,
-      image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2070",
+      image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=2070&auto=format&fit=crop",
     },
   ];
   const { scrollYProgress } = useScroll({
@@ -84,11 +84,11 @@ export default function ConceptSection() {
               >
                 <div className="relative h-full glass rounded-3xl overflow-hidden p-8 hover:shadow-xl transition-all duration-500">
                   {/* Background Image */}
-                  <div className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
+                  <div className="absolute inset-0 opacity-15 group-hover:opacity-25 transition-opacity duration-500">
                     <img
                       src={step.image}
                       alt={step.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover sepia-[.15]"
                     />
                   </div>
 

@@ -30,7 +30,6 @@ interface ProfileData {
   id: number;
   firstName: string;
   lastName: string;
-  city: string | null;
   postalCode: string | null;
   country: string | null;
   bio: string | null;
@@ -196,10 +195,10 @@ export default function CareRecipientDashboard() {
               <p className="text-amber-100">
                 {t('recipient.welcomeMessage') || 'Here\'s an overview of your care profile'}
               </p>
-              {profile?.city && (
+              {profile?.postalCode && (
                 <div className="flex items-center gap-1 text-amber-100 mt-2 text-sm">
                   <MapPin className="w-4 h-4" />
-                  <span>{profile.city}{profile.postalCode ? `, ${profile.postalCode}` : ''}</span>
+                  <span>{profile.postalCode}</span>
                 </div>
               )}
             </div>
@@ -336,8 +335,8 @@ export default function CareRecipientDashboard() {
                       </span>
                     )}
                   </div>
-                  {profile?.city && (
-                    <p className="text-sm text-gray-500">{profile.city}</p>
+                  {profile?.postalCode && (
+                    <p className="text-sm text-gray-500">{profile.postalCode}</p>
                   )}
                   {profile?.bio ? (
                     <p className="text-sm text-gray-600 mt-1 line-clamp-2">{profile.bio}</p>

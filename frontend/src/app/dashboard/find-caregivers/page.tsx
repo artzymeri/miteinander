@@ -9,7 +9,6 @@ import {
   ChevronDown,
   X,
   Globe,
-  Building,
   Loader2,
   Star,
   Briefcase,
@@ -37,20 +36,6 @@ const COUNTRIES = [
   { code: 'FR', flag: '🇫🇷' },
 ];
 
-// Cities by country
-const CITIES_BY_COUNTRY: Record<string, string[]> = {
-  'DE': ['Berlin', 'Munich', 'Hamburg', 'Frankfurt', 'Cologne', 'Stuttgart', 'Düsseldorf', 'Leipzig', 'Dortmund', 'Essen'],
-  'AT': ['Vienna', 'Graz', 'Linz', 'Salzburg', 'Innsbruck'],
-  'CH': ['Zurich', 'Geneva', 'Basel', 'Bern', 'Lausanne'],
-  'LI': ['Vaduz', 'Schaan', 'Balzers', 'Triesen', 'Eschen', 'Mauren', 'Triesenberg', 'Ruggell', 'Gamprin', 'Schellenberg', 'Planken'],
-  'SE': ['Stockholm', 'Gothenburg', 'Malmö', 'Uppsala', 'Linköping', 'Örebro', 'Västerås', 'Helsingborg', 'Norrköping', 'Jönköping'],
-  'NL': ['Amsterdam', 'Rotterdam', 'The Hague', 'Utrecht', 'Eindhoven'],
-  'GB': ['London', 'Birmingham', 'Manchester', 'Glasgow', 'Liverpool'],
-  'LU': ['Luxembourg City', 'Esch-sur-Alzette', 'Differdange', 'Dudelange', 'Ettelbruck'],
-  'BE': ['Brussels', 'Antwerp', 'Ghent', 'Charleroi', 'Liège'],
-  'FR': ['Paris', 'Marseille', 'Lyon', 'Toulouse', 'Nice'],
-};
-
 interface SkillData {
   id: number;
   key: string;
@@ -64,7 +49,6 @@ interface Caregiver {
   firstName: string;
   lastName: string;
   address: string | null;
-  city: string;
   postalCode: string;
   country: string;
   skills: SkillData[];
@@ -88,7 +72,6 @@ interface SkillOption {
 
 interface FilterOptions {
   countries: string[];
-  cities: string[];
   skills: SkillOption[];
 }
 
@@ -109,17 +92,14 @@ export default function FindCaregiversPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [search, setSearch] = useState('');
   const [selectedCountry, setSelectedCountry] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
   const [selectedSkills, setSelectedSkills] = useState<number[]>([]);
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({ 
     countries: [], 
-    cities: [], 
     skills: [] 
   });
   
   // Dropdowns
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
-  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
   
   // Refs
   const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -164,7 +144,6 @@ export default function FindCaregiversPage() {
       
       if (search) params.append('search', search);
       if (selectedCountry) params.append('country', selectedCountry);
-      if (selectedCity) params.append('city', selectedCity);
       selectedSkills.forEach(id => params.append('skills[]', id.toString()));
       
       const response = await fetch(`${API_URL}/recipient/caregivers?${params}`, {
@@ -193,7 +172,7 @@ export default function FindCaregiversPage() {
       setIsLoading(false);
       setIsLoadingMore(false);
     }
-  }, [token, search, selectedCountry, selectedCity, selectedSkills]);
+  }, [token, search, selectedCountry, selectedSkills]);
 
   // Initial load
   useEffect(() => {
@@ -216,7 +195,7 @@ export default function FindCaregiversPage() {
         clearTimeout(searchTimeoutRef.current);
       }
     };
-  }, [search, selectedCountry, selectedCity, selectedSkills, fetchCaregivers]);
+  }, [search, selectedCountry, selectedSkills, fetchCaregivers]);
 
   // Infinite scroll observer
   useEffect(() => {
@@ -269,11 +248,10 @@ export default function FindCaregiversPage() {
   const clearFilters = () => {
     setSearch('');
     setSelectedCountry('');
-    setSelectedCity('');
     setSelectedSkills([]);
   };
 
-  const hasActiveFilters = search || selectedCountry || selectedCity || selectedSkills.length > 0;
+  const hasActiveFilters = search || selectedCountry || selectedSkills.length > 0;
 
   return (
     <CareRecipientLayout>
@@ -314,7 +292,7 @@ export default function FindCaregiversPage() {
               <span>{t('recipient.findCaregivers.filters') || 'Filters'}</span>
               {hasActiveFilters && (
                 <span className="ml-1 px-2 py-0.5 bg-amber-500 text-white text-xs rounded-full">
-                  {(selectedCountry ? 1 : 0) + (selectedCity ? 1 : 0) + selectedSkills.length}
+                  {(selectedCountry ? 1 : 0) + selectedSkills.length}
                 </span>
               )}
               <ChevronDown className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
@@ -340,7 +318,6 @@ export default function FindCaregiversPage() {
                       type="button"
                       onClick={() => {
                         setIsCountryDropdownOpen(!isCountryDropdownOpen);
-                        setIsCityDropdownOpen(false);
                       }}
                       className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all cursor-pointer"
                     >
@@ -364,7 +341,6 @@ export default function FindCaregiversPage() {
                           type="button"
                           onClick={() => {
                             setSelectedCountry('');
-                            setSelectedCity('');
                             setIsCountryDropdownOpen(false);
                           }}
                           className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-amber-50 text-left cursor-pointer transition-colors ${
@@ -380,7 +356,6 @@ export default function FindCaregiversPage() {
                             type="button"
                             onClick={() => {
                               setSelectedCountry(c.code);
-                              setSelectedCity('');
                               setIsCountryDropdownOpen(false);
                             }}
                             className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-amber-50 text-left cursor-pointer transition-colors ${
@@ -391,69 +366,6 @@ export default function FindCaregiversPage() {
                             <span className="text-gray-900">{t(`register.countries.${c.code}`)}</span>
                           </button>
                         ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* City */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t('recipient.findCaregivers.city') || 'City'}
-                  </label>
-                  <div className="relative">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsCityDropdownOpen(!isCityDropdownOpen);
-                        setIsCountryDropdownOpen(false);
-                      }}
-                      className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all cursor-pointer"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Building className="w-5 h-5 text-gray-400" />
-                        <span className={selectedCity ? 'text-gray-900' : 'text-gray-400'}>
-                          {selectedCity || (t('recipient.findCaregivers.allCities') || 'All Cities')}
-                        </span>
-                      </div>
-                      <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isCityDropdownOpen ? 'rotate-180' : ''}`} />
-                    </button>
-                    
-                    {isCityDropdownOpen && (
-                      <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-20 overflow-hidden max-h-60 overflow-y-auto">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSelectedCity('');
-                            setIsCityDropdownOpen(false);
-                          }}
-                          className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-amber-50 text-left cursor-pointer transition-colors ${
-                            !selectedCity ? 'bg-amber-50' : ''
-                          }`}
-                        >
-                          <Building className="w-5 h-5 text-gray-400" />
-                          <span className="text-gray-900">{t('recipient.findCaregivers.allCities') || 'All Cities'}</span>
-                        </button>
-                        {(selectedCountry ? CITIES_BY_COUNTRY[selectedCountry] || [] : filterOptions.cities).map((city) => (
-                          <button
-                            key={city}
-                            type="button"
-                            onClick={() => {
-                              setSelectedCity(city);
-                              setIsCityDropdownOpen(false);
-                            }}
-                            className={`w-full px-4 py-2.5 hover:bg-amber-50 text-left cursor-pointer transition-colors ${
-                              city === selectedCity ? 'bg-amber-50' : ''
-                            }`}
-                          >
-                            <span className="text-gray-900">{city}</span>
-                          </button>
-                        ))}
-                        {selectedCountry && (!CITIES_BY_COUNTRY[selectedCountry] || CITIES_BY_COUNTRY[selectedCountry].length === 0) && (
-                          <div className="px-4 py-3 text-gray-500 text-sm">
-                            {t('recipient.findCaregivers.noCitiesAvailable') || 'No cities available'}
-                          </div>
-                        )}
                       </div>
                     )}
                   </div>
@@ -557,7 +469,7 @@ export default function FindCaregiversPage() {
                       )}
                       <p className="text-sm text-gray-400 truncate mt-0.5 flex items-center gap-1">
                         <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-                        {[caregiver.address, caregiver.city, caregiver.postalCode].filter(Boolean).join(', ')}
+                        {[caregiver.address, caregiver.postalCode].filter(Boolean).join(', ')}
                       </p>
                     </div>
                   </div>

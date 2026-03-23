@@ -211,7 +211,6 @@ export default function UserModal({
     ...(userType !== 'support'
       ? [
           { key: 'address', label: t('admin.fields.address'), icon: MapPin, type: 'text' },
-          { key: 'city', label: t('admin.fields.city'), icon: MapPin, type: 'text' },
           { key: 'postalCode', label: t('admin.fields.postalCode'), icon: MapPin, type: 'text' },
           { key: 'dateOfBirth', label: t('admin.fields.dateOfBirth'), icon: Calendar, type: 'date' },
         ]

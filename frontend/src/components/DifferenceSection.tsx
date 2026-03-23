@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Users, MessageSquare, Shield, MapPin, Home, Accessibility, Pill, Heart, Sparkles, ChefHat, Car, Bath } from "lucide-react";
 import { useTranslation } from "@/context/LanguageContext";
@@ -33,6 +34,27 @@ export default function DifferenceSection() {
       image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2070",
     },
   ];
+
+  const shuffledTags = useMemo(() => {
+    const allTags = [
+      { icon: Home, label: t('difference.tagDailyLiving') },
+      { icon: Accessibility, label: t('difference.tagMobility') },
+      { icon: Pill, label: t('difference.tagMedication') },
+      { icon: Heart, label: t('difference.tagCompanionship') },
+      { icon: Sparkles, label: t('difference.tagHousekeeping') },
+      { icon: ChefHat, label: t('difference.tagMealPrep') },
+      { icon: Car, label: t('difference.tagTransportation') },
+      { icon: Bath, label: t('difference.tagHygiene') },
+    ];
+    // Fisher-Yates shuffle
+    for (let i = allTags.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [allTags[i], allTags[j]] = [allTags[j], allTags[i]];
+    }
+    return allTags.slice(0, 6);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <section id="difference" className="py-24 md:py-32 bg-gradient-to-b from-background to-[#eae9e4]">
       <div className="max-w-7xl mx-auto px-6">
@@ -149,18 +171,9 @@ export default function DifferenceSection() {
               <h3 className="text-xl md:text-2xl font-serif text-white mb-4 max-w-sm">
                 {t('difference.bannerTitle')}
               </h3>
-              {/* Care need category pills */}
+              {/* Care need category pills — shuffled, show 6 */}
               <div className="flex flex-wrap gap-2">
-                {[
-                  { icon: Home, label: t('difference.tagDailyLiving') },
-                  { icon: Accessibility, label: t('difference.tagMobility') },
-                  { icon: Pill, label: t('difference.tagMedication') },
-                  { icon: Heart, label: t('difference.tagCompanionship') },
-                  { icon: Sparkles, label: t('difference.tagHousekeeping') },
-                  { icon: ChefHat, label: t('difference.tagMealPrep') },
-                  { icon: Car, label: t('difference.tagTransportation') },
-                  { icon: Bath, label: t('difference.tagHygiene') },
-                ].map((tag, i) => {
+                {shuffledTags.map((tag, i) => {
                   const TagIcon = tag.icon;
                   return (
                     <motion.span

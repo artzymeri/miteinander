@@ -68,6 +68,7 @@ export default function RootLayout({
                 {children}
                 <Toaster position="top-right" richColors closeButton />
                 <CookieConsent />
+                <div id="datepicker-portal" />
               </LanguageProvider>
             </SocketProvider>
           </AuthProvider>

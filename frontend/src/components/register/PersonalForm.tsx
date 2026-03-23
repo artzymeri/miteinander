@@ -169,6 +169,8 @@ const PersonalForm: FC<PersonalFormProps> = ({ firstName, lastName, phone, phone
               className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all text-gray-900 placeholder:text-gray-400 cursor-pointer"
               wrapperClassName="w-full"
               popperClassName="datepicker-popper"
+              popperPlacement="top-start"
+              portalId="datepicker-portal"
             />
           </div>
         </div>

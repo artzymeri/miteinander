@@ -331,6 +331,8 @@ export default function UserModal({
                           className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all cursor-pointer"
                           wrapperClassName="w-full"
                           popperClassName="datepicker-popper"
+                          popperPlacement="top-start"
+                          portalId="datepicker-portal"
                         />
                       </div>
                     ) : (

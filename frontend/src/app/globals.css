@@ -196,13 +196,15 @@ html {
 .react-datepicker__day--today {
   font-weight: 700 !important;
   color: #1f2937 !important;
-  background-color: #f3f4f6 !important;
+  background-color: transparent !important;
+  border: 2px solid #d1d5db !important;
   border-radius: 0.5rem !important;
 }
 
 .react-datepicker__day--today.react-datepicker__day--selected {
   color: white !important;
   background-color: #f59e0b !important;
+  border-color: #f59e0b !important;
 }
 
 .react-datepicker__day--outside-month {

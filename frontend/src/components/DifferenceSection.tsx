@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Users, MessageSquare, Shield, MapPin, Heart, Stethoscope, Baby, Brain, HandHeart, Activity } from "lucide-react";
+import { Users, MessageSquare, Shield, MapPin, Home, Accessibility, Pill, Heart, Sparkles, ChefHat, Car, Bath } from "lucide-react";
 import { useTranslation } from "@/context/LanguageContext";
 
 export default function DifferenceSection() {
@@ -149,15 +149,17 @@ export default function DifferenceSection() {
               <h3 className="text-xl md:text-2xl font-serif text-white mb-4 max-w-sm">
                 {t('difference.bannerTitle')}
               </h3>
-              {/* Floating qualification pills */}
+              {/* Care need category pills */}
               <div className="flex flex-wrap gap-2">
                 {[
-                  { icon: Stethoscope, label: t('difference.tagNurse') },
-                  { icon: Heart, label: t('difference.tagElderly') },
-                  { icon: Baby, label: t('difference.tagChildcare') },
-                  { icon: Brain, label: t('difference.tagDementia') },
-                  { icon: HandHeart, label: t('difference.tagPalliative') },
-                  { icon: Activity, label: t('difference.tagRehab') },
+                  { icon: Home, label: t('difference.tagDailyLiving') },
+                  { icon: Accessibility, label: t('difference.tagMobility') },
+                  { icon: Pill, label: t('difference.tagMedication') },
+                  { icon: Heart, label: t('difference.tagCompanionship') },
+                  { icon: Sparkles, label: t('difference.tagHousekeeping') },
+                  { icon: ChefHat, label: t('difference.tagMealPrep') },
+                  { icon: Car, label: t('difference.tagTransportation') },
+                  { icon: Bath, label: t('difference.tagHygiene') },
                 ].map((tag, i) => {
                   const TagIcon = tag.icon;
                   return (

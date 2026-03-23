@@ -48,12 +48,14 @@
     "card3Desc": "Price negotiations on your terms.",
     "bannerBadge": "Near you",
     "bannerTitle": "A wide range of caregivers with different qualifications near you",
-    "tagNurse": "Nursing",
-    "tagElderly": "Elderly care",
-    "tagChildcare": "Childcare",
-    "tagDementia": "Dementia",
-    "tagPalliative": "Palliative",
-    "tagRehab": "Rehab"
+    "tagDailyLiving": "Daily Living",
+    "tagMobility": "Mobility",
+    "tagMedication": "Medication",
+    "tagCompanionship": "Companionship",
+    "tagHousekeeping": "Housekeeping",
+    "tagMealPrep": "Meal Preparation",
+    "tagTransportation": "Transportation",
+    "tagHygiene": "Personal Hygiene"
   },
   "app": {
     "badge": "Coming soon",

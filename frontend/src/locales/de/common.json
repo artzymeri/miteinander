@@ -48,12 +48,14 @@
     "card3Desc": "Preisverhandlungen nach Ihren Vorstellungen.",
     "bannerBadge": "In Ihrer Nähe",
     "bannerTitle": "Eine große Auswahl an Pflegekräften mit unterschiedlichen Qualifikationen in Ihrer Nähe",
-    "tagNurse": "Krankenpflege",
-    "tagElderly": "Altenpflege",
-    "tagChildcare": "Kinderbetreuung",
-    "tagDementia": "Demenz",
-    "tagPalliative": "Palliativ",
-    "tagRehab": "Reha"
+    "tagDailyLiving": "Alltägliche Aktivitäten",
+    "tagMobility": "Mobilitätshilfe",
+    "tagMedication": "Medikamentengabe",
+    "tagCompanionship": "Gesellschaft",
+    "tagHousekeeping": "Haushaltsführung",
+    "tagMealPrep": "Mahlzeitenzubereitung",
+    "tagTransportation": "Transport",
+    "tagHygiene": "Körperpflege"
   },
   "app": {
     "badge": "Bald verfügbar",

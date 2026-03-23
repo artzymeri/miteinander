@@ -61,15 +61,15 @@ export default function Impressum() {
             {t('imprint.designAndDevelopment')}
           </h2>
           <p>
-            Made with ❤️ from TM-Solution GmbH
+            Made with ❤️ from Atika Solutions
             <br />
             <a
-              href="https://www.tm-solution.de"
+              href="https://atika.solutions"
               target="_blank"
               rel="noopener noreferrer"
               className="text-accent hover:text-accent-light transition-colors"
             >
-              www.tm-solution.de
+              www.atika.solutions
             </a>
           </p>
 

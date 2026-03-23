@@ -48,12 +48,14 @@
     "card3Desc": "Négociations de prix selon vos conditions.",
     "bannerBadge": "Près de chez vous",
     "bannerTitle": "Un large choix de soignants avec différentes qualifications près de chez vous",
-    "tagNurse": "Soins infirmiers",
-    "tagElderly": "Soins aux personnes âgées",
-    "tagChildcare": "Garde d'enfants",
-    "tagDementia": "Démence",
-    "tagPalliative": "Palliatif",
-    "tagRehab": "Rééducation"
+    "tagDailyLiving": "Activités Quotidiennes",
+    "tagMobility": "Aide À La Mobilité",
+    "tagMedication": "Gestion Des Médicaments",
+    "tagCompanionship": "Compagnie",
+    "tagHousekeeping": "Entretien Ménager",
+    "tagMealPrep": "Préparation Des Repas",
+    "tagTransportation": "Transport",
+    "tagHygiene": "Hygiène Personnelle"
   },
   "app": {
     "badge": "Bientôt disponible",

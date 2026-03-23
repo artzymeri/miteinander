@@ -106,15 +106,6 @@ export default function ConceptSection() {
                     {step.description}
                   </p>
                 </div>
-
-                {/* Decorative line */}
-                <motion.div
-                  className="absolute bottom-0 left-0 h-1 bg-accent rounded-b-3xl"
-                  initial={{ width: 0 }}
-                  whileInView={{ width: "100%" }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1, delay: 0.5 + index * 0.2 }}
-                />
               </motion.div>
             );
           })}

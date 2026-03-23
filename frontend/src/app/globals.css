@@ -172,11 +172,21 @@ html {
   color: #1f2937 !important;
 }
 
-.react-datepicker__day--selected,
-.react-datepicker__day--keyboard-selected {
+.react-datepicker__day--selected {
   background-color: #f59e0b !important;
   color: white !important;
   border-radius: 0.5rem !important;
+}
+
+.react-datepicker__day--keyboard-selected {
+  background-color: transparent !important;
+  color: #1f2937 !important;
+  border-radius: 0.5rem !important;
+}
+
+.react-datepicker__day--keyboard-selected.react-datepicker__day--selected {
+  background-color: #f59e0b !important;
+  color: white !important;
 }
 
 .react-datepicker__day--selected:hover {

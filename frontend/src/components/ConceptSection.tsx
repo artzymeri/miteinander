@@ -15,7 +15,7 @@ export default function ConceptSection() {
       title: t("concept.step1Title"),
       description: t("concept.step1Desc"),
       icon: Search,
-      image: "https://images.unsplash.com/photo-1516733968668-dbdce39c0571?q=80&w=2070&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1758612898258-398a43e7fd65?q=80&w=3132&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
     {
       number: "02",

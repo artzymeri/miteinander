@@ -1,13 +1,11 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { motion } from "framer-motion";
 import { Search, MessageCircle, CalendarCheck } from "lucide-react";
 import { useTranslation } from "@/context/LanguageContext";
 
 export default function ConceptSection() {
   const { t } = useTranslation();
-  const containerRef = useRef<HTMLDivElement>(null);
   
   const steps = [
     {
@@ -32,13 +30,9 @@ export default function ConceptSection() {
       image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=2070&auto=format&fit=crop",
     },
   ];
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
 
   return (
-    <section id="concept" className="py-24 md:py-32 bg-background" ref={containerRef}>
+    <section id="concept" className="py-24 md:py-32 bg-background">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <motion.div
@@ -72,58 +66,55 @@ export default function ConceptSection() {
             return (
               <motion.div
                 key={step.number}
-                className="group"
-                initial={{ opacity: 0, x: index % 2 === 0 ? -100 : 100 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                className="group relative cursor-pointer shimmer-effect"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{
-                  duration: 0.8,
-                  delay: index * 0.2,
-                  ease: [0.25, 0.1, 0.25, 1],
+                  duration: 0.6,
+                  delay: index * 0.15,
                 }}
+                whileHover={{ scale: 1.03 }}
               >
-                <div className="relative h-full glass rounded-3xl overflow-hidden p-8 hover:shadow-xl transition-all duration-500">
-                  {/* Background Image */}
-                  <div className="absolute inset-0 opacity-15 group-hover:opacity-25 transition-opacity duration-500">
-                    <img
-                      src={step.image}
-                      alt={step.title}
-                      className="w-full h-full object-cover sepia-[.15]"
-                    />
-                  </div>
-
-                  {/* Content */}
-                  <div className="relative z-10">
-                    {/* Number */}
-                    <span className="text-7xl font-serif text-accent/20 font-bold absolute -top-2 -left-2">
-                      {step.number}
-                    </span>
-
-                    {/* Icon */}
-                    <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mb-6 group-hover:bg-accent/20 transition-colors">
-                      <Icon className="w-7 h-7 text-accent" />
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="text-2xl font-serif text-primary mb-4">
-                      {step.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p className="text-muted leading-relaxed">
-                      {step.description}
-                    </p>
-                  </div>
-
-                  {/* Decorative line */}
-                  <motion.div
-                    className="absolute bottom-0 left-0 h-1 bg-accent"
-                    initial={{ width: 0 }}
-                    whileInView={{ width: "100%" }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1, delay: 0.5 + index * 0.2 }}
+                <div className="absolute inset-0 rounded-3xl overflow-hidden">
+                  <img
+                    src={step.image}
+                    alt={step.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/50 to-transparent" />
                 </div>
+
+                <div className="relative z-10 h-full min-h-[320px] md:min-h-[380px] p-8 flex flex-col justify-end">
+                  {/* Number */}
+                  <span className="absolute top-4 left-6 text-7xl font-serif text-white/10 font-bold">
+                    {step.number}
+                  </span>
+
+                  {/* Icon */}
+                  <div className="w-12 h-12 rounded-xl glass flex items-center justify-center mb-4">
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-2xl font-serif text-white mb-3">
+                    {step.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-white/75 leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
+
+                {/* Decorative line */}
+                <motion.div
+                  className="absolute bottom-0 left-0 h-1 bg-accent rounded-b-3xl"
+                  initial={{ width: 0 }}
+                  whileInView={{ width: "100%" }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1, delay: 0.5 + index * 0.2 }}
+                />
               </motion.div>
             );
           })}

@@ -45,7 +45,15 @@
     "card2Title": "Competent caregivers",
     "card2Desc": "You choose the nurse that fits your needs.",
     "card3Title": "Fair conditions",
-    "card3Desc": "Price negotiations on your terms."
+    "card3Desc": "Price negotiations on your terms.",
+    "bannerBadge": "Near you",
+    "bannerTitle": "A wide range of caregivers with different qualifications near you",
+    "tagNurse": "Nursing",
+    "tagElderly": "Elderly care",
+    "tagChildcare": "Childcare",
+    "tagDementia": "Dementia",
+    "tagPalliative": "Palliative",
+    "tagRehab": "Rehab"
   },
   "app": {
     "badge": "Coming soon",

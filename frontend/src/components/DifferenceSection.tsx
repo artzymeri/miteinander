@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Users, MessageSquare, Shield } from "lucide-react";
+import { Users, MessageSquare, Shield, MapPin, Heart, Stethoscope, Baby, Brain, HandHeart, Activity } from "lucide-react";
 import { useTranslation } from "@/context/LanguageContext";
 
 export default function DifferenceSection() {
@@ -129,7 +129,58 @@ export default function DifferenceSection() {
             );
           })}
 
-
+          {/* Wide Banner Card */}
+          <motion.div
+            className="col-span-2 relative group cursor-pointer overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-primary/95 to-primary/85"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <div className="relative z-10 p-6 md:p-8 flex flex-col justify-between min-h-[160px] md:min-h-[200px]">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-9 h-9 rounded-xl bg-accent/20 flex items-center justify-center">
+                  <MapPin className="w-4 h-4 text-accent" />
+                </div>
+                <span className="text-accent text-xs tracking-[0.15em] uppercase font-medium">
+                  {t('difference.bannerBadge')}
+                </span>
+              </div>
+              <h3 className="text-xl md:text-2xl font-serif text-white mb-4 max-w-sm">
+                {t('difference.bannerTitle')}
+              </h3>
+              {/* Floating qualification pills */}
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { icon: Stethoscope, label: t('difference.tagNurse') },
+                  { icon: Heart, label: t('difference.tagElderly') },
+                  { icon: Baby, label: t('difference.tagChildcare') },
+                  { icon: Brain, label: t('difference.tagDementia') },
+                  { icon: HandHeart, label: t('difference.tagPalliative') },
+                  { icon: Activity, label: t('difference.tagRehab') },
+                ].map((tag, i) => {
+                  const TagIcon = tag.icon;
+                  return (
+                    <motion.span
+                      key={tag.label}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm text-white/80 text-xs font-medium border border-white/10"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.5 + i * 0.08, duration: 0.4 }}
+                      whileHover={{ scale: 1.08, backgroundColor: 'rgba(255,255,255,0.2)' }}
+                    >
+                      <TagIcon className="w-3 h-3" />
+                      {tag.label}
+                    </motion.span>
+                  );
+                })}
+              </div>
+            </div>
+            {/* Decorative gradient orbs */}
+            <div className="absolute -top-12 -right-12 w-40 h-40 bg-accent/10 rounded-full blur-3xl" />
+            <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-accent/5 rounded-full blur-2xl" />
+          </motion.div>
         </div>
       </div>
     </section>

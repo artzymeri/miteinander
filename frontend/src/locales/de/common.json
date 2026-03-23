@@ -45,7 +45,15 @@
     "card2Title": "Kompetente Pflegekräfte",
     "card2Desc": "Sie wählen die Pflegekraft, die zu Ihren Bedürfnissen passt.",
     "card3Title": "Faire Konditionen",
-    "card3Desc": "Preisverhandlungen nach Ihren Vorstellungen."
+    "card3Desc": "Preisverhandlungen nach Ihren Vorstellungen.",
+    "bannerBadge": "In Ihrer Nähe",
+    "bannerTitle": "Eine große Auswahl an Pflegekräften mit unterschiedlichen Qualifikationen in Ihrer Nähe",
+    "tagNurse": "Krankenpflege",
+    "tagElderly": "Altenpflege",
+    "tagChildcare": "Kinderbetreuung",
+    "tagDementia": "Demenz",
+    "tagPalliative": "Palliativ",
+    "tagRehab": "Reha"
   },
   "app": {
     "badge": "Bald verfügbar",

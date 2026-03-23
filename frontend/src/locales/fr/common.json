@@ -45,7 +45,15 @@
     "card2Title": "Soignants compétents",
     "card2Desc": "Vous choisissez le soignant qui correspond à vos besoins.",
     "card3Title": "Conditions équitables",
-    "card3Desc": "Négociations de prix selon vos conditions."
+    "card3Desc": "Négociations de prix selon vos conditions.",
+    "bannerBadge": "Près de chez vous",
+    "bannerTitle": "Un large choix de soignants avec différentes qualifications près de chez vous",
+    "tagNurse": "Soins infirmiers",
+    "tagElderly": "Soins aux personnes âgées",
+    "tagChildcare": "Garde d'enfants",
+    "tagDementia": "Démence",
+    "tagPalliative": "Palliatif",
+    "tagRehab": "Rééducation"
   },
   "app": {
     "badge": "Bientôt disponible",

@@ -18,6 +18,8 @@ import {
   Briefcase,
   Award,
   Loader2,
+  CheckCircle,
+  AlertCircle,
 } from 'lucide-react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -123,24 +125,28 @@ export default function CareGiverDashboard() {
     }
   };
 
-  // Calculate profile completion percentage
+  // Calculate profile completion percentage and missing items
   const calculateProfileCompletion = () => {
-    if (!profile) return 0;
-    let completed = 0;
-    const total = 7;
+    if (!profile) return { percentage: 0, missingItems: [], completedItems: [] };
     
-    if (profile.firstName && profile.lastName) completed++;
-    if (profile.postalCode) completed++;
-    if (profile.bio) completed++;
-    if (profile.skills && profile.skills.length > 0) completed++;
-    if (profile.certifications && profile.certifications.length > 0) completed++;
-    if (profile.experienceYears) completed++;
-    if (profile.profileImageUrl) completed++;
-    
-    return Math.round((completed / total) * 100);
+    const fields = [
+      { key: 'name', check: !!(profile.firstName && profile.lastName), label: t('caregiver.profileFields.name') || 'Full Name' },
+      { key: 'postalCode', check: !!profile.postalCode, label: t('caregiver.profileFields.postalCode') || 'Postal Code' },
+      { key: 'bio', check: !!profile.bio, label: t('caregiver.profileFields.bio') || 'Bio / Description' },
+      { key: 'skills', check: !!(profile.skills && profile.skills.length > 0), label: t('caregiver.profileFields.skills') || 'Skills' },
+      { key: 'certifications', check: !!(profile.certifications && profile.certifications.length > 0), label: t('caregiver.profileFields.certifications') || 'Certifications' },
+      { key: 'experience', check: !!profile.experienceYears, label: t('caregiver.profileFields.experience') || 'Experience Years' },
+      { key: 'profileImage', check: !!profile.profileImageUrl, label: t('caregiver.profileFields.profileImage') || 'Profile Photo' },
+    ];
+
+    const completedItems = fields.filter(f => f.check);
+    const missingItems = fields.filter(f => !f.check);
+    const percentage = Math.round((completedItems.length / fields.length) * 100);
+
+    return { percentage, missingItems, completedItems };
   };
 
-  const profileCompletion = calculateProfileCompletion();
+  const { percentage: profileCompletion, missingItems, completedItems } = calculateProfileCompletion();
 
   const stats = [
     {
@@ -423,14 +429,49 @@ export default function CareGiverDashboard() {
                     style={{ width: `${profileCompletion}%` }}
                   />
                 </div>
-                <p className="text-xs text-gray-500">{t('caregiver.completeProfileHint') || 'Complete your profile to attract more clients'}</p>
+                {profileCompletion === 100 ? (
+                  <p className="text-xs text-green-600 font-medium flex items-center gap-1">
+                    <CheckCircle className="w-3.5 h-3.5" />
+                    {t('caregiver.profileComplete') || 'Your profile is complete!'}
+                  </p>
+                ) : (
+                  <p className="text-xs text-gray-500">{t('caregiver.completeProfileHint') || 'Complete your profile to attract more clients'}</p>
+                )}
               </div>
+
+              {/* Missing & Completed Items Checklist */}
+              {profileCompletion < 100 && missingItems.length > 0 && (
+                <div className="mt-4 space-y-1.5">
+                  <p className="text-xs font-medium text-gray-700 mb-2">
+                    {t('caregiver.missingFields') || 'What\'s left to do:'}
+                  </p>
+                  {missingItems.map((item) => (
+                    <div key={item.key} className="flex items-center gap-2 text-xs">
+                      <AlertCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
+                      <span className="text-gray-600">{item.label}</span>
+                    </div>
+                  ))}
+                  {completedItems.length > 0 && (
+                    <div className="pt-2 mt-2 border-t border-gray-100 space-y-1.5">
+                      {completedItems.map((item) => (
+                        <div key={item.key} className="flex items-center gap-2 text-xs">
+                          <CheckCircle className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                          <span className="text-gray-400 line-through">{item.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
               <button 
                 onClick={() => router.push('/caregiver/profile')}
                 className="w-full mt-6 py-3 text-center bg-amber-50 text-amber-600 hover:bg-amber-100 rounded-xl font-medium text-sm transition-colors cursor-pointer"
               >
-                {t('caregiver.viewProfile') || 'View Profile'} →
+                {profileCompletion < 100 
+                  ? (t('caregiver.completeProfile') || 'Complete Profile')
+                  : (t('caregiver.viewProfile') || 'View Profile')
+                } →
               </button>
             </div>
           </motion.div>

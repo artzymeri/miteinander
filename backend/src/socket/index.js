@@ -39,6 +39,8 @@ const setupSocket = (httpServer) => {
       methods: ['GET', 'POST'],
       credentials: true,
     },
+    transports: ['polling', 'websocket'],
+    allowUpgrades: true,
     pingTimeout: 60000,
     pingInterval: 25000,
   });

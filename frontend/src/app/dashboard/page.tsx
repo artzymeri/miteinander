@@ -119,21 +119,6 @@ export default function CareRecipientDashboard() {
     }
   };
 
-  const formatTimeAgo = (dateString: string) => {
-    const now = new Date();
-    const date = new Date(dateString);
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMins / 60);
-    const diffDays = Math.floor(diffHours / 24);
-
-    if (diffMins < 1) return t('common.justNow') || 'Just now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-    return date.toLocaleDateString(language === 'de' ? 'de-DE' : language === 'fr' ? 'fr-FR' : 'en-US', { month: 'short', day: 'numeric' });
-  };
-
   const totalUnread = recentConversations.reduce((sum, c) => sum + c.unreadCount, 0);
 
   const stats = [
@@ -356,71 +341,6 @@ export default function CareRecipientDashboard() {
             </div>
           </motion.div>
         </div>
-
-        {/* Recent Messages */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.55 }}
-          className="bg-white rounded-xl shadow-sm border border-gray-100"
-        >
-          <div className="p-6 border-b border-gray-100">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">
-                {t('recipient.recentMessages') || 'Recent Messages'}
-              </h2>
-              <MessageSquare className="w-5 h-5 text-gray-400" />
-            </div>
-          </div>
-          <div className="p-6 space-y-4">
-            {recentConversations.length > 0 ? (
-              recentConversations.map((conv) => {
-                const otherUser = conv.careGiver;
-                if (!otherUser) return null;
-                const displayName = `${otherUser.firstName} ${otherUser.lastName?.[0] || ''}.`;
-                const initials = `${otherUser.firstName?.[0] || ''}${otherUser.lastName?.[0] || ''}`;
-                return (
-                  <div
-                    key={conv.id}
-                    onClick={() => router.push('/dashboard/messages')}
-                    className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"
-                  >
-                    {otherUser.profileImageUrl ? (
-                      <img src={otherUser.profileImageUrl} alt={displayName} className="w-10 h-10 rounded-full object-cover" />
-                    ) : (
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-semibold text-sm">
-                        {initials}
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <p className={`font-medium text-gray-900 ${conv.unreadCount > 0 ? 'font-bold' : ''}`}>{displayName}</p>
-                        <p className="text-xs text-gray-400">{conv.lastMessage ? formatTimeAgo(conv.lastMessage.createdAt) : ''}</p>
-                      </div>
-                      <p className="text-sm text-gray-600 truncate">{conv.lastMessage?.content || t('messages.noMessages') || 'No messages yet'}</p>
-                    </div>
-                    {conv.unreadCount > 0 && (
-                      <span className="bg-amber-500 text-white text-xs font-medium rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 mt-1">
-                        {conv.unreadCount > 9 ? '9+' : conv.unreadCount}
-                      </span>
-                    )}
-                  </div>
-                );
-              })
-            ) : (
-              <div className="text-center py-8 text-gray-400">
-                <MessageSquare className="w-10 h-10 mx-auto mb-2 text-gray-300" />
-                <p className="text-sm">{t('messages.noMessages') || 'No messages yet'}</p>
-              </div>
-            )}
-            <button 
-              onClick={() => router.push('/dashboard/messages')}
-              className="w-full py-3 text-center text-amber-600 hover:text-amber-700 font-medium text-sm"
-            >
-              {t('recipient.viewAllMessages') || 'View all messages'} →
-            </button>
-          </div>
-        </motion.div>
 
         {/* Quick Actions */}
         <motion.div

@@ -1,7 +1,4 @@
 {
-  "common": {
-    "justNow": "Just now"
-  },
   "nav": {
     "howItWorks": "How it works",
     "benefits": "Benefits",
@@ -247,6 +244,7 @@
     "people": "People"
   },
   "common": {
+    "justNow": "Just now",
     "backToHome": "← Back to home",
     "home": "Home",
     "back": "Back",
@@ -664,6 +662,7 @@
     "profileSummary": "Profile Summary",
     "editCareNeeds": "Edit Care Needs",
     "viewProfile": "View Profile",
+    "noBioYet": "No bio added yet",
     "settled": "Settled",
     "recentMessages": "Recent Messages",
     "viewAllMessages": "View all messages",

@@ -1,7 +1,4 @@
 {
-  "common": {
-    "justNow": "À l'instant"
-  },
   "nav": {
     "howItWorks": "Comment ça marche",
     "benefits": "Avantages",
@@ -247,6 +244,7 @@
     "people": "les gens"
   },
   "common": {
+    "justNow": "À l'instant",
     "backToHome": "← Retour à l'accueil",
     "home": "Accueil",
     "back": "Retour",
@@ -664,6 +662,7 @@
     "profileSummary": "Résumé du profil",
     "editCareNeeds": "Modifier les besoins en soins",
     "viewProfile": "Voir le profil",
+    "noBioYet": "Aucune bio ajoutée pour l'instant",
     "settled": "Établi",
     "recentMessages": "Messages récents",
     "viewAllMessages": "Voir tous les messages",

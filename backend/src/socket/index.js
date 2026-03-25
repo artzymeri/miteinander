@@ -14,9 +14,23 @@ const onlineUsers = new Map();
 
 const getUserKey = (role, userId) => `${role}:${userId}`;
 
+const getProductionOrigins = () => {
+  const url = process.env.FRONTEND_URL;
+  if (!url) return [];
+  const origins = new Set();
+  origins.add(url);
+  // Add www variant if not already www, or non-www if it is
+  if (url.includes('://www.')) {
+    origins.add(url.replace('://www.', '://'));
+  } else {
+    origins.add(url.replace('://', '://www.'));
+  }
+  return [...origins].filter(Boolean);
+};
+
 const setupSocket = (httpServer) => {
   const allowedOrigins = config.server.env === 'production'
-    ? [process.env.FRONTEND_URL, process.env.FRONTEND_URL?.replace('https://', 'https://www.')]
+    ? getProductionOrigins()
     : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:1003', 'http://127.0.0.1:1003'];
 
   io = new Server(httpServer, {

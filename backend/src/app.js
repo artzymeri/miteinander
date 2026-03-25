@@ -12,8 +12,21 @@ const app = express();
 app.use(helmet());
 
 // CORS configuration
+const getProductionOrigins = () => {
+  const url = process.env.FRONTEND_URL;
+  if (!url) return [];
+  const origins = new Set();
+  origins.add(url);
+  if (url.includes('://www.')) {
+    origins.add(url.replace('://www.', '://'));
+  } else {
+    origins.add(url.replace('://', '://www.'));
+  }
+  return [...origins].filter(Boolean);
+};
+
 const allowedOrigins = config.server.env === 'production'
-  ? [process.env.FRONTEND_URL, process.env.FRONTEND_URL?.replace('https://', 'https://www.')]
+  ? getProductionOrigins()
   : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:1003', 'http://127.0.0.1:1003'];
 
 app.use(cors({

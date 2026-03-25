@@ -67,7 +67,8 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
   const [settledCaregiver, setSettledCaregiver] = useState<{ id: number; firstName: string; lastName: string; profileImageUrl: string | null } | null>(null);
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [notifUnreadCount, setNotifUnreadCount] = useState(0);
-  const [showNotifPopover, setShowNotifPopover] = useState(false);
+  const [showSidebarNotif, setShowSidebarNotif] = useState(false);
+  const [showMobileNotif, setShowMobileNotif] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
   const mobileNotifRef = useRef<HTMLDivElement>(null);
 
@@ -152,23 +153,29 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
   // Close popover when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        notifRef.current && !notifRef.current.contains(event.target as Node) &&
-        mobileNotifRef.current && !mobileNotifRef.current.contains(event.target as Node)
-      ) {
-        setShowNotifPopover(false);
+      if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+        setShowSidebarNotif(false);
       }
-      if (notifRef.current && !notifRef.current.contains(event.target as Node) && !mobileNotifRef.current) {
-        setShowNotifPopover(false);
+      if (mobileNotifRef.current && !mobileNotifRef.current.contains(event.target as Node)) {
+        setShowMobileNotif(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleOpenNotifications = async () => {
-    setShowNotifPopover(!showNotifPopover);
-    if (!showNotifPopover && notifUnreadCount > 0) {
+  const handleOpenNotifications = async (source: 'sidebar' | 'mobile') => {
+    const isOpening = source === 'sidebar' ? !showSidebarNotif : !showMobileNotif;
+
+    if (source === 'sidebar') {
+      setShowSidebarNotif(prev => !prev);
+      setShowMobileNotif(false);
+    } else {
+      setShowMobileNotif(prev => !prev);
+      setShowSidebarNotif(false);
+    }
+
+    if (isOpening && notifUnreadCount > 0) {
       // Mark visible notifications as read
       const unreadIds = notifications.filter(n => !n.isRead).map(n => n.id);
       if (unreadIds.length > 0) {
@@ -194,12 +201,14 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
   const handleNotificationClick = (notif: NotificationData) => {
     if (notif.type === 'rate_caregiver' && notif.data?.caregiverId) {
       router.push(`/dashboard/caregivers/${notif.data.caregiverId}`);
-      setShowNotifPopover(false);
+      setShowSidebarNotif(false);
+      setShowMobileNotif(false);
       setIsSidebarOpen(false);
     }
     if (notif.type === 'settlement_confirmed' || notif.type === 'settlement_rejected') {
       router.push('/dashboard/settings');
-      setShowNotifPopover(false);
+      setShowSidebarNotif(false);
+      setShowMobileNotif(false);
       setIsSidebarOpen(false);
     }
   };
@@ -311,7 +320,7 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
           {/* Notification bell - outside nav to avoid overflow clipping */}
           <div className="px-4 pb-2 relative" ref={notifRef}>
               <button
-                onClick={handleOpenNotifications}
+                onClick={() => handleOpenNotifications('sidebar')}
                 className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all w-full text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"
               >
                 <div className="relative">
@@ -327,7 +336,7 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
 
               {/* Notification popover */}
               <AnimatePresence>
-                {showNotifPopover && (
+                {showSidebarNotif && (
                   <motion.div
                     initial={{ opacity: 0, y: -4, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -508,7 +517,7 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
             <Logo accentStroke='lightgray' mainStroke='orangered' width={32} height={32} />
             <div className="relative" ref={mobileNotifRef}>
               <button
-                onClick={handleOpenNotifications}
+                onClick={() => handleOpenNotifications('mobile')}
                 className="p-2 rounded-lg hover:bg-gray-100 transition-colors relative cursor-pointer"
               >
                 <Bell className="w-5 h-5 text-gray-600" />
@@ -521,7 +530,7 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
 
               {/* Mobile notification popover */}
               <AnimatePresence>
-                {showNotifPopover && (
+                {showMobileNotif && (
                   <motion.div
                     initial={{ opacity: 0, y: -4, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}

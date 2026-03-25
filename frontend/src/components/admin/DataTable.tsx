@@ -256,8 +256,8 @@ export default function DataTable<T extends { id: number | string }>({
       </div>
 
       {/* Pagination */}
-      <div className="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="px-4 py-3 border-t border-gray-100 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {onPageSizeChange && (
             <div className="flex items-center gap-2">
               <select
@@ -269,10 +269,10 @@ export default function DataTable<T extends { id: number | string }>({
                   <option key={size} value={size}>{size}</option>
                 ))}
               </select>
-              <span className="text-sm text-gray-500">{t('admin.table.perPage')}</span>
+              <span className="text-sm text-gray-500 whitespace-nowrap">{t('admin.table.perPage')}</span>
             </div>
           )}
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 whitespace-nowrap">
             {t('admin.table.showing')}{' '}
             <span className="font-medium">
               {totalItems > 0 ? (currentPage - 1) * pageSize + 1 : 0}-{Math.min(currentPage * pageSize, totalItems)}
@@ -289,7 +289,7 @@ export default function DataTable<T extends { id: number | string }>({
           >
             <ChevronLeft size={18} />
           </button>
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-gray-600 whitespace-nowrap">
             {currentPage} / {totalPages || 1}
           </span>
           <button

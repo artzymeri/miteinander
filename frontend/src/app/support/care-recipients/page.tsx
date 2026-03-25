@@ -191,8 +191,8 @@ export default function SupportCareRecipientsPage() {
 
           {/* Pagination */}
           {data && (
-            <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between">
-              <div className="flex items-center gap-3">
+            <div className="px-4 py-3 border-t border-gray-200 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <div className="flex items-center gap-2">
                   <select
                     value={pageSize}
@@ -203,9 +203,9 @@ export default function SupportCareRecipientsPage() {
                       <option key={size} value={size}>{size}</option>
                     ))}
                   </select>
-                  <span className="text-sm text-gray-500">{t('admin.table.perPage')}</span>
+                  <span className="text-sm text-gray-500 whitespace-nowrap">{t('admin.table.perPage')}</span>
                 </div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 whitespace-nowrap">
                   {t('admin.table.showing')} {data.totalItems > 0 ? ((data.currentPage - 1) * pageSize) + 1 : 0}-{Math.min(data.currentPage * pageSize, data.totalItems)} {t('admin.table.of')} {data.totalItems} {t('admin.table.results')}
                 </p>
               </div>
@@ -218,7 +218,7 @@ export default function SupportCareRecipientsPage() {
                   >
                     <ChevronLeft size={16} />
                   </button>
-                  <span className="px-3 py-1 text-sm text-gray-600">{data.currentPage} / {data.totalPages}</span>
+                  <span className="px-3 py-1 text-sm text-gray-600 whitespace-nowrap">{data.currentPage} / {data.totalPages}</span>
                   <button
                     onClick={() => setCurrentPage(p => Math.min(data.totalPages, p + 1))}
                     disabled={currentPage >= data.totalPages}

@@ -70,7 +70,8 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [settlementRequests, setSettlementRequests] = useState<SettlementRequest[]>([]);
   const [settlementCount, setSettlementCount] = useState(0);
-  const [showSettlementPopover, setShowSettlementPopover] = useState(false);
+  const [showSidebarSettlement, setShowSidebarSettlement] = useState(false);
+  const [showMobileSettlement, setShowMobileSettlement] = useState(false);
   const [respondingTo, setRespondingTo] = useState<number | null>(null);
   const settlementRef = useRef<HTMLDivElement>(null);
   const mobileSettlementRef = useRef<HTMLDivElement>(null);
@@ -133,11 +134,11 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
   // Close popover when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        settlementRef.current && !settlementRef.current.contains(event.target as Node) &&
-        (!mobileSettlementRef.current || !mobileSettlementRef.current.contains(event.target as Node))
-      ) {
-        setShowSettlementPopover(false);
+      if (settlementRef.current && !settlementRef.current.contains(event.target as Node)) {
+        setShowSidebarSettlement(false);
+      }
+      if (mobileSettlementRef.current && !mobileSettlementRef.current.contains(event.target as Node)) {
+        setShowMobileSettlement(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -365,7 +366,10 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
             {/* Settlement requests bell */}
             <div ref={settlementRef} className="relative mb-2">
               <button
-                onClick={() => setShowSettlementPopover(!showSettlementPopover)}
+                onClick={() => {
+                  setShowSidebarSettlement(prev => !prev);
+                  setShowMobileSettlement(false);
+                }}
                 className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-gray-600 hover:bg-amber-50 hover:text-amber-600 transition-all"
               >
                 <div className="relative">
@@ -386,7 +390,7 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
 
               {/* Settlement popover */}
               <AnimatePresence>
-                {showSettlementPopover && (
+                {showSidebarSettlement && (
                   <motion.div
                     initial={{ opacity: 0, y: 8, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -444,7 +448,10 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
             <Logo accentStroke='lightgray' mainStroke='orangered' width={32} height={32} />
             <div ref={mobileSettlementRef} className="relative">
               <button
-                onClick={() => setShowSettlementPopover(!showSettlementPopover)}
+                onClick={() => {
+                  setShowMobileSettlement(prev => !prev);
+                  setShowSidebarSettlement(false);
+                }}
                 className="p-2 rounded-lg hover:bg-gray-100 transition-colors relative"
               >
                 <Bell className="w-5 h-5 text-gray-600" />
@@ -457,7 +464,7 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
 
               {/* Mobile settlement popover */}
               <AnimatePresence>
-                {showSettlementPopover && (
+                {showMobileSettlement && (
                   <motion.div
                     initial={{ opacity: 0, y: -8, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}

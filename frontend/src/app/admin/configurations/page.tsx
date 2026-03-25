@@ -286,8 +286,8 @@ export default function ConfigurationsPage() {
 
       {/* Care Needs Panel */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-          <div>
+        <div className="p-4 sm:p-6 border-b border-gray-100 flex items-center justify-between gap-3">
+          <div className="min-w-0">
             <h2 className="text-lg font-semibold text-gray-900">
               {t('admin.config.careNeeds.title')}
             </h2>
@@ -297,10 +297,11 @@ export default function ConfigurationsPage() {
           </div>
           <button
             onClick={() => handleOpenForm()}
-            className="flex items-center gap-2 px-4 py-2.5 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors cursor-pointer flex-shrink-0 text-sm sm:text-base whitespace-nowrap"
           >
             <Plus size={18} />
-            {t('admin.config.careNeeds.add')}
+            <span className="hidden sm:inline">{t('admin.config.careNeeds.add')}</span>
+            <span className="sm:hidden">{t('admin.actions.add') || 'Add'}</span>
           </button>
         </div>
 
@@ -326,50 +327,52 @@ export default function ConfigurationsPage() {
               return (
                 <div
                   key={careNeed.id}
-                  className={`p-4 flex items-center gap-4 hover:bg-gray-50 transition-colors ${
+                  className={`p-3 sm:p-4 hover:bg-gray-50 transition-colors ${
                     !careNeed.isActive ? 'opacity-50' : ''
                   }`}
                 >
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <GripVertical size={18} className="cursor-grab" />
-                  </div>
-                  <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center">
-                    {IconComponent && <IconComponent size={20} className="text-amber-600" />}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium text-gray-900">{getLabelByLanguage(careNeed)}</p>
-                      <span className="text-xs text-gray-400">({careNeed.key})</span>
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="flex items-center text-gray-400 flex-shrink-0">
+                      <GripVertical size={18} className="cursor-grab" />
                     </div>
-                    <div className="flex gap-4 text-xs text-gray-500 mt-1">
-                      <span>EN: {careNeed.labelEn}</span>
-                      <span>DE: {careNeed.labelDe}</span>
-                      <span>FR: {careNeed.labelFr}</span>
+                    <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
+                      {IconComponent && <IconComponent size={20} className="text-amber-600" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="font-medium text-gray-900 truncate">{getLabelByLanguage(careNeed)}</p>
+                        <span className="text-xs text-gray-400 whitespace-nowrap">({careNeed.key})</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+                      <button
+                        onClick={() => handleToggleActive(careNeed)}
+                        className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs rounded-full cursor-pointer transition-colors whitespace-nowrap ${
+                          careNeed.isActive
+                            ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        {careNeed.isActive ? t('admin.status.active') : t('admin.status.inactive')}
+                      </button>
+                      <button
+                        onClick={() => handleOpenForm(careNeed)}
+                        className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <Edit size={16} className="text-gray-500" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(careNeed)}
+                        className="p-1.5 sm:p-2 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <Trash2 size={16} className="text-red-500" />
+                      </button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => handleToggleActive(careNeed)}
-                      className={`px-3 py-1.5 text-xs rounded-full cursor-pointer transition-colors ${
-                        careNeed.isActive
-                          ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      }`}
-                    >
-                      {careNeed.isActive ? t('admin.status.active') : t('admin.status.inactive')}
-                    </button>
-                    <button
-                      onClick={() => handleOpenForm(careNeed)}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
-                    >
-                      <Edit size={16} className="text-gray-500" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(careNeed)}
-                      className="p-2 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-                    >
-                      <Trash2 size={16} className="text-red-500" />
-                    </button>
+                  <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-gray-500 mt-1.5 ml-[4.25rem] sm:ml-[4.75rem]">
+                    <span className="whitespace-nowrap">EN: {careNeed.labelEn}</span>
+                    <span className="whitespace-nowrap">DE: {careNeed.labelDe}</span>
+                    <span className="whitespace-nowrap">FR: {careNeed.labelFr}</span>
                   </div>
                 </div>
               );

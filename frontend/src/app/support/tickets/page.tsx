@@ -471,14 +471,14 @@ export default function SupportTicketsPage() {
           {selectedTicket ? (
             <>
               {/* Chat header */}
-              <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-3">
+              <div className="p-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-2 min-w-0">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
                   <button
                     onClick={() => {
                       socket?.emit('leave_support_ticket', { ticketId: selectedTicket.id });
                       setSelectedTicket(null);
                     }}
-                    className="sm:hidden p-1 text-gray-500 hover:text-gray-700"
+                    className="sm:hidden p-1 text-gray-500 hover:text-gray-700 flex-shrink-0"
                   >
                     <X size={20} />
                   </button>
@@ -486,28 +486,28 @@ export default function SupportTicketsPage() {
                     <img
                       src={selectedTicket.user.profileImageUrl}
                       alt=""
-                      className="w-10 h-10 rounded-full object-cover"
+                      className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
                       <User className="w-5 h-5 text-gray-400" />
                     </div>
                   )}
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium text-gray-900">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="font-medium text-gray-900 truncate">
                         {selectedTicket.user ? `${selectedTicket.user.firstName} ${selectedTicket.user.lastName}` : `User #${selectedTicket.userId}`}
                       </p>
-                      <span className="px-1.5 py-0.5 text-[10px] font-mono font-medium bg-gray-100 text-gray-500 rounded">
+                      <span className="px-1.5 py-0.5 text-[10px] font-mono font-medium bg-gray-100 text-gray-500 rounded whitespace-nowrap">
                         #{selectedTicket.id}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 truncate">
                       {selectedTicket.user?.email} · {selectedTicket.userRole === 'care_giver' ? t('support.tickets.caregiver') : t('support.tickets.carerecipient')}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-shrink-0">
                   {getStatusBadge(selectedTicket.status)}
                   {selectedTicket.status !== 'closed' && (
                     <button
@@ -571,8 +571,8 @@ export default function SupportTicketsPage() {
 
               {/* Input */}
               {selectedTicket.status !== 'closed' ? (
-                <div className="p-4 border-t border-gray-200">
-                  <div className="flex items-end gap-2">
+                <div className="p-4 border-t border-gray-200 min-w-0">
+                  <div className="flex items-end gap-2 min-w-0">
                     <textarea
                       ref={inputRef}
                       value={newMessage}
@@ -580,7 +580,7 @@ export default function SupportTicketsPage() {
                       onKeyDown={handleKeyDown}
                       placeholder={t('support.tickets.typePlaceholder')}
                       rows={1}
-                      className="flex-1 resize-none px-4 py-2.5 border border-gray-200 rounded-xl focus:border-amber-500 focus:ring-1 focus:ring-amber-500/20 outline-none text-sm"
+                      className="flex-1 min-w-0 resize-none px-4 py-2.5 border border-gray-200 rounded-xl focus:border-amber-500 focus:ring-1 focus:ring-amber-500/20 outline-none text-sm"
                       style={{ maxHeight: '120px' }}
                     />
                     <button

@@ -317,8 +317,8 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
             })}
           </nav>
 
-          {/* Notification bell - outside nav to avoid overflow clipping */}
-          <div className="px-4 pb-2 relative" ref={notifRef}>
+          {/* Notification bell - outside nav to avoid overflow clipping (hidden on mobile, shown in mobile header instead) */}
+          <div className="hidden lg:block px-4 pb-2 relative" ref={notifRef}>
               <button
                 onClick={() => handleOpenNotifications('sidebar')}
                 className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all w-full text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer"

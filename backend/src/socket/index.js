@@ -1,6 +1,7 @@
 const { Server } = require('socket.io');
 const { verifyToken } = require('../utils/jwt');
 const { getModelByRole } = require('../utils/helpers');
+const config = require('../config/config');
 const models = require('../models');
 
 let io;
@@ -14,9 +15,13 @@ const onlineUsers = new Map();
 const getUserKey = (role, userId) => `${role}:${userId}`;
 
 const setupSocket = (httpServer) => {
+  const allowedOrigins = config.server.env === 'production'
+    ? [process.env.FRONTEND_URL, process.env.FRONTEND_URL?.replace('https://', 'https://www.')]
+    : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:1003', 'http://127.0.0.1:1003'];
+
   io = new Server(httpServer, {
     cors: {
-      origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:1003', 'http://127.0.0.1:1003'],
+      origin: allowedOrigins,
       methods: ['GET', 'POST'],
       credentials: true,
     },

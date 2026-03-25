@@ -236,6 +236,13 @@ const sendTicketMessage = async (req, res) => {
           message: messageData,
         });
 
+        // Update ticket list for all agents/admins
+        io.to('support_agents').to('admin_agents').emit('support_ticket_update', {
+          ticketId: parseInt(ticketId),
+          message: messageData,
+          ticket: ticket.toJSON(),
+        });
+
         // If this was the first reply (assigned now) → hide from other support agents
         if (ticket.status === 'assigned') {
           io.to('support_agents').to('admin_agents').emit('support_ticket_claimed', {

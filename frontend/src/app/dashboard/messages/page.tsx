@@ -66,7 +66,7 @@ interface Message {
 
 export default function RecipientMessagesPage() {
   const { token, user } = useAuth();
-  const { sendMessage, respondSettlement, joinConversation, leaveConversation, onNewMessage, onMessagesRead, startTyping, stopTyping, onTyping, onStopTyping, markAsRead, refreshUnreadCount, onSettlementCompleted } = useSocket();
+  const { sendMessage, respondSettlement, joinConversation, leaveConversation, onNewMessage, onNewNotification, onMessagesRead, startTyping, stopTyping, onTyping, onStopTyping, markAsRead, refreshUnreadCount, onSettlementCompleted } = useSocket();
   const { t } = useTranslation();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -182,6 +182,15 @@ export default function RecipientMessagesPage() {
     });
     return cleanup;
   }, [activeConversation, onNewMessage, markAsRead, fetchConversations]);
+
+  // Listen for new_message_notification (fires on personal room, updates list even when no conversation is open)
+  useEffect(() => {
+    const cleanup = onNewNotification(() => {
+      fetchConversations();
+      refreshUnreadCount();
+    });
+    return cleanup;
+  }, [onNewNotification, fetchConversations, refreshUnreadCount]);
 
   // Listen for typing
   useEffect(() => {

@@ -37,13 +37,11 @@ const createCheckoutSession = async (req, res, next) => {
     const user = req.user;
     const role = req.userRole;
 
-    if (!plan || !['monthly', 'yearly'].includes(plan)) {
-      return errorResponse(res, 'Invalid plan. Must be "monthly" or "yearly".', 400, 'INVALID_PLAN');
+    if (!plan || !['yearly'].includes(plan)) {
+      return errorResponse(res, 'Invalid plan. Must be "yearly".', 400, 'INVALID_PLAN');
     }
 
-    const priceId = plan === 'monthly' 
-      ? config.stripe.monthlyPriceId 
-      : config.stripe.yearlyPriceId;
+    const priceId = config.stripe.yearlyPriceId;
 
     const customerId = await getOrCreateCustomer(user, role);
 
@@ -107,13 +105,8 @@ const getSubscriptionStatus = async (req, res, next) => {
     const user = req.user;
     const role = req.userRole;
 
-    // Check trial expiry for caregivers
+    // Get effective subscription status
     let effectiveStatus = user.subscriptionStatus || 'none';
-    if (effectiveStatus === 'trial' && user.trialEndsAt) {
-      if (new Date() > new Date(user.trialEndsAt)) {
-        effectiveStatus = 'expired';
-      }
-    }
 
     // Check if subscription is active but scheduled to cancel
     const isCanceling = effectiveStatus === 'active' && user.subscriptionEndsAt != null;
@@ -142,7 +135,6 @@ const getSubscriptionStatus = async (req, res, next) => {
     return successResponse(res, {
       subscriptionStatus: effectiveStatus,
       subscriptionId: user.subscriptionId || null,
-      trialEndsAt: user.trialEndsAt || null,
       subscriptionEndsAt: user.subscriptionEndsAt || null,
       currentPeriodEnd,
       plan,

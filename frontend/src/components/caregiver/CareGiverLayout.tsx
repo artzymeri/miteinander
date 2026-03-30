@@ -78,10 +78,8 @@ export default function CareGiverLayout({ children }: CareGiverLayoutProps) {
 
   // Compute subscription access synchronously
   const subscriptionStatus = user?.subscriptionStatus;
-  const trialExpired = subscriptionStatus === 'trial' && user?.trialEndsAt && new Date() > new Date(user.trialEndsAt);
   const hasSubscriptionAccess = isAuthenticated && user?.role === 'care_giver' && (
-    subscriptionStatus === 'active' ||
-    (subscriptionStatus === 'trial' && !trialExpired)
+    subscriptionStatus === 'active'
   );
 
   useEffect(() => {

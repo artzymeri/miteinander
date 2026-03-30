@@ -6,7 +6,6 @@ const config = require('./src/config/config');
 const { initializeDatabase, testConnection } = require('./src/config/database');
 const { migrate, getPendingMigrations } = require('./src/migrations/runner');
 const { setupSocket } = require('./src/socket');
-const { checkTrialExpirations } = require('./src/utils/trialChecker');
 
 const startServer = async () => {
   console.log('\n🚀 Starting MyHelper Backend Server...\n');
@@ -59,11 +58,7 @@ const startServer = async () => {
       console.log('═'.repeat(50));
       console.log('\n');
 
-      // Start trial expiration checker — runs every hour
-      setInterval(checkTrialExpirations, 60 * 60 * 1000);
-      // Run once at startup (after a short delay to ensure DB is ready)
-      setTimeout(checkTrialExpirations, 10000);
-      console.log('⏰ Trial expiration checker started (every 1 hour)\n');
+      // Trial system has been removed — no trial expiration checker needed
     });
     
   } catch (error) {

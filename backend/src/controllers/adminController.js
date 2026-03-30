@@ -628,11 +628,6 @@ const getUserSubscriptionDetails = async (req, res) => {
 
     const raw = user.get({ plain: true });
     let effectiveStatus = raw.subscriptionStatus || 'none';
-    if (effectiveStatus === 'trial' && raw.trialEndsAt) {
-      if (new Date() > new Date(raw.trialEndsAt)) {
-        effectiveStatus = 'expired';
-      }
-    }
 
     const isCancelingFromDb = effectiveStatus === 'active' && raw.subscriptionEndsAt != null;
 
@@ -661,22 +656,8 @@ const getUserSubscriptionDetails = async (req, res) => {
       }
     }
 
-    // For trial users, also try to get plan info from Stripe
-    if (stripe && raw.subscriptionId && effectiveStatus === 'trial' && !plan) {
-      try {
-        const sub = await stripe.subscriptions.retrieve(raw.subscriptionId);
-        const item = sub.items?.data?.[0];
-        const priceId = item?.price?.id || item?.plan?.id;
-        if (priceId === config.stripe.monthlyPriceId) plan = 'monthly';
-        else if (priceId === config.stripe.yearlyPriceId) plan = 'yearly';
-      } catch (stripeErr) {
-        // silently ignore
-      }
-    }
-
     return successResponse(res, {
       subscriptionStatus: effectiveStatus,
-      trialEndsAt: raw.trialEndsAt || null,
       subscriptionEndsAt: raw.subscriptionEndsAt || null,
       currentPeriodEnd,
       plan,

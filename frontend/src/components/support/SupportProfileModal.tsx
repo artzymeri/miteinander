@@ -14,7 +14,6 @@ type UserData = Record<string, any>;
 
 interface SubscriptionDetails {
   subscriptionStatus: string;
-  trialEndsAt: string | null;
   subscriptionEndsAt: string | null;
   currentPeriodEnd: string | null;
   plan: string | null;
@@ -186,7 +185,6 @@ export default function SupportProfileModal({
   const getSubscriptionColor = (status: string) => {
     const colors: Record<string, string> = {
       active: 'bg-green-100 text-green-700',
-      trial: 'bg-blue-100 text-blue-700',
       past_due: 'bg-yellow-100 text-yellow-700',
       canceled: 'bg-red-100 text-red-700',
       none: 'bg-gray-100 text-gray-600',
@@ -288,12 +286,6 @@ export default function SupportProfileModal({
                     <div>
                       <p className="text-xs text-gray-500 mb-1">{t('admin.fields.plan')}</p>
                       <p className="text-sm text-gray-900 capitalize">{subDetails.plan}</p>
-                    </div>
-                  )}
-                  {(subDetails?.subscriptionStatus === 'trial' || subDetails?.subscriptionStatus === 'expired' || (!subDetails && (user.subscriptionStatus === 'trial' || user.subscriptionStatus === 'expired'))) && (subDetails?.trialEndsAt || user.trialEndsAt) && (
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">{t('admin.fields.trialEndsAt')}</p>
-                      <p className="text-sm text-gray-900">{formatDate(String(subDetails?.trialEndsAt || user.trialEndsAt))}</p>
                     </div>
                   )}
                   {subDetails?.currentPeriodEnd && !subDetails.isCanceling && (

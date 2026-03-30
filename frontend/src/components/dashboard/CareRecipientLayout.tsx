@@ -75,8 +75,7 @@ export default function CareRecipientLayout({ children }: CareRecipientLayoutPro
   // Compute subscription access synchronously
   const subscriptionStatus = user?.subscriptionStatus;
   const hasSubscriptionAccess = isAuthenticated && user?.role === 'care_recipient' && (
-    subscriptionStatus === 'active' ||
-    subscriptionStatus === 'trial'
+    subscriptionStatus === 'active'
   );
 
   useEffect(() => {

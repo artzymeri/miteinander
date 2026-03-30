@@ -201,9 +201,8 @@ export interface CareGiver {
   isVerified: boolean;
   createdAt: string;
   lastLoginAt: string | null;
-  subscriptionStatus: 'trial' | 'active' | 'past_due' | 'canceled' | 'none';
+  subscriptionStatus: 'active' | 'past_due' | 'canceled' | 'none';
   subscriptionId: string | null;
-  trialEndsAt: string | null;
   subscriptionEndsAt: string | null;
 }
 
@@ -217,9 +216,8 @@ export interface CareRecipient {
   isActive: boolean;
   createdAt: string;
   lastLoginAt: string | null;
-  subscriptionStatus: 'trial' | 'active' | 'past_due' | 'canceled' | 'none';
+  subscriptionStatus: 'active' | 'past_due' | 'canceled' | 'none';
   subscriptionId: string | null;
-  trialEndsAt: string | null;
   subscriptionEndsAt: string | null;
 }
 

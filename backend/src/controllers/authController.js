@@ -98,16 +98,8 @@ const register = async (req, res, next) => {
       ...additionalData,
     };
 
-    // Set trial for caregivers: 7-day free trial
-    if (role === USER_ROLES.CARE_GIVER) {
-      userData.subscriptionStatus = 'trial';
-      userData.trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
-    }
-
-    // Care recipients have no trial — status defaults to 'none' (must choose plan)
-    if (role === USER_ROLES.CARE_RECIPIENT) {
-      userData.subscriptionStatus = 'none';
-    }
+    // No trial — all users start with 'none' subscription status (must subscribe)
+    userData.subscriptionStatus = 'none';
 
     const user = await Model.create(userData);
     
@@ -212,7 +204,6 @@ const verifyEmail = async (req, res, next) => {
       token,
       role: userRole,
       subscriptionStatus: foundUser.subscriptionStatus || 'none',
-      trialEndsAt: foundUser.trialEndsAt || null,
       subscriptionEndsAt: foundUser.subscriptionEndsAt || null,
     }, 'Email verified successfully');
   } catch (error) {
@@ -355,23 +346,13 @@ const login = async (req, res, next) => {
     if (userRole === USER_ROLES.CARE_GIVER || userRole === USER_ROLES.CARE_RECIPIENT) {
       let subStatus = foundUser.subscriptionStatus || 'none';
 
-      // For caregivers on trial, check if trial expired
-      if (subStatus === 'trial' && foundUser.trialEndsAt) {
-        if (new Date() > new Date(foundUser.trialEndsAt)) {
-          subStatus = 'expired';
-        }
-      }
-
-      // If subscription is not active AND (trial expired or care_recipient with 'none'),
-      // return SUBSCRIPTION_REQUIRED so frontend redirects to plans page
-      if (subStatus === 'expired' || subStatus === 'canceled' || 
-          (subStatus === 'none' && userRole === USER_ROLES.CARE_RECIPIENT)) {
+      // If subscription is not active, require subscription
+      if (subStatus !== 'active') {
         return successResponse(res, {
           user: foundUser.toJSON(),
           token,
           role: userRole,
           subscriptionStatus: subStatus,
-          trialEndsAt: foundUser.trialEndsAt || null,
           subscriptionEndsAt: foundUser.subscriptionEndsAt || null,
           subscriptionRequired: true,
         }, 'Login successful — subscription required');
@@ -383,7 +364,6 @@ const login = async (req, res, next) => {
         token,
         role: userRole,
         subscriptionStatus: subStatus,
-        trialEndsAt: foundUser.trialEndsAt || null,
         subscriptionEndsAt: foundUser.subscriptionEndsAt || null,
       }, 'Login successful');
     }

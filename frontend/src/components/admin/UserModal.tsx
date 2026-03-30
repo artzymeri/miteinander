@@ -21,7 +21,6 @@ type UserData = Record<string, any>;
 
 interface SubscriptionDetails {
   subscriptionStatus: string;
-  trialEndsAt: string | null;
   subscriptionEndsAt: string | null;
   currentPeriodEnd: string | null;
   plan: string | null;
@@ -374,12 +373,6 @@ export default function UserModal({
                       <div>
                         <p className="text-xs text-gray-500 mb-1">{t('admin.fields.plan')}</p>
                         <p className="text-sm text-gray-900 capitalize">{subDetails.plan}</p>
-                      </div>
-                    )}
-                    {(subDetails?.subscriptionStatus === 'trial' || subDetails?.subscriptionStatus === 'expired') && (subDetails?.trialEndsAt || formData.trialEndsAt) && (
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">{t('admin.fields.trialEndsAt')}</p>
-                        <p className="text-sm text-gray-900">{new Date(String(subDetails?.trialEndsAt || formData.trialEndsAt)).toLocaleDateString('de-DE')}</p>
                       </div>
                     )}
                     {subDetails?.currentPeriodEnd && !subDetails.isCanceling && (

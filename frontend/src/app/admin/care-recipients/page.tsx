@@ -109,7 +109,6 @@ export default function CareRecipientsPage() {
         const status = item.subscriptionStatus || 'none';
         const colors: Record<string, string> = {
           active: 'bg-green-100 text-green-700',
-          trial: 'bg-blue-100 text-blue-700',
           past_due: 'bg-yellow-100 text-yellow-700',
           canceled: 'bg-red-100 text-red-700',
           none: 'bg-gray-100 text-gray-600',

@@ -44,11 +44,21 @@ const EmergencyContactForm: FC<EmergencyContactFormProps> = ({
         <p className="mt-2 text-gray-600">{t('register.emergencyContactSubtitle')}</p>
       </div>
 
+      {/* Optional banner */}
+      <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+        <svg className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p className="text-sm text-blue-800">
+          {t('register.emergencyContactOptional')}
+        </p>
+      </div>
+
       <div className="space-y-4">
         {/* Emergency Contact Name */}
         <div className="space-y-2">
           <label htmlFor="emergencyContactName" className="block text-sm font-medium text-gray-700">
-            {t('register.emergencyContactName')} *
+            {t('register.emergencyContactName')}
           </label>
           <div className="relative">
             <User className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -59,7 +69,6 @@ const EmergencyContactForm: FC<EmergencyContactFormProps> = ({
               onChange={(e) => onChange({ emergencyContactName: e.target.value })}
               placeholder="Max Mustermann"
               className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all text-gray-900 placeholder:text-gray-400"
-              required
             />
           </div>
         </div>
@@ -67,7 +76,7 @@ const EmergencyContactForm: FC<EmergencyContactFormProps> = ({
         {/* Emergency Contact Phone with Country Code */}
         <div className="space-y-2">
           <label htmlFor="emergencyContactPhone" className="block text-sm font-medium text-gray-700">
-            {t('register.emergencyContactPhone')} *
+            {t('register.emergencyContactPhone')}
           </label>
           <div className="flex gap-2">
             {/* Country Code Dropdown */}
@@ -118,7 +127,6 @@ const EmergencyContactForm: FC<EmergencyContactFormProps> = ({
                 onChange={(e) => onChange({ emergencyContactPhone: e.target.value })}
                 placeholder="123 456789"
                 className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all text-gray-900 placeholder:text-gray-400"
-                required
               />
             </div>
           </div>

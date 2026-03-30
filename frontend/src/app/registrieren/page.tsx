@@ -167,8 +167,13 @@ export default function RegisterPage() {
       
       if (selectedRole === 'care_recipient') {
         payload.careNeeds = formData.careNeeds;
-        payload.emergencyContactName = formData.emergencyContactName;
-        payload.emergencyContactPhone = formData.emergencyContactPhoneCountryCode + formData.emergencyContactPhone;
+        // Emergency contact is optional
+        if (formData.emergencyContactName.trim()) {
+          payload.emergencyContactName = formData.emergencyContactName;
+        }
+        if (formData.emergencyContactPhone.trim()) {
+          payload.emergencyContactPhone = formData.emergencyContactPhoneCountryCode + formData.emergencyContactPhone;
+        }
       } else {
         payload.bio = formData.bio;
         payload.skills = formData.skills;
@@ -247,12 +252,7 @@ export default function RegisterPage() {
           return formData.bio.length > 0 && formData.skills.length > 0;
         }
       case 5:
-        if (selectedRole === 'care_recipient') {
-          return (
-            formData.emergencyContactName.length > 0 &&
-            formData.emergencyContactPhone.length > 0
-          );
-        }
+        // Emergency contact is optional (recommended but not required)
         return true;
       default:
         return true;

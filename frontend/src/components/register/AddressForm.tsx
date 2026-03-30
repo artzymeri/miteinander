@@ -13,7 +13,7 @@ interface AddressFormProps {
 
 const COUNTRIES = [
   { code: 'DE', name: 'Germany', flag: '🇩🇪' },
-  { code: 'AT', name: 'Austria', flag: '🇦��' },
+  { code: 'AT', name: 'Austria', flag: '🇦🇹' },
   { code: 'CH', name: 'Switzerland', flag: '🇨🇭' },
   { code: 'LI', name: 'Liechtenstein', flag: '🇱🇮' },
   { code: 'SE', name: 'Sweden', flag: '🇸🇪' },

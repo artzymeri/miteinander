@@ -10,8 +10,7 @@ interface User {
   lastName: string;
   role: 'admin' | 'support' | 'care_giver' | 'care_recipient';
   profileImageUrl?: string | null;
-  subscriptionStatus?: 'trial' | 'active' | 'past_due' | 'canceled' | 'none' | 'expired';
-  trialEndsAt?: string | null;
+  subscriptionStatus?: 'active' | 'past_due' | 'canceled' | 'none' | 'expired';
   subscriptionEndsAt?: string | null;
 }
 
@@ -62,8 +61,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const data = await response.json();
 
       if (data.success) {
-        const { token: newToken, user: userData, role, subscriptionStatus, trialEndsAt, subscriptionEndsAt, subscriptionRequired } = data.data;
-        const userWithRole = { ...userData, role, subscriptionStatus, trialEndsAt, subscriptionEndsAt };
+        const { token: newToken, user: userData, role, subscriptionStatus, subscriptionEndsAt, subscriptionRequired } = data.data;
+        const userWithRole = { ...userData, role, subscriptionStatus, subscriptionEndsAt };
         
         localStorage.setItem('token', newToken);
         localStorage.setItem('user', JSON.stringify(userWithRole));
